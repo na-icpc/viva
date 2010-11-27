@@ -1,0 +1,420 @@
+/**
+ * JavaCC template file created by SF JavaCC plugin 1.5.17+ wizard for JavaCC 1.5.0+
+ */options{  JDK_VERSION = "1.6";  static = false;}PARSER_BEGIN( PatternParser )package org.vanb.viva.parser;
+
+import org.vanb.viva.patterns.*;
+import org.vanb.viva.expressions.*;
+import org.vanb.viva.utils.*;
+
+public class PatternParser{
+    private SymbolTable<Class<?>> symbols = new SymbolTable<Class<?>>();
+}PARSER_END( PatternParser )SKIP :{  " "| "\r"| "\t"| "\n"}TOKEN :
+{
+  < INTEGER_LITERAL:
+        <DECIMAL_LITERAL> (["l","L"])?
+      | <HEX_LITERAL> (["l","L"])?
+      | <OCTAL_LITERAL> (["l","L"])?
+  >
+|
+  < #DECIMAL_LITERAL: ["1"-"9"] (["0"-"9"])* >
+|
+  < #HEX_LITERAL: "0" ["x","X"] (["0"-"9","a"-"f","A"-"F"])+ >
+|
+  < #OCTAL_LITERAL: "0" (["0"-"7"])* >
+|
+  < FLOATING_POINT_LITERAL:
+        <DECIMAL_FLOATING_POINT_LITERAL>
+      | <HEXADECIMAL_FLOATING_POINT_LITERAL>
+  >
+|
+  < #DECIMAL_FLOATING_POINT_LITERAL:
+        (["0"-"9"])+ "." (["0"-"9"])* (<DECIMAL_EXPONENT>)? (["f","F","d","D"])?
+      | "." (["0"-"9"])+ (<DECIMAL_EXPONENT>)? (["f","F","d","D"])?
+      | (["0"-"9"])+ <DECIMAL_EXPONENT> (["f","F","d","D"])?
+      | (["0"-"9"])+ (<DECIMAL_EXPONENT>)? ["f","F","d","D"]
+  >
+|
+  < #DECIMAL_EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ >
+|
+  < #HEXADECIMAL_FLOATING_POINT_LITERAL:
+        "0" ["x", "X"] (["0"-"9","a"-"f","A"-"F"])+ (".")? <HEXADECIMAL_EXPONENT> (["f","F","d","D"])?
+      | "0" ["x", "X"] (["0"-"9","a"-"f","A"-"F"])* "." (["0"-"9","a"-"f","A"-"F"])+ <HEXADECIMAL_EXPONENT> (["f","F","d","D"])?
+  >
+|
+  < #HEXADECIMAL_EXPONENT: ["p","P"] (["+","-"])? (["0"-"9"])+ >
+|
+  < CHARACTER_LITERAL:
+      "'"
+      (   (~["'","\\","\n","\r"])
+        | ("\\"
+            ( ["n","t","b","r","f","\\","'","\""]
+            | ["0"-"7"] ( ["0"-"7"] )?
+            | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+            )
+          )
+      )
+      "'"
+  >
+|
+  < STRING_LITERAL:
+      "\""
+      (   (~["\"","\\","\n","\r"])
+        | ("\\"
+            ( ["n","t","b","r","f","\\","'","\""]
+            | ["0"-"7"] ( ["0"-"7"] )?
+            | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+            )
+          )
+      )*
+      "\""
+  >
+}
+
+/* IDENTIFIERS */
+
+TOKEN :
+{
+  < IDENTIFIER: <LETTER> (<PART_LETTER>)* >
+|
+  < #LETTER:
+      [  // all chars for which Character.isIdentifierStart is true
+         "$",
+         "A"-"Z",
+         "_",
+         "a"-"z"
+      ]
+  >
+|
+  < #PART_LETTER:
+      [  // all chars for which Character.isIdentifierPart is true
+         "$",
+         "0"-"9",
+         "A"-"Z",
+         "_",
+         "a"-"z"
+      ]
+  >
+}
+PatternList multilinePattern() :{ 
+    PatternList plist = new PatternList();
+    Pattern p; 
+}{
+  ( 
+      p=singlePattern()   
+      { 
+          plist.addPattern( p );
+      } 
+  )*
+  {
+      return plist;
+  }
+}
+
+Pattern singlePattern() :
+{
+    Pattern pattern;
+    PatternListController controller;
+    PatternList plist;
+    ExpressionNode exp=null;
+}
+{
+  (
+    "{" "[" controller=qualifier() "]" { symbols.addLevel(); } plist=multilinePattern() [ "[" exp=constraint( true ) "]" ] "}"
+    {
+        symbols.removeLevel();
+        controller.setPatternList( plist );
+        if( exp!=null ) controller.addConstraint( exp );
+        pattern = controller;
+    }
+  |       plist=simplePattern() ";"
+    {
+        controller = new SingleLineController();
+        controller.setPatternList( plist );
+        pattern = controller;
+    }
+  )
+  {
+      return pattern;
+  }}PatternListController qualifier() :{
+    PatternListController pattern=null;
+    Pattern term=null;
+    ExpressionNode exp = null;
+}{
+  (
+    "*" exp=expression( false )
+    {
+        CountController count = new CountController();
+        count.setCountExpression( exp );
+        pattern = count;
+    }
+  |
+    "=" {symbols.addLevel();} term=simplePattern()
+    {
+        symbols.removeLevel();
+        MatchController match = new MatchController();
+        match.setTerminatingPattern( term );
+        pattern = match;
+    }  )
+  {
+      return pattern;
+  } }
+
+PatternList simplePattern() :
+{
+    PatternList plist = new PatternList();
+    ExpressionNode exp = null;
+    Token token;
+}
+{  ( 
+      token=< IDENTIFIER >
+      {
+          String name = token.image;
+          boolean unique = symbols.add( name, Integer.class );
+          if( !unique )
+          {
+              throw new ParseException( "Variable " + name + " is already defined." );
+          }
+          IntegerPattern pattern = new IntegerPattern();
+          plist.addPattern( pattern );
+      } 
+      [ "(" exp=constraint( false ) ")" ] 
+      {
+          if( exp!=null ) plist.addConstraint( exp );
+          exp = null;
+      } 
+   )+
+  {
+      return plist;
+  }
+}ExpressionNode constraint( boolean isCumulative ) :
+{
+    ExpressionNode lhs, rhs;
+    BinaryOperatorNode op;
+}
+{
+  lhs=orConstraint( isCumulative ) 
+  ( 
+      "||" rhs=orConstraint( isCumulative )
+      {
+          op = new OrNode();
+          op.instantiate( lhs, rhs );
+          lhs = op;
+      }
+  )*
+  {
+      return lhs;
+  }
+}
+
+ExpressionNode orConstraint( boolean isCumulative ) :
+{
+    ExpressionNode lhs, rhs;
+    BinaryOperatorNode op;
+}
+{
+  lhs=simpleConstraint( isCumulative ) 
+  ( 
+      "&&" rhs=simpleConstraint( isCumulative )
+      {
+          op = new AndNode();
+          op.instantiate( lhs, rhs );
+          lhs = op;
+      }
+  )*
+  {
+      return lhs;
+  }
+}
+ExpressionNode simpleConstraint( boolean isCumulative ) :
+{
+    ExpressionNode lhs, rhs;
+    BinaryOperatorNode op, newop;
+}
+{
+  lhs=expression( isCumulative ) op=boolop() rhs=expression( isCumulative )
+  {
+      op.instantiate( lhs, rhs );
+      lhs = rhs;
+  }
+  ( 
+      newop=boolop() rhs=expression( isCumulative )
+      {
+	      newop.instantiate( lhs, rhs );
+	      BinaryOperatorNode andop = new AndNode();
+	      andop.instantiate( op, newop );
+	      op = andop;
+	      lhs = rhs;
+      }
+  )*
+  {
+      return op;
+  }}
+
+BinaryOperatorNode boolop() :
+{
+    BinaryOperatorNode op = null;
+}
+{    (
+      ">" { op = new GreaterThanNode(); }
+    |
+      "<" { op = new LessThanNode(); }
+    |
+      ">=" { op = new GreaterThanEqualToNode(); }
+    |
+      "<=" { op = new LessThanEqualToNode(); }
+    |
+      "=" { op = new EqualToNode(); }
+    |
+      "==" { op = new EqualToNode(); }
+    |
+      "!=" { op = new NotEqualToNode(); }
+    |
+      "<>" { op = new NotEqualToNode(); }
+    |
+      "%"  { op = new EqualToNode(); }       )
+    {
+        return op;
+    }
+}
+
+ExpressionNode expression( boolean isCumulative ) :
+{
+    ExpressionNode lhs, rhs;
+    BinaryOperatorNode op;
+}
+{
+  lhs=term(isCumulative) 
+  ( 
+      op=addop() rhs=term(isCumulative)
+      {
+          op.instantiate( lhs, rhs );
+          lhs = op;
+      } 
+  )*
+  {
+      return lhs;
+  }
+}
+
+BinaryOperatorNode addop() :
+{
+    BinaryOperatorNode op = null;
+}{
+  (    "+" { op = new PlusNode(); }
+  |
+    "-" { op = new MinusNode(); }
+  )
+  {
+      return op;
+  }}
+
+ExpressionNode term( boolean isCumulative ) :
+{
+    ExpressionNode lhs, rhs;
+    BinaryOperatorNode op;
+}
+{
+  lhs=factor(isCumulative) 
+  ( 
+      op=multop() rhs=factor(isCumulative)
+      {
+          op.instantiate( lhs, rhs );
+          lhs = op;
+      } 
+  )*
+  {
+      return lhs;
+  }
+}
+
+BinaryOperatorNode multop() :
+{
+    BinaryOperatorNode op = null;
+}
+{
+  (
+    "*" { op = new TimesNode(); }
+  |
+    "/" { op = new DivideNode(); }
+  )
+  {
+      return op;
+  }
+}
+
+ExpressionNode factor( boolean isCumulative ) :
+{
+    Token token;
+    ExpressionNode node;
+    Object value;
+    String lit;
+}
+{
+  (
+    token=< IDENTIFIER >
+    {
+        String name = token.image;
+        Class<?> type = symbols.lookup( name );
+        if( type==null )
+        {
+            throw new ParseException( "Unknown identifier: " + name );
+        }
+        node = new VariableNode( name, type );
+    }
+  |
+    token=< INTEGER_LITERAL >
+    {
+        boolean islong = token.image.toUpperCase().endsWith( "L" );
+        try
+        {
+            if( islong )
+            {
+                value = new Long( token.image );
+            }
+            else
+            {
+                value = new Integer( token.image );
+            }
+        }
+        catch( Exception e )
+        {
+            throw new ParseException( "Unable to parse " + token.image 
+                + " as a " + (islong ? "Long" : "Integer") );
+        }
+        
+        node = new ConstantNode( value );
+    }
+  |
+    token=< FLOATING_POINT_LITERAL >
+    {
+        try
+        {
+            value = new Double( token.image );
+        }
+        catch( Exception e )
+        {
+            throw new ParseException( "Unable to parse " + token.image + " as a Double" );
+        }
+        node = new ConstantNode( value );
+    }
+  |
+    token=< CHARACTER_LITERAL >
+    {
+        lit = token.image;
+        if( lit.startsWith( "'" ) ) lit = lit.substring(1);
+        value = new Integer( (int)(lit.charAt(0)) );
+        node = new ConstantNode( value );
+    }
+  |
+    token=< STRING_LITERAL >
+    {
+        lit = token.image;
+        if( lit.startsWith( "\"" ) ) lit = lit.substring(1);
+        if( lit.endsWith( "\"" ) ) lit = lit.substring( 0, lit.length()-1);
+        node = new ConstantNode( lit );
+    }
+  |
+    "(" node=expression(isCumulative) ")"   )
+  {
+      return node;
+  }}

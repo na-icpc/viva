@@ -1,9 +1,11 @@
 package org.vanb.viva.patterns;
 
-public class IntegerPattern extends ValuePattern
+public class StringPattern extends ValuePattern
 {
+    @Override
     public Object getValue( String token ) throws Exception
     {
-        return new Integer( token );
+        return token;
     }
+
 }

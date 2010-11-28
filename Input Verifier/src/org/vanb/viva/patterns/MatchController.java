@@ -2,7 +2,7 @@ package org.vanb.viva.patterns;
 
 import org.vanb.viva.*;
 import org.vanb.viva.expressions.*;
-import org.vanb.viva.utils.InputManager;
+import org.vanb.viva.utils.*;
 
 /**
  * Class to control a pattern list by looking for a sentinel pattern.
@@ -38,20 +38,26 @@ public class MatchController extends PatternListController
      * @param input A controller for the input source
      * @return true if this Pattern matches, otherwise false
      */
-    public boolean test( InputManager input )
+    public boolean test( InputManager input, SymbolTable<ValueManager> values )
     {
         boolean success = true;
+        
+        values.addLevel();
         for(;;)
         {
-            boolean terminate = terminatingPattern.test( input );
+            values.addLevel();
+            boolean terminate = terminatingPattern.test( input, values );
+            values.removeLevel();
             if( terminate ) break;
             
             input.resetLine();
-            success = patternList.test( input );
+            success = patternList.test( input, values );
+
             if( !success ) break;
         }
+        values.removeLevel();
         
-        if( success ) success = constraints.test();
+        if( success ) success = constraints.test( values );
         
         return success;
     }

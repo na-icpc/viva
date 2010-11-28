@@ -1,4 +1,5 @@
 package org.vanb.viva.expressions;
+import org.vanb.viva.utils.*;
 
 public class ConstantNode implements ExpressionNode
 {
@@ -9,16 +10,14 @@ public class ConstantNode implements ExpressionNode
         value = v;
     }
     @Override
-    public Object evaluate()
+    public Object evaluate( SymbolTable<ValueManager> values )
     {
-        // TODO Auto-generated method stub
         return value;
     }
 
     @Override
     public Class<?> returnType()
     {
-        // TODO Auto-generated method stub
         return value.getClass();
     }
 

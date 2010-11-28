@@ -1,6 +1,6 @@
 package org.vanb.viva.patterns;
 
-import org.vanb.viva.utils.InputManager;
+import org.vanb.viva.utils.*;
 
 /**
  * Generic Pattern
@@ -15,5 +15,5 @@ public interface Pattern
      * @param input A controller for the input source
      * @return true if this Pattern matches, otherwise false
      */
-    public boolean test( InputManager input );
+    public boolean test( InputManager input, SymbolTable<ValueManager> values );
 }

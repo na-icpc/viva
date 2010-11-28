@@ -1,12 +1,12 @@
 package org.vanb.viva.patterns;
 
-import org.vanb.viva.utils.InputManager;
+import org.vanb.viva.utils.*;
 
 public class SingleLineController extends PatternListController
 {
-    public boolean test( InputManager input )
+    public boolean test( InputManager input, SymbolTable<ValueManager> values )
     {
-        boolean success = super.test( input );
+        boolean success = super.test( input, values );
         try
         {
             input.getNextLine();

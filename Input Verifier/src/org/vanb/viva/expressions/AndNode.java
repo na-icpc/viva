@@ -1,10 +1,10 @@
 package org.vanb.viva.expressions;
 
 import org.vanb.viva.parser.ParseException;
+import org.vanb.viva.utils.*;
 
 public class AndNode extends BinaryOperatorNode
 {
-
     @Override
     public void instantiate( ExpressionNode lhs, ExpressionNode rhs ) throws ParseException
     {
@@ -21,12 +21,12 @@ public class AndNode extends BinaryOperatorNode
     }
 
     @Override
-    public Object evaluate()
+    public Object evaluate( SymbolTable<ValueManager> values )
     {
-        Boolean result = (Boolean)left.evaluate();
+        Boolean result = (Boolean)left.evaluate( values );
         if( result )
         {
-            result = (Boolean)right.evaluate();
+            result = (Boolean)right.evaluate( values );
         }
         return result;
     }

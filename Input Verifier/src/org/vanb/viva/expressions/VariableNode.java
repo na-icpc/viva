@@ -1,5 +1,7 @@
 package org.vanb.viva.expressions;
 
+import org.vanb.viva.utils.*;
+
 public class VariableNode implements ExpressionNode
 {
     private String name;
@@ -12,17 +14,14 @@ public class VariableNode implements ExpressionNode
     }
     
     @Override
-    public Object evaluate()
+    public Object evaluate( SymbolTable<ValueManager> values )
     {
-        // TODO Auto-generated method stub
-        // Look up value somehow
-        return null;
+        return values.lookup( name ).getCurrentValue();
     }
 
     @Override
     public Class<?> returnType()
     {
-        // TODO Auto-generated method stub
         return type;
     }
 

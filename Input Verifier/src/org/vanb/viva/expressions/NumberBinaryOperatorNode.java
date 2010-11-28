@@ -2,6 +2,8 @@ package org.vanb.viva.expressions;
 
 import org.vanb.viva.parser.ParseException;
 
+import org.vanb.viva.utils.*;
+
 public abstract class NumberBinaryOperatorNode extends BinaryOperatorNode
 {
     private Class<?> type;
@@ -52,11 +54,11 @@ public abstract class NumberBinaryOperatorNode extends BinaryOperatorNode
     }
 
     @Override
-    public Object evaluate()
+    public Object evaluate( SymbolTable<ValueManager> values )
     {
         Object result = null;
-        Number l = (Number)left.evaluate();
-        Number r = (Number)right.evaluate();
+        Number l = (Number)left.evaluate( values );
+        Number r = (Number)right.evaluate( values );
         if( type.equals( Double.class ))
         {
             result = evaluate( l.doubleValue(), r.doubleValue() );   

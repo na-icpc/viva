@@ -1,6 +1,8 @@
 package org.vanb.viva.patterns;
 
 import org.vanb.viva.expressions.*;
+import org.vanb.viva.utils.*;
+
 import java.util.*;
 
 public class ConstraintList
@@ -17,7 +19,7 @@ public class ConstraintList
         constraints.add( exp );   
     }
     
-    public boolean test()
+    public boolean test( SymbolTable<ValueManager> values )
     {
         boolean success = true;
         for( ExpressionNode constraint : constraints )
@@ -28,7 +30,7 @@ public class ConstraintList
             }
             else
             {
-                success = (Boolean)constraint.evaluate();
+                success = (Boolean)constraint.evaluate( values );
             }
             
             if( !success ) break;

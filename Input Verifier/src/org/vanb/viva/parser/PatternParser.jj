@@ -175,6 +175,7 @@ PatternList simplePattern() :
               throw new ParseException( "Variable " + name + " is already defined." );
           }
           IntegerPattern pattern = new IntegerPattern();
+          pattern.setName( name );
           plist.addPattern( pattern );
       } 
       [ "(" exp=constraint( false ) ")" ] 

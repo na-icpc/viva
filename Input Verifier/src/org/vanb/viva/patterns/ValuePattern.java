@@ -1,7 +1,6 @@
 package org.vanb.viva.patterns;
 
-import org.vanb.viva.utils.InputManager;
-import org.vanb.viva.utils.SymbolTable;
+import org.vanb.viva.utils.VIVAContext;
 import org.vanb.viva.utils.ValueManager;
 
 public abstract class ValuePattern implements Pattern
@@ -14,20 +13,20 @@ public abstract class ValuePattern implements Pattern
     }
     
     @Override
-    public boolean test( InputManager input, SymbolTable<ValueManager> values )
+    public boolean test( VIVAContext context )
     {
         boolean success = true;
         String token = "";
         
         try
         {
-            token = input.getNextToken();
+            token = context.input.getNextToken( context );
             Object value = getValue( token );
-            ValueManager vm = values.lookup( token );
+            ValueManager vm = context.values.lookup( token );
             if( vm==null )
             {
                 vm = new ValueManager();
-                values.add( name, vm );
+                context.values.add( name, vm );
             }
             vm.addValue( value );
         }

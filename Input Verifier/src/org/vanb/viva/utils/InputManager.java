@@ -22,23 +22,25 @@ public class InputManager
      * 
      * @param filename Name of the file
      */
-    public InputManager( String filename ) throws Exception
+    public InputManager( String filename, VIVAContext context ) throws Exception
     {
         reader = new FileReader( filename );    
         lineno = tokenno = 0;
         tokens = new String[0];
         ch = ' ';
+        getNextLine( context );
     }
     
     /**
      * Get the next token on the current line.
+     * @param context TODO
      * 
      * @return The next token
      * @throws Exception
      */
-    public String getNextToken() throws Exception
+    public String getNextToken( VIVAContext context ) throws Exception
     {
-        if( tokenno >=tokens.length )
+        if( tokenno >= tokens.length )
         {
             throw new Exception( "Too few tokens on line " + lineno );   
         }
@@ -56,8 +58,9 @@ public class InputManager
     
     /**
      * Read the next line, and perform formatting checks.
+     * @param context TODO
      */
-    public void getNextLine() throws Exception
+    public void getNextLine( VIVAContext context ) throws Exception
     {
         boolean previousblank = Character.isWhitespace( ch );
         StringBuilder sb = new StringBuilder();

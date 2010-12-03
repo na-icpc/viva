@@ -5,7 +5,7 @@ import org.vanb.viva.utils.*;
 
 import java.util.*;
 
-public class ConstraintList
+public class ConstraintList implements Pattern
 {
     private LinkedList<ExpressionNode> constraints;
     
@@ -19,7 +19,7 @@ public class ConstraintList
         constraints.add( exp );   
     }
     
-    public boolean test( SymbolTable<ValueManager> values )
+    public boolean test( VIVAContext context )
     {
         boolean success = true;
         for( ExpressionNode constraint : constraints )
@@ -30,7 +30,7 @@ public class ConstraintList
             }
             else
             {
-                success = (Boolean)constraint.evaluate( values );
+                success = (Boolean)constraint.evaluate( context );
             }
             
             if( !success ) break;

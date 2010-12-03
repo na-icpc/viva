@@ -21,12 +21,12 @@ public class OrNode extends BinaryOperatorNode
     }
 
     @Override
-    public Object evaluate( SymbolTable<ValueManager> values )
+    public Object evaluate( VIVAContext context )
     {
-        Boolean result = (Boolean)left.evaluate( values );
+        Boolean result = (Boolean)left.evaluate( context );
         if( !result )
         {
-            result = (Boolean)right.evaluate( values );
+            result = (Boolean)right.evaluate( context );
         }
         return result;
     }

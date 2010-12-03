@@ -35,23 +35,22 @@ public class CountController extends PatternListController
     /**
      * Test to see if this pattern matches the input file
      * 
-     * @param input A controller for the input source
      * @return true if this Pattern matches, otherwise false
      */
-    public boolean test( InputManager input, SymbolTable<ValueManager> values )
+    public boolean test( VIVAContext context )
     {
         boolean success = true;
-        int c = (Integer)count.evaluate(null);
+        int c = (Integer)count.evaluate( context );
         
-        values.addLevel();
+        context.values.addLevel();
         for( int i=0; i<c; i++ )
         {
-            success = patternList.test( input, values );
+            success = patternList.test( context );
             if( !success ) break;
         }
-        values.removeLevel();
+        context.values.removeLevel();
         
-        if( success ) success = constraints.test( values );
+        if( success ) success = constraints.test( context );
         
         return success;
     }

@@ -11,11 +11,11 @@ public interface ExpressionNode
 {
 	/**
 	 * Evaluate the expression rooted at this node.
+	 * @param context TODO
 	 * 
-	 * @param values The current list of variable values
 	 * @return The value of this expression
 	 */
-    public Object evaluate( SymbolTable<ValueManager> values );
+    public Object evaluate( VIVAContext context );
     
     /**
      * Tell the return type of this expression.

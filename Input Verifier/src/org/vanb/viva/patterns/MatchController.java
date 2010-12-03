@@ -35,29 +35,28 @@ public class MatchController extends PatternListController
     /**
      * Test to see if this pattern matches the input file
      * 
-     * @param input A controller for the input source
      * @return true if this Pattern matches, otherwise false
      */
-    public boolean test( InputManager input, SymbolTable<ValueManager> values )
+    public boolean test( VIVAContext context )
     {
         boolean success = true;
         
-        values.addLevel();
+        context.values.addLevel();
         for(;;)
         {
-            values.addLevel();
-            boolean terminate = terminatingPattern.test( input, values );
-            values.removeLevel();
+            context.values.addLevel();
+            boolean terminate = terminatingPattern.test( context );
+            context.values.removeLevel();
             if( terminate ) break;
             
-            input.resetLine();
-            success = patternList.test( input, values );
+            context.input.resetLine();
+            success = patternList.test( context );
 
             if( !success ) break;
         }
-        values.removeLevel();
+        context.values.removeLevel();
         
-        if( success ) success = constraints.test( values );
+        if( success ) success = constraints.test( context );
         
         return success;
     }

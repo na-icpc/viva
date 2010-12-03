@@ -10,7 +10,7 @@ public class ConstantNode implements ExpressionNode
         value = v;
     }
     @Override
-    public Object evaluate( SymbolTable<ValueManager> values )
+    public Object evaluate( VIVAContext context )
     {
         return value;
     }

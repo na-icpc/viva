@@ -4,12 +4,12 @@ import org.vanb.viva.utils.*;
 
 public class SingleLineController extends PatternListController
 {
-    public boolean test( InputManager input, SymbolTable<ValueManager> values )
+    public boolean test( VIVAContext context )
     {
-        boolean success = super.test( input, values );
+        boolean success = super.test( context );
         try
         {
-            input.getNextLine();
+            context.input.getNextLine( context );
         }
         catch( Exception e )
         {

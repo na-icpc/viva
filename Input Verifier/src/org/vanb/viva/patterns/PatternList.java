@@ -43,20 +43,19 @@ public class PatternList implements Pattern
     /**
      * Test to see if this pattern matches the input file
      * 
-     * @param input A controller for the input source
      * @return true if this Pattern matches, otherwise false
      */
-    public boolean test( InputManager input, SymbolTable<ValueManager> values )
+    public boolean test( VIVAContext context )
     {
         boolean success = true;
         
         for( Pattern pattern : patterns )
         {
-            success = pattern.test( input, values );
+            success = pattern.test( context );
             if( !success ) break;
         }
         
-        if( success ) success = constraints.test( values );
+        if( success ) success = constraints.test( context );
         
         return success;
     }

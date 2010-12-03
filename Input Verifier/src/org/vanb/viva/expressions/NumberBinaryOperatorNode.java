@@ -54,11 +54,11 @@ public abstract class NumberBinaryOperatorNode extends BinaryOperatorNode
     }
 
     @Override
-    public Object evaluate( SymbolTable<ValueManager> values )
+    public Object evaluate( VIVAContext context )
     {
         Object result = null;
-        Number l = (Number)left.evaluate( values );
-        Number r = (Number)right.evaluate( values );
+        Number l = (Number)left.evaluate( context );
+        Number r = (Number)right.evaluate( context );
         if( type.equals( Double.class ))
         {
             result = evaluate( l.doubleValue(), r.doubleValue() );   

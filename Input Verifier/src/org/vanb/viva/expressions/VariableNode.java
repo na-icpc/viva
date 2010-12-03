@@ -14,9 +14,9 @@ public class VariableNode implements ExpressionNode
     }
     
     @Override
-    public Object evaluate( SymbolTable<ValueManager> values )
+    public Object evaluate( VIVAContext context )
     {
-        return values.lookup( name ).getCurrentValue();
+        return context.values.lookup( name ).getCurrentValue();
     }
 
     @Override

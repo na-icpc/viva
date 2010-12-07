@@ -14,6 +14,7 @@ public interface Pattern
      * @param context TODO
      * 
      * @return true if this Pattern matches, otherwise false
+     * @throws VIVAException TODO
      */
-    public boolean test( VIVAContext context );
+    public boolean test( VIVAContext context ) throws VIVAException;
 }

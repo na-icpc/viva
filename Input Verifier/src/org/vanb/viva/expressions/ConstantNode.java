@@ -10,7 +10,7 @@ public class ConstantNode implements ExpressionNode
         value = v;
     }
     @Override
-    public Object evaluate( VIVAContext context )
+    public Object evaluate( VIVAContext context ) throws VIVAException
     {
         return value;
     }
@@ -19,6 +19,11 @@ public class ConstantNode implements ExpressionNode
     public Class<?> returnType()
     {
         return value.getClass();
+    }
+    
+    public String toString()
+    {
+        return value.toString();
     }
 
 }

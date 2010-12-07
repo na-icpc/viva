@@ -21,7 +21,7 @@ public abstract class NumberBinaryOperatorNode extends BinaryOperatorNode
                 && !lhs.returnType().equals( Integer.class )
                 && !lhs.returnType().equals( Long.class ) ) 
         {
-            throw new ParseException( "Bad left operand to numerical operator: Expecting Double, Float, Long or Integer, got " + lhs.returnType().toString() );
+            throw new ParseException( "Bad left operand to " + operator + " operator: Expecting Double, Float, Long or Integer, got " + lhs.returnType().toString() );
         }
         if( !rhs.returnType().equals( Double.class )
                 && !rhs.returnType().equals( Float.class )
@@ -54,7 +54,7 @@ public abstract class NumberBinaryOperatorNode extends BinaryOperatorNode
     }
 
     @Override
-    public Object evaluate( VIVAContext context )
+    public Object evaluate( VIVAContext context ) throws VIVAException
     {
         Object result = null;
         Number l = (Number)left.evaluate( context );

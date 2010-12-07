@@ -37,7 +37,7 @@ public class MatchController extends PatternListController
      * 
      * @return true if this Pattern matches, otherwise false
      */
-    public boolean test( VIVAContext context )
+    public boolean test( VIVAContext context ) throws VIVAException
     {
         boolean success = true;
         
@@ -45,14 +45,14 @@ public class MatchController extends PatternListController
         for(;;)
         {
             context.values.addLevel();
+            context.justTesting = true;
             boolean terminate = terminatingPattern.test( context );
+            context.justTesting = false;
             context.values.removeLevel();
             if( terminate ) break;
             
             context.input.resetLine();
-            success = patternList.test( context );
-
-            if( !success ) break;
+            success &= patternList.test( context );
         }
         context.values.removeLevel();
         

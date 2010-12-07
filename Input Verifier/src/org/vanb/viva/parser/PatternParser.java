@@ -118,6 +118,7 @@ public class PatternParser implements PatternParserConstants {
               {if (true) throw new ParseException( "Variable " + name + " is already defined." );}
           }
           IntegerPattern pattern = new IntegerPattern();
+          pattern.setName( name );
           plist.addPattern( pattern );
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 26:
@@ -232,42 +233,43 @@ public class PatternParser implements PatternParserConstants {
 
   final public BinaryOperatorNode boolop() throws ParseException {
     BinaryOperatorNode op = null;
+    Token token;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case 30:
-      jj_consume_token(30);
-            op = new GreaterThanNode();
+      token = jj_consume_token(30);
+                    op = new GreaterThanNode(); op.operator = token.image;
       break;
     case 31:
-      jj_consume_token(31);
-            op = new LessThanNode();
+      token = jj_consume_token(31);
+                    op = new LessThanNode(); op.operator = token.image;
       break;
     case 32:
-      jj_consume_token(32);
-             op = new GreaterThanEqualToNode();
+      token = jj_consume_token(32);
+                     op = new GreaterThanEqualToNode(); op.operator = token.image;
       break;
     case 33:
-      jj_consume_token(33);
-             op = new LessThanEqualToNode();
+      token = jj_consume_token(33);
+                     op = new LessThanEqualToNode(); op.operator = token.image;
       break;
     case 25:
-      jj_consume_token(25);
-            op = new EqualToNode();
+      token = jj_consume_token(25);
+                    op = new EqualToNode(); op.operator = token.image;
       break;
     case 34:
-      jj_consume_token(34);
-             op = new EqualToNode();
+      token = jj_consume_token(34);
+                     op = new EqualToNode(); op.operator = token.image;
       break;
     case 35:
-      jj_consume_token(35);
-             op = new NotEqualToNode();
+      token = jj_consume_token(35);
+                     op = new NotEqualToNode(); op.operator = token.image;
       break;
     case 36:
-      jj_consume_token(36);
-             op = new NotEqualToNode();
+      token = jj_consume_token(36);
+                     op = new NotEqualToNode(); op.operator = token.image;
       break;
     case 37:
-      jj_consume_token(37);
-             op = new EqualToNode();
+      token = jj_consume_token(37);
+                     op = new EqualToNode(); op.operator = token.image;
       break;
     default:
       jj_la1[9] = jj_gen;
@@ -304,14 +306,15 @@ public class PatternParser implements PatternParserConstants {
 
   final public BinaryOperatorNode addop() throws ParseException {
     BinaryOperatorNode op = null;
+    Token token;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case 38:
-      jj_consume_token(38);
-          op = new PlusNode();
+      token = jj_consume_token(38);
+                  op = new PlusNode(); op.operator = token.image;
       break;
     case 39:
-      jj_consume_token(39);
-          op = new MinusNode();
+      token = jj_consume_token(39);
+                  op = new MinusNode(); op.operator = token.image;
       break;
     default:
       jj_la1[11] = jj_gen;
@@ -348,14 +351,15 @@ public class PatternParser implements PatternParserConstants {
 
   final public BinaryOperatorNode multop() throws ParseException {
     BinaryOperatorNode op = null;
+    Token token;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case 24:
-      jj_consume_token(24);
-          op = new TimesNode();
+      token = jj_consume_token(24);
+                  op = new TimesNode(); op.operator = token.image;
       break;
     case 40:
-      jj_consume_token(40);
-          op = new DivideNode();
+      token = jj_consume_token(40);
+                  op = new DivideNode(); op.operator = token.image;
       break;
     default:
       jj_la1[13] = jj_gen;
@@ -434,6 +438,7 @@ public class PatternParser implements PatternParserConstants {
       jj_consume_token(26);
       node = expression(isCumulative);
       jj_consume_token(27);
+        node = new ParenthesesNode( node );
       break;
     default:
       jj_la1[14] = jj_gen;

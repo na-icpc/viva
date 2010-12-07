@@ -254,25 +254,26 @@ ExpressionNode orConstraint( boolean isCumulative ) :
 BinaryOperatorNode boolop() :
 {
     BinaryOperatorNode op = null;
+    Token token;
 }
 {    (
-      ">" { op = new GreaterThanNode(); }
+      token = ">" { op = new GreaterThanNode(); op.operator = token.image; }
     |
-      "<" { op = new LessThanNode(); }
+      token = "<" { op = new LessThanNode(); op.operator = token.image; }
     |
-      ">=" { op = new GreaterThanEqualToNode(); }
+      token = ">=" { op = new GreaterThanEqualToNode(); op.operator = token.image; }
     |
-      "<=" { op = new LessThanEqualToNode(); }
+      token = "<=" { op = new LessThanEqualToNode(); op.operator = token.image; }
     |
-      "=" { op = new EqualToNode(); }
+      token = "=" { op = new EqualToNode(); op.operator = token.image; }
     |
-      "==" { op = new EqualToNode(); }
+      token = "==" { op = new EqualToNode(); op.operator = token.image; }
     |
-      "!=" { op = new NotEqualToNode(); }
+      token = "!=" { op = new NotEqualToNode(); op.operator = token.image; }
     |
-      "<>" { op = new NotEqualToNode(); }
+      token = "<>" { op = new NotEqualToNode(); op.operator = token.image; }
     |
-      "%"  { op = new EqualToNode(); }       )
+      token = "%"  { op = new EqualToNode(); op.operator = token.image; }       )
     {
         return op;
     }
@@ -300,10 +301,11 @@ ExpressionNode expression( boolean isCumulative ) :
 BinaryOperatorNode addop() :
 {
     BinaryOperatorNode op = null;
+    Token token;
 }{
-  (    "+" { op = new PlusNode(); }
+  (    token = "+" { op = new PlusNode(); op.operator = token.image; }
   |
-    "-" { op = new MinusNode(); }
+    token = "-" { op = new MinusNode(); op.operator = token.image; }
   )
   {
       return op;
@@ -331,12 +333,13 @@ ExpressionNode term( boolean isCumulative ) :
 BinaryOperatorNode multop() :
 {
     BinaryOperatorNode op = null;
+    Token token;
 }
 {
   (
-    "*" { op = new TimesNode(); }
+    token = "*" { op = new TimesNode(); op.operator = token.image; }
   |
-    "/" { op = new DivideNode(); }
+    token = "/" { op = new DivideNode(); op.operator = token.image; }
   )
   {
       return op;
@@ -415,7 +418,9 @@ ExpressionNode factor( boolean isCumulative ) :
         node = new ConstantNode( lit );
     }
   |
-    "(" node=expression(isCumulative) ")"   )
+    "(" node=expression(isCumulative) ")"
+    {        node = new ParenthesesNode( node );
+    }   )
   {
       return node;
   }}

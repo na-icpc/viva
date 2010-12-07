@@ -8,6 +8,7 @@ public class AndNode extends BinaryOperatorNode
     @Override
     public void instantiate( ExpressionNode lhs, ExpressionNode rhs ) throws ParseException
     {
+        operator = "&&";
         left = lhs;
         right = rhs;
         if( !lhs.returnType().equals( Boolean.class )) 
@@ -21,7 +22,7 @@ public class AndNode extends BinaryOperatorNode
     }
 
     @Override
-    public Object evaluate( VIVAContext context )
+    public Object evaluate( VIVAContext context ) throws VIVAException
     {
         Boolean result = (Boolean)left.evaluate( context );
         if( result )

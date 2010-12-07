@@ -1,5 +1,6 @@
 package org.vanb.viva.patterns;
 
+
 public class FloatPattern extends ValuePattern
 {
 
@@ -8,5 +9,10 @@ public class FloatPattern extends ValuePattern
     {
         return new Float( token );
     }
-
+    
+    
+    public String getType()
+    {
+        return "Float";
+    }
 }

@@ -19,7 +19,7 @@ public class ConstraintList implements Pattern
         constraints.add( exp );   
     }
     
-    public boolean test( VIVAContext context )
+    public boolean test( VIVAContext context ) throws VIVAException
     {
         boolean success = true;
         for( ExpressionNode constraint : constraints )
@@ -27,10 +27,15 @@ public class ConstraintList implements Pattern
             if( !constraint.returnType().equals( Boolean.class ) )
             {
                 success = false;
+                context.showError( "Constraing evaluates to non-Boolean" );
             }
             else
             {
                 success = (Boolean)constraint.evaluate( context );
+                if( !success && !context.justTesting )
+                {
+                    context.showError( "Failed constraint: " + constraint );
+                }
             }
             
             if( !success ) break;

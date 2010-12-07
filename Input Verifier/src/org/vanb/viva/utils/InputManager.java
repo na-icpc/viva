@@ -14,8 +14,9 @@ public class InputManager
     int lineno, tokenno;
     String tokens[];
     char ch;
-    char eolchars[] = "\n".toCharArray();
+    char eolchars[] = "\r\n".toCharArray();
     int eolcount;
+    boolean eof = false;
    
     /**
      * Create an input controller for the specified file.
@@ -28,7 +29,7 @@ public class InputManager
         lineno = tokenno = 0;
         tokens = new String[0];
         ch = ' ';
-        getNextLine( context );
+        getNextLine( context, false );
     }
     
     /**
@@ -40,6 +41,10 @@ public class InputManager
      */
     public String getNextToken( VIVAContext context ) throws Exception
     {
+        if( eof )
+        {
+            throw new Exception( "EOF encountered on line " + lineno );
+        }
         if( tokenno >= tokens.length )
         {
             throw new Exception( "Too few tokens on line " + lineno );   
@@ -56,15 +61,26 @@ public class InputManager
         tokenno = 0;
     }
     
+    public boolean atEOF()
+    {
+        return eof;
+    }
+    
     /**
      * Read the next line, and perform formatting checks.
      * @param context TODO
      */
-    public void getNextLine( VIVAContext context ) throws Exception
+    public void getNextLine( VIVAContext context, boolean expectingblankline ) throws Exception
     {
         boolean previousblank = Character.isWhitespace( ch );
         StringBuilder sb = new StringBuilder();
         eolcount = 0;
+        boolean blankerror = false;
+        
+        if( tokenno != tokens.length )
+        {
+            context.err.println( "Unused tokens on line " + lineno );
+        }
         
         do
         {
@@ -77,7 +93,8 @@ public class InputManager
                 // Check for EOF
                 if( c<0 )
                 {
-                   throw new Exception( "EOF Encountered on line " + lineno );  
+                    eof = true;
+                    break;
                 }
                 
                 // Convert to char
@@ -87,7 +104,14 @@ public class InputManager
                 if( ch==eolchars[eolcount] ) 
                 {
                     ++eolcount; 
-                    if( eolcount==eolchars.length ) break;
+                    if( eolcount==eolchars.length )
+                    {
+                        if( previousblank && sb.length()>0 )
+                        {
+                            context.err.println( "Blank(s) at the end of line " + lineno );
+                        }
+                        break;
+                    }
                 }
                 else 
                 {
@@ -95,28 +119,32 @@ public class InputManager
                     boolean isblank = ch==' ';
                     
                     // Check for duplicate blanks
-                    if( isblank && previousblank )
+                    if( isblank && previousblank && !blankerror )
                     {
-                        System.err.println( "Extra blanks encountered on line " + lineno );
+                        blankerror = true;
+                        context.err.println( "Extra blank(s) on line " + lineno );
                     }
                     
                     // Check for spurious chars
-                    else if( Character.isWhitespace( ch ) || Character.isISOControl( ch ) )
+                    else if( !isblank && (Character.isWhitespace( ch ) || Character.isISOControl( ch )) )
                     {
-                        System.err.println( "Spurious character encountered on line " + lineno);   
+                        context.err.println( "Spurious character (" + ch + ") on line " + lineno );   
                     }
                     else
                     {
                         sb.append( ch );
                     }
+                    
+                    previousblank = isblank;
                 } 
             }  
+            
             tokens = sb.toString().trim().split( "\\s+" );
-            if( tokens.length==0 )
+            if( !expectingblankline && (tokens.length==0 || (tokens.length==1 && tokens[0].length()==0) ) )
             {
-                System.err.println( "Blank line encountered on line " + lineno );
+                context.err.println( "Blank line encountered on line " + lineno );
             }
-        } while( tokens.length==0 );
+        } while( !eof && expectingblankline || ((tokens.length==0 || (tokens.length==1 && tokens[0].length()==0)) ) );
         tokenno = 0;
     }
 }

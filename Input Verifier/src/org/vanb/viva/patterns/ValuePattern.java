@@ -1,6 +1,7 @@
 package org.vanb.viva.patterns;
 
 import org.vanb.viva.utils.VIVAContext;
+import org.vanb.viva.utils.VIVAException;
 import org.vanb.viva.utils.ValueManager;
 
 public abstract class ValuePattern implements Pattern
@@ -13,7 +14,7 @@ public abstract class ValuePattern implements Pattern
     }
     
     @Override
-    public boolean test( VIVAContext context )
+    public boolean test( VIVAContext context ) throws VIVAException
     {
         boolean success = true;
         String token = "";
@@ -21,6 +22,14 @@ public abstract class ValuePattern implements Pattern
         try
         {
             token = context.input.getNextToken( context );
+        }
+        catch( Exception e )
+        {
+            context.throwException( e.getMessage() );
+        }
+        
+        try
+        {
             Object value = getValue( token );
             ValueManager vm = context.values.lookup( token );
             if( vm==null )
@@ -32,6 +41,7 @@ public abstract class ValuePattern implements Pattern
         }
         catch( Exception e )
         {
+            context.showError( "Unable to parse value as " + getType() );
             success = false;
         }
         
@@ -39,5 +49,7 @@ public abstract class ValuePattern implements Pattern
     }
     
     public abstract Object getValue( String token ) throws Exception;
+    
+    public abstract String getType();
 
 }

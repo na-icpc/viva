@@ -14,7 +14,7 @@ public class VariableNode implements ExpressionNode
     }
     
     @Override
-    public Object evaluate( VIVAContext context )
+    public Object evaluate( VIVAContext context ) throws VIVAException
     {
         return context.values.lookup( name ).getCurrentValue();
     }
@@ -23,6 +23,11 @@ public class VariableNode implements ExpressionNode
     public Class<?> returnType()
     {
         return type;
+    }
+    
+    public String toString()
+    {
+        return name;
     }
 
 }

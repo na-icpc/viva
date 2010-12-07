@@ -3,6 +3,7 @@
  */
 package org.vanb.viva.patterns;
 
+
 /**
  * @author David Van Brackle
  *
@@ -18,5 +19,9 @@ public class DoublePattern extends ValuePattern
     {
         return new Double( token );
     }
-
+    
+    public String getType()
+    {
+        return "Double";
+    }
 }

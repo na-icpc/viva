@@ -14,8 +14,9 @@ public interface ExpressionNode
 	 * @param context TODO
 	 * 
 	 * @return The value of this expression
+	 * @throws VIVAException TODO
 	 */
-    public Object evaluate( VIVAContext context );
+    public Object evaluate( VIVAContext context ) throws VIVAException;
     
     /**
      * Tell the return type of this expression.

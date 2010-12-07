@@ -1,5 +1,6 @@
 package org.vanb.viva.patterns;
 
+
 public class LongPattern extends ValuePattern
 {
     @Override
@@ -7,5 +8,9 @@ public class LongPattern extends ValuePattern
     {
         return new Long( token );
     }
-
+    
+    public String getType()
+    {
+        return "Long";
+    }
 }

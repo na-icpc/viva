@@ -50,7 +50,7 @@ public class PatternListController implements Pattern
      * 
      * @return true if this Pattern matches, otherwise false
      */
-    public boolean test( VIVAContext context )
+    public boolean test( VIVAContext context ) throws VIVAException
     {
         boolean success = patternList.test( context );
         

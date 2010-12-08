@@ -25,11 +25,14 @@ public class VIVAContext
     
     public void showError( String message ) throws VIVAException
     {
-        err.println( "At line " + input.lineno + " token " + input.tokenno + ": " + message );
-        ++errcount;
-        if( errcount>=maxerrs )
+        if( !justTesting )
         {
-            throwException( "Too many errors. Exiting." );
+            err.println( "At line " + input.lineno + " token " + input.tokenno + ": " + message );
+            ++errcount;
+            if( errcount>=maxerrs )
+            {
+                throwException( "Too many errors. Exiting." );
+            }
         }
     }
 }

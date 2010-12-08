@@ -32,7 +32,7 @@ public class ConstraintList implements Pattern
             else
             {
                 success = (Boolean)constraint.evaluate( context );
-                if( !success && !context.justTesting )
+                if( !success )
                 {
                     context.showError( "Failed constraint: " + constraint );
                 }

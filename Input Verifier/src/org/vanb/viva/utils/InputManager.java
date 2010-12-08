@@ -70,7 +70,7 @@ public class InputManager
      * Read the next line, and perform formatting checks.
      * @param context TODO
      */
-    public void getNextLine( VIVAContext context, boolean expectingblankline ) throws Exception
+    public void getNextLine( VIVAContext context, boolean expectingEOF ) throws Exception
     {
         boolean previousblank = Character.isWhitespace( ch );
         StringBuilder sb = new StringBuilder();
@@ -82,6 +82,7 @@ public class InputManager
             context.err.println( "Unused tokens on line " + lineno );
         }
         
+        boolean isblankline = false;
         do
         {
             ++lineno;
@@ -140,11 +141,12 @@ public class InputManager
             }  
             
             tokens = sb.toString().trim().split( "\\s+" );
-            if( !expectingblankline && (tokens.length==0 || (tokens.length==1 && tokens[0].length()==0) ) )
+            isblankline = tokens.length==0 || (tokens.length==1 && tokens[0].length()==0);
+            if( !expectingEOF && isblankline )
             {
                 context.err.println( "Blank line encountered on line " + lineno );
             }
-        } while( !eof && expectingblankline || ((tokens.length==0 || (tokens.length==1 && tokens[0].length()==0)) ) );
+        } while( !eof && isblankline && !expectingEOF );
         tokenno = 0;
     }
 }

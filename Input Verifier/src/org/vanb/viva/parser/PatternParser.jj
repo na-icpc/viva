@@ -8,6 +8,11 @@ import org.vanb.viva.utils.*;
 
 public class PatternParser{
     private SymbolTable<Class<?>> symbols = new SymbolTable<Class<?>>();
+
+    private String getPosition( Token token )
+    {
+        return "At line " + token.beginLine + " column " + token.beginColumn + ": ";    }
+      
 }PARSER_END( PatternParser )SKIP :{  " "| "\r"| "\t"| "\n"}TOKEN :
 {
   < INTEGER_LITERAL:
@@ -16,7 +21,7 @@ public class PatternParser{
       | <OCTAL_LITERAL> (["l","L"])?
   >
 |
-  < #DECIMAL_LITERAL: (["-"])? ["1"-"9"] (["0"-"9"])* >
+  < #DECIMAL_LITERAL: ("-")? ["1"-"9"] (["0"-"9"])* >
 |
   < #HEX_LITERAL: "0" ["x","X"] (["0"-"9","a"-"f","A"-"F"])+ >
 |
@@ -28,7 +33,7 @@ public class PatternParser{
   >
 |
   < #DECIMAL_FLOATING_POINT_LITERAL:
-        (["-"])? (["0"-"9"])+ "." (["0"-"9"])* (<DECIMAL_EXPONENT>)? (["f","F","d","D"])?
+        ("-")? (["0"-"9"])+ "." (["0"-"9"])* (<DECIMAL_EXPONENT>)? (["f","F","d","D"])?
       | "." (["0"-"9"])+ (<DECIMAL_EXPONENT>)? (["f","F","d","D"])?
       | (["0"-"9"])+ <DECIMAL_EXPONENT> (["f","F","d","D"])?
       | (["0"-"9"])+ (<DECIMAL_EXPONENT>)? ["f","F","d","D"]
@@ -172,17 +177,24 @@ PatternList simplePattern() :
           boolean unique = symbols.add( name, Integer.class );
           if( !unique )
           {
-              throw new ParseException( "Variable " + name + " is already defined." );
+              throw new ParseException( getPosition(token) + "Variable " + name + " is already defined." );
           }
           IntegerPattern pattern = new IntegerPattern();
           pattern.setName( name );
           plist.addPattern( pattern );
       } 
-      [ "(" exp=constraint( false ) ")" ] 
-      {
-          if( exp!=null ) plist.addConstraint( exp );
-          exp = null;
-      } 
+      [ "(" exp=constraint( false )
+	      {
+	          if( exp!=null ) plist.addConstraint( exp );
+	          exp = null;
+	      }
+	      (
+	            "," exp=constraint( false )
+	            {	                if( exp!=null ) plist.addConstraint( exp );
+	                exp = null;
+	            }	      )*
+	      ")"
+      ] 
    )+
   {
       return plist;
@@ -361,7 +373,7 @@ ExpressionNode factor( boolean isCumulative ) :
         Class<?> type = symbols.lookup( name );
         if( type==null )
         {
-            throw new ParseException( "Unknown identifier: " + name );
+            throw new ParseException( getPosition(token) + "Unknown identifier: " + name );
         }
         node = new VariableNode( name, type );
     }
@@ -382,7 +394,7 @@ ExpressionNode factor( boolean isCumulative ) :
         }
         catch( Exception e )
         {
-            throw new ParseException( "Unable to parse " + token.image 
+            throw new ParseException( getPosition(token) + "Unable to parse " + token.image 
                 + " as a " + (islong ? "Long" : "Integer") );
         }
         
@@ -397,7 +409,7 @@ ExpressionNode factor( boolean isCumulative ) :
         }
         catch( Exception e )
         {
-            throw new ParseException( "Unable to parse " + token.image + " as a Double" );
+            throw new ParseException( getPosition(token) + "Unable to parse " + token.image + " as a Double" );
         }
         node = new ConstantNode( value );
     }

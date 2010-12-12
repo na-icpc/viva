@@ -56,7 +56,7 @@ public class MatchController extends PatternListController
         }
         context.values.removeLevel();
         
-        if( success ) success = constraints.test( context );
+        success &= constraints.test( context );
         
         return success;
     }

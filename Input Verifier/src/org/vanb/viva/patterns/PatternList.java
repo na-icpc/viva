@@ -51,11 +51,10 @@ public class PatternList implements Pattern
         
         for( Pattern pattern : patterns )
         {
-            success = pattern.test( context );
-            if( !success ) break;
+            success &= pattern.test( context );
         }
         
-        if( success ) success = constraints.test( context );
+        success &= constraints.test( context );
         
         return success;
     }

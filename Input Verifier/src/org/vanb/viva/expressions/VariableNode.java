@@ -16,7 +16,22 @@ public class VariableNode implements ExpressionNode
     @Override
     public Object evaluate( VIVAContext context ) throws VIVAException
     {
-        return context.values.lookup( name ).getCurrentValue();
+        ValueManager vm = context.values.lookup( name );
+        Object value;
+        
+        if( vm!=null )
+        {
+            value = vm.getCurrentValue();      
+        }
+        else
+        {
+            context.showError( "Cannot find value for " + name + ", using 0" );
+            vm = new ValueManager();
+            value = new Integer( 0 );
+            vm.addValue( value );
+            context.values.add( name, vm );
+        }
+        return value;
     }
 
     @Override

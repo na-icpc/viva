@@ -46,11 +46,10 @@ public class CountController extends PatternListController
         for( int i=0; i<c; i++ )
         {
             success &= patternList.test( context );
-
         }
         context.values.removeLevel();
         
-        if( success ) success = constraints.test( context );
+        success &= constraints.test( context );
         
         return success;
     }

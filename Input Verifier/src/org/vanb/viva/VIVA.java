@@ -54,6 +54,7 @@ public class VIVA
             catch( Exception e )
             {
                 context.err.println( "Fatal error: " + e.getMessage() );
+                e.printStackTrace();
                 context.err.println( "Processing stopped." );
                 result = false;
             }

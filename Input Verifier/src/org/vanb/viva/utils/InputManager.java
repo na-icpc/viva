@@ -1,7 +1,6 @@
 package org.vanb.viva.utils;
 
 import java.io.*;
-import java.util.*;
 
 /**
  * Control the input: get lines, tokenize them, report simple formatting errors.

@@ -2,7 +2,6 @@ package org.vanb.viva.patterns;
 
 import java.util.*;
 
-import org.vanb.viva.*;
 import org.vanb.viva.expressions.*;
 import org.vanb.viva.utils.*;
 

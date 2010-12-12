@@ -52,9 +52,9 @@ public class MatchController extends PatternListController
             context.input.resetLine();
             success &= patternList.test( context );
         }
-        context.values.removeLevel();
         
         success &= constraints.test( context );
+        context.values.removeLevel();
         
         return success;
     }

@@ -55,9 +55,9 @@ public class CountController extends PatternListController
         {
             success &= patternList.test( context );
         }
-        context.values.removeLevel();
         
         success &= constraints.test( context );
+        context.values.removeLevel();
         
         return success;
     }

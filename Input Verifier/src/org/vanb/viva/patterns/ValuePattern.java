@@ -50,6 +50,6 @@ public abstract class ValuePattern implements Pattern
     
     public abstract Object getValue( String token ) throws Exception;
     
-    public abstract String getType();
+    public abstract Class<?> getType();
 
 }

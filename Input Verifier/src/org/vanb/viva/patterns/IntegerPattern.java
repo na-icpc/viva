@@ -9,8 +9,8 @@ public class IntegerPattern extends ValuePattern
     }
     
     
-    public String getType()
+    public Class<?> getType()
     {
-        return "Integer";
+        return Integer.class;
     }
 }

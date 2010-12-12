@@ -9,8 +9,8 @@ public class LongPattern extends ValuePattern
         return new Long( token );
     }
     
-    public String getType()
+    public Class<?> getType()
     {
-        return "Long";
+        return Long.class;
     }
 }

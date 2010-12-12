@@ -20,8 +20,8 @@ public class DoublePattern extends ValuePattern
         return new Double( token );
     }
     
-    public String getType()
+    public Class<?> getType()
     {
-        return "Double";
+        return Double.class;
     }
 }

@@ -40,7 +40,16 @@ public class CountController extends PatternListController
     public boolean test( VIVAContext context ) throws VIVAException
     {
         boolean success = true;
-        int c = (Integer)count.evaluate( context );
+        int c=0;
+        
+        try
+        {
+            c = (Integer)count.evaluate( context );
+        }
+        catch( Exception e )
+        {
+            context.throwException( e.getMessage() );
+        }
         
         context.values.addLevel();
         for( int i=0; i<c; i++ )

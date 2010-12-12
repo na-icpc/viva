@@ -54,7 +54,7 @@ public class PatternListController implements Pattern
     {
         boolean success = patternList.test( context );
         
-        if( success ) success = constraints.test( context );
+        success &= constraints.test( context );
         
         return success;
     }

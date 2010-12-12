@@ -1,7 +1,5 @@
 package org.vanb.viva.patterns;
 
-import org.vanb.viva.*;
-import org.vanb.viva.expressions.*;
 import org.vanb.viva.utils.*;
 
 /**

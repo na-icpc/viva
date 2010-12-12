@@ -167,35 +167,49 @@ Pattern singlePattern() :
 PatternList simplePattern() :
 {
     PatternList plist = new PatternList();
+    PatternList innerlist = null;
+    PatternListController controller = null;
     ExpressionNode exp = null;
     Token token;
 }
-{  ( 
-      token=< IDENTIFIER >
-      {
-          String name = token.image;
-          boolean unique = symbols.add( name, Integer.class );
-          if( !unique )
-          {
-              throw new ParseException( getPosition(token) + "Variable " + name + " is already defined." );
-          }
-          IntegerPattern pattern = new IntegerPattern();
-          pattern.setName( name );
-          plist.addPattern( pattern );
-      } 
-      [ "(" exp=constraint( false )
+{
+  (
+	  (	    "<" "[" controller=qualifier() "]" { symbols.addLevel(); } innerlist=simplePattern() [ "[" exp=constraint( true ) "]" ] ">"
+	    {
+	        symbols.removeLevel();
+	        controller.setPatternList( innerlist );
+	        if( exp!=null ) controller.addConstraint( exp );
+	        plist.addPattern( controller );
+	    }
+	  )
+	  |
+	  ( 
+	      token=< IDENTIFIER >
 	      {
-	          if( exp!=null ) plist.addConstraint( exp );
-	          exp = null;
-	      }
-	      (
-	            "," exp=constraint( false )
-	            {	                if( exp!=null ) plist.addConstraint( exp );
-	                exp = null;
-	            }	      )*
-	      ")"
-      ] 
-   )+
+	          String name = token.image;
+	          boolean unique = symbols.add( name, Integer.class );
+	          if( !unique )
+	          {
+	              throw new ParseException( getPosition(token) + "Variable " + name + " is already defined." );
+	          }
+	          IntegerPattern pattern = new IntegerPattern();
+	          pattern.setName( name );
+	          plist.addPattern( pattern );
+	      } 
+	      [ "(" exp=constraint( false )
+		      {
+		          if( exp!=null ) plist.addConstraint( exp );
+		          exp = null;
+		      }
+		      (
+		            "," exp=constraint( false )
+		            {		                if( exp!=null ) plist.addConstraint( exp );
+		                exp = null;
+		            }		      )*
+		      ")"
+	      ] 
+	   )
+  )+
   {
       return plist;
   }

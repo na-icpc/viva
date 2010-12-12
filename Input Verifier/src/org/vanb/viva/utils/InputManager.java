@@ -49,7 +49,6 @@ public class InputManager
         {
             throw new Exception( "Too few tokens on line " + lineno );   
         }
-        
         return tokens[tokenno++];
     }
     

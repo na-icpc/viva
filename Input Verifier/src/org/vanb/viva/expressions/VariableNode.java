@@ -26,6 +26,7 @@ public class VariableNode implements ExpressionNode
         else
         {
             context.showError( "Cannot find value for " + name + ", using 0" );
+            new Exception().printStackTrace();
             vm = new ValueManager();
             value = new Integer( 0 );
             vm.addValue( value );

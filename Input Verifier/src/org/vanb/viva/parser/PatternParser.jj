@@ -76,6 +76,14 @@ public class PatternParser{
 }
 
 /* IDENTIFIERS */
+TOKEN :
+{    < DOUBLE : "double" >
+|   < INTEGER : "integer" >
+|   < INT : "int" >
+|   < LONG : "long" >
+|   < FLOAT : "float" >
+|   < STRING : "string" >
+}
 
 TOKEN :
 {
@@ -171,6 +179,7 @@ PatternList simplePattern() :
     PatternListController controller = null;
     ExpressionNode exp = null;
     Token token;
+    ValuePattern value = null;
 }
 {
   (
@@ -184,28 +193,30 @@ PatternList simplePattern() :
 	  )
 	  |
 	  ( 
-	      token=< IDENTIFIER >
+	      token=< IDENTIFIER > [ ":" value=type() ]
 	      {
 	          String name = token.image;
-	          boolean unique = symbols.add( name, Integer.class );
+	          if( value==null ) value = new IntegerPattern();
+	          value.setName( name );
+	          plist.addPattern( value );
+	          boolean unique = symbols.add( name, value.getType() );
 	          if( !unique )
 	          {
 	              throw new ParseException( getPosition(token) + "Variable " + name + " is already defined." );
 	          }
-	          IntegerPattern pattern = new IntegerPattern();
-	          pattern.setName( name );
-	          plist.addPattern( pattern );
+	          value = null;
 	      } 
-	      [ "(" exp=constraint( false )
-		      {
-		          if( exp!=null ) plist.addConstraint( exp );
-		          exp = null;
-		      }
-		      (
-		            "," exp=constraint( false )
-		            {		                if( exp!=null ) plist.addConstraint( exp );
-		                exp = null;
-		            }		      )*
+	      [
+	          "(" exp=constraint( false )
+			      {
+			          if( exp!=null ) plist.addConstraint( exp );
+			          exp = null;
+			      }
+			      (
+			            "," exp=constraint( false )
+			            {			                if( exp!=null ) plist.addConstraint( exp );
+			                exp = null;
+			            }			      )*
 		      ")"
 	      ] 
 	   )
@@ -213,6 +224,22 @@ PatternList simplePattern() :
   {
       return plist;
   }
+}
+
+ValuePattern type() :
+{
+  ValuePattern pattern = null;
+}
+{  (
+      < DOUBLE >  { pattern = new DoublePattern(); }
+  |   < FLOAT >   { pattern = new FloatPattern(); }
+  |   < LONG >    { pattern = new LongPattern(); }
+  |   < INT >     { pattern = new IntegerPattern(); }
+  |   < INTEGER > { pattern = new IntegerPattern(); }
+  |   < STRING >  { pattern = new StringPattern(); }
+  )
+  {
+      return pattern;  }
 }ExpressionNode constraint( boolean isCumulative ) :
 {
     ExpressionNode lhs, rhs;
@@ -299,7 +326,7 @@ BinaryOperatorNode boolop() :
     |
       token = "<>" { op = new NotEqualToNode(); op.operator = token.image; }
     |
-      token = "%"  { op = new EqualToNode(); op.operator = token.image; }       )
+      token = "%"  { op = new RegExpNode(); op.operator = token.image; }       )
     {
         return op;
     }
@@ -399,7 +426,7 @@ ExpressionNode factor( boolean isCumulative ) :
         {
             if( islong )
             {
-                value = new Long( token.image );
+                value = new Long( token.image.substring( 0, token.image.length()-1 ) );
             }
             else
             {
@@ -409,7 +436,7 @@ ExpressionNode factor( boolean isCumulative ) :
         catch( Exception e )
         {
             throw new ParseException( getPosition(token) + "Unable to parse " + token.image 
-                + " as a " + (islong ? "Long" : "Integer") );
+                + " as " + (islong ? "a Long" : "an Integer") );
         }
         
         node = new ConstantNode( value );

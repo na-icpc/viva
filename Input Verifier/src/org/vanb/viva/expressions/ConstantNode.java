@@ -23,7 +23,7 @@ public class ConstantNode implements ExpressionNode
     
     public String toString()
     {
-        return value.toString();
+        return value instanceof String ? "\"" + value + "\"" : value.toString();
     }
 
 }

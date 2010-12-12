@@ -10,9 +10,8 @@ public class FloatPattern extends ValuePattern
         return new Float( token );
     }
     
-    
-    public String getType()
+    public Class<?> getType()
     {
-        return "Float";
+        return Float.class;
     }
 }

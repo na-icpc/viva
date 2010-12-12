@@ -9,8 +9,8 @@ public class StringPattern extends ValuePattern
         return token;
     }
     
-    public String getType()
+    public Class<?> getType()
     {
-        return "String";
+        return String.class;
     }
 }

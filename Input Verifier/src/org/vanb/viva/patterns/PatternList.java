@@ -25,7 +25,7 @@ public class PatternList implements Pattern
     }
     
     /**
-     * Add a pattern to this patternList
+     * Add a pattern to this PatternList
      * 
      * @param pattern Pattern to add
      */
@@ -34,6 +34,11 @@ public class PatternList implements Pattern
         patterns.add( pattern );   
     }
     
+    /**
+     * Add a constraint to this PatternList
+     * 
+     * @param pattern Pattern to add
+     */
     public void addConstraint( ExpressionNode constraint )
     {
         constraints.addConstraint( constraint );

@@ -4,8 +4,8 @@ import org.vanb.viva.utils.*;
 
 public class VariableNode implements ExpressionNode
 {
-    private String name;
-    private Class<?> type;
+    protected String name;
+    protected Class<?> type;
     
     public VariableNode( String n, Class<?> t )
     {

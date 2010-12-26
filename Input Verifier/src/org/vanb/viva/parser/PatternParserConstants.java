@@ -33,11 +33,23 @@ public interface PatternParserConstants {
   /** RegularExpression Id. */
   int STRING_LITERAL = 15;
   /** RegularExpression Id. */
-  int IDENTIFIER = 16;
+  int DOUBLE = 16;
   /** RegularExpression Id. */
-  int LETTER = 17;
+  int INTEGER = 17;
   /** RegularExpression Id. */
-  int PART_LETTER = 18;
+  int INT = 18;
+  /** RegularExpression Id. */
+  int LONG = 19;
+  /** RegularExpression Id. */
+  int FLOAT = 20;
+  /** RegularExpression Id. */
+  int STRING = 21;
+  /** RegularExpression Id. */
+  int IDENTIFIER = 22;
+  /** RegularExpression Id. */
+  int LETTER = 23;
+  /** RegularExpression Id. */
+  int PART_LETTER = 24;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -60,6 +72,12 @@ public interface PatternParserConstants {
     "<HEXADECIMAL_EXPONENT>",
     "<CHARACTER_LITERAL>",
     "<STRING_LITERAL>",
+    "\"double\"",
+    "\"integer\"",
+    "\"int\"",
+    "\"long\"",
+    "\"float\"",
+    "\"string\"",
     "<IDENTIFIER>",
     "<LETTER>",
     "<PART_LETTER>",
@@ -70,12 +88,14 @@ public interface PatternParserConstants {
     "\";\"",
     "\"*\"",
     "\"=\"",
+    "\"<\"",
+    "\">\"",
+    "\":\"",
     "\"(\"",
+    "\",\"",
     "\")\"",
     "\"||\"",
     "\"&&\"",
-    "\">\"",
-    "\"<\"",
     "\">=\"",
     "\"<=\"",
     "\"==\"",

@@ -4,7 +4,7 @@
 
 import org.vanb.viva.patterns.*;
 import org.vanb.viva.expressions.*;
-import org.vanb.viva.utils.*;
+import org.vanb.viva.utils.*;import java.util.*;
 
 public class PatternParser{
     private SymbolTable<Class<?>> symbols = new SymbolTable<Class<?>>();
@@ -408,16 +408,7 @@ ExpressionNode factor( boolean isCumulative ) :
 }
 {
   (
-    token=< IDENTIFIER >
-    {
-        String name = token.image;
-        Class<?> type = symbols.lookup( name );
-        if( type==null )
-        {
-            throw new ParseException( getPosition(token) + "Unknown identifier: " + name );
-        }
-        node = new VariableNode( name, type );
-    }
+    token=< IDENTIFIER >  node=named( token.image, isCumulative )
   |
     token=< INTEGER_LITERAL >
     {
@@ -477,3 +468,45 @@ ExpressionNode factor( boolean isCumulative ) :
   {
       return node;
   }}
+
+ExpressionNode named( String name, boolean isCumulative ) :
+{    ExpressionNode node = null;
+    ExpressionNode subscript = null;
+    ExpressionNode parm = null;
+    LinkedList<ExpressionNode> parms = new LinkedList<ExpressionNode>();
+    Class<? > type;
+}
+{  (     "[" subscript=expression(isCumulative) "]"
+     {
+         type = symbols.lookup( name );
+         if( type==null )
+         {
+             throw new ParseException( getPosition(token) + "Unknown identifier: " + name );
+         }
+
+         if( !subscript.returnType().equals( Integer.class ) )
+         {             throw new ParseException( getPosition(token) + "Subscript must be Integer, not " + subscript.returnType() );
+         }
+         node = new SubscriptNode( name, type, subscript );     }
+  |
+     "(" parm=expression(isCumulative) {parms.add(parm);} ("," parm=expression(isCumulative) {parms.add(parm);} )* ")"
+     {         type = symbols.lookup( name );
+         if( type==null )
+         {
+             throw new ParseException( getPosition(token) + "Unknown identifier: " + name );
+         }
+         node = isCumulative ? new CumulativeFunctionNode( name, type, parms )
+                             : new InlineFunctionNode( name, type, parms );
+     }
+  |
+     {         type = symbols.lookup( name );
+         if( type==null )
+         {
+             throw new ParseException( getPosition(token) + "Unknown identifier: " + name );
+         }
+         node = new VariableNode( name, type );
+     }     
+  )
+  {
+      return node;  }
+}

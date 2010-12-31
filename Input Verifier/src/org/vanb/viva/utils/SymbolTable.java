@@ -64,7 +64,7 @@ public class SymbolTable<T>
     
     /**
      * Add a symbol & value to the Symbol Table. Only add to the most recent context.
-     * Return true if this
+     * Return true if this is a new symbol, false if the symbol is already there.
      * 
      * @param key Name of symbol to add
      * @param value Value of symbol to add

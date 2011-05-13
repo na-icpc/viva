@@ -11,8 +11,7 @@ public class PatternParser{
 
     private String getPosition( Token token )
     {
-        return "At line " + token.beginLine + " column " + token.beginColumn + ": ";    }
-      
+        return "At line " + token.beginLine + " column " + token.beginColumn + ": ";    }     
 }PARSER_END( PatternParser )SKIP :{  " "| "\r"| "\t"| "\n"}TOKEN :
 {
   < INTEGER_LITERAL:

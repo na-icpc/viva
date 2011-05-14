@@ -116,7 +116,7 @@ TOKEN :
       { 
           plist.addPattern( p );
       } 
-  )*
+  )+
   {
       return plist;
   }
@@ -125,14 +125,15 @@ TOKEN :
 Pattern singlePattern() :
 {
     Pattern pattern;
-    PatternListController controller;
+    PatternListController controller=null;
     PatternList plist;
     ExpressionNode exp=null;
 }
 {
   (
-    "{" "[" controller=qualifier() "]" { symbols.addLevel(); } plist=multilinePattern() [ "[" exp=constraint( true ) "]" ] "}"
+    "{" [ "[" controller=qualifier() "]" ] { symbols.addLevel(); } plist=multilinePattern() [ "[" exp=constraint( true ) "]" ] "}"
     {
+        if( controller==null ) controller = new EOFController();
         symbols.removeLevel();
         controller.setPatternList( plist );
         if( exp!=null ) controller.addConstraint( exp );
@@ -182,8 +183,9 @@ PatternList simplePattern() :
 }
 {
   (
-	  (	    "<" "[" controller=qualifier() "]" { symbols.addLevel(); } innerlist=simplePattern() [ "[" exp=constraint( true ) "]" ] ">"
+	  (	    "<" [ "[" controller=qualifier() "]" ] { symbols.addLevel(); } innerlist=simplePattern() [ "[" exp=constraint( true ) "]" ] ">"
 	    {
+	        if( controller==null ) controller = new EOLNController();
 	        symbols.removeLevel();
 	        controller.setPatternList( innerlist );
 	        if( exp!=null ) controller.addConstraint( exp );

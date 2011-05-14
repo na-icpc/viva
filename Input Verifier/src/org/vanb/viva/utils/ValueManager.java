@@ -42,4 +42,9 @@ public class ValueManager
     {
         return count;
     }
+    
+    public String toString()
+    {
+        return "ValueManager:" + values + " " + current + " " + count;
+    }
 }

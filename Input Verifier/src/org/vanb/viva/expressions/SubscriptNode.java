@@ -32,7 +32,7 @@ public class SubscriptNode extends VariableNode
                 }
                 else
                 {
-                    context.showError( "Subscript " + n + " is out of range for " + name + "[]" );
+                    context.showError( "Subscript " + n + " is out of range for " + name + "[] " + vm );
                 }
             }
             else

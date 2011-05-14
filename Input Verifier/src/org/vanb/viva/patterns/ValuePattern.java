@@ -31,7 +31,7 @@ public abstract class ValuePattern implements Pattern
         try
         {
             Object value = getValue( token );
-            ValueManager vm = context.values.lookup( token );
+            ValueManager vm = context.values.lookup( name );
             if( vm==null )
             {
                 vm = new ValueManager();

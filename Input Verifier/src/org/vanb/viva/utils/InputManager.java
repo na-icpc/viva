@@ -64,6 +64,11 @@ public class InputManager
         return eof;
     }
     
+    public boolean atEOLN()
+    {
+        return tokenno >= tokens.length;
+    }
+    
     /**
      * Read the next line, and perform formatting checks.
      * @param context TODO

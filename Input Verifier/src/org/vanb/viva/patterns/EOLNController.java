@@ -1,6 +1,5 @@
 package org.vanb.viva.patterns;
 
-import org.vanb.viva.expressions.*;
 import org.vanb.viva.utils.*;
 
 /**
@@ -8,29 +7,16 @@ import org.vanb.viva.utils.*;
  * 
  * @author David Van Brackle
  */
-public class CountController extends PatternListController
+public class EOLNController extends PatternListController
 {
-    ExpressionNode count;
-    
     /**
      * Create a Pattern to control a pattern list by looking for a sentinel pattern.
      */
-    public CountController()
+    public EOLNController()
     {
         super();
-        count = null;
     }
-    
-    /**
-     * Set the Count.
-     * 
-     * @param exp The number of times to repeat the pattern.
-     */
-    public void setCountExpression( ExpressionNode exp )
-    {
-        count = exp;
-    }
-        
+            
     /**
      * Test to see if this pattern matches the input file
      * 
@@ -39,20 +25,11 @@ public class CountController extends PatternListController
     public boolean test( VIVAContext context ) throws VIVAException
     {
         boolean success = true;
-        int c=0;
-        
-        try
-        {
-            c = (Integer)count.evaluate( context );
-        }
-        catch( Exception e )
-        {
-            context.throwException( e.getMessage() );
-        }
         
         context.values.addLevel();
-        for( int i=0; i<c; i++ )
+        for(;;)
         {
+            if( context.input.atEOLN() ) break;
             success &= patternList.test( context );
         }
         

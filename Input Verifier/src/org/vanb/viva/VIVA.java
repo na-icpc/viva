@@ -3,6 +3,7 @@ package org.vanb.viva;
 import org.vanb.viva.parser.*;
 import org.vanb.viva.patterns.*;
 import org.vanb.viva.utils.*;
+import org.vanb.viva.functions.*;
 
 import java.io.*;
 
@@ -62,6 +63,11 @@ public class VIVA
         
         return result;
     }
+    
+    public void addFunction( Function function )
+    {
+        context.addFunction( function );
+    }
 
     /**
      * @param args
@@ -69,6 +75,8 @@ public class VIVA
     public static void main( String[] args ) throws Exception
     {
         VIVA viva = new VIVA();
+        
+        viva.addFunction( new LengthFunction() );
         
         viva.setPattern( new FileInputStream( "test.pattern" ) );
         

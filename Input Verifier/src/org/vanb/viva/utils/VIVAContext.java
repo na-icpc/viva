@@ -1,6 +1,8 @@
 package org.vanb.viva.utils;
 
 import java.io.*;
+import java.util.*;
+import org.vanb.viva.functions.*;
 
 public class VIVAContext
 {
@@ -9,6 +11,7 @@ public class VIVAContext
     public SymbolTable<ValueManager> values;
     public int errcount, maxerrs;
     public boolean justTesting = false;
+    public HashMap<String,Function> functions = new HashMap<String,Function>();
     
     public VIVAContext()
     {
@@ -16,7 +19,7 @@ public class VIVAContext
         errcount = 0;
         maxerrs = 25;
     }
-    
+ 
     public void throwException( String message ) throws VIVAException
     {
         throw new VIVAException( "At line " + input.lineno + " token " + input.tokenno + ": " + message, 
@@ -34,5 +37,10 @@ public class VIVAContext
                 throwException( "Too many errors. Exiting." );
             }
         }
+    }
+    
+    public void addFunction( Function function )
+    {
+        functions.put( function.getName(), function );
     }
 }

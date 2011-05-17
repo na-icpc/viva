@@ -3,7 +3,8 @@ package org.vanb.viva.parser;
 
 import org.vanb.viva.patterns.*;
 import org.vanb.viva.expressions.*;
-import org.vanb.viva.utils.*;import java.util.*;
+import org.vanb.viva.utils.*;
+import java.util.*;
 
 public class PatternParser implements PatternParserConstants {
     private SymbolTable<Class<?>> symbols = new SymbolTable<Class<?>>();
@@ -567,7 +568,7 @@ public class PatternParser implements PatternParserConstants {
     ExpressionNode subscript = null;
     ExpressionNode parm = null;
     LinkedList<ExpressionNode> parms = new LinkedList<ExpressionNode>();
-    Class<? > type;
+    Class<?> type;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case 26:
       jj_consume_token(26);

@@ -7,21 +7,21 @@ import java.util.*;
 
 /**
  * A generic, hierarchical symbol table.
- * The symbol table is implemented as a stack of Hashtables.
+ * The symbol table is implemented as a stack of HashMaps.
  * 
  * @author vanb
  */
 public class SymbolTable<T>
 {
-    private LinkedList<Hashtable<String,T>> tables;
+    private LinkedList<HashMap<String,T>> tables;
     
     /**
      * Create a generic SymbolTable.
      */
     public SymbolTable()
     {
-        tables = new LinkedList<Hashtable<String,T>>();
-        tables.add( new Hashtable<String,T>() );
+        tables = new LinkedList<HashMap<String,T>>();
+        tables.add( new HashMap<String,T>() );
     }
     
     /**
@@ -29,11 +29,11 @@ public class SymbolTable<T>
      */
     public void addLevel()
     {
-        tables.addFirst( new Hashtable<String,T>() );
+        tables.addFirst( new HashMap<String,T>() );
     }
     
     /**
-     * Pop a hierarchical level. Be sure to leave at least one Hashtable in the stack.
+     * Pop a hierarchical level. Be sure to leave at least one HashMap in the stack.
      */
     public void removeLevel()
     {
@@ -44,7 +44,7 @@ public class SymbolTable<T>
     }
     
     /**
-     * Look up a symbol. Go through the Hashtables, starting with the most recent.
+     * Look up a symbol. Go through the HashMaps, starting with the most recent.
      * 
      * @param name  Symbol to look up
      * @return Value, null if not found
@@ -53,7 +53,7 @@ public class SymbolTable<T>
     {
         T result = null;
         
-        for( Hashtable<String,T> table : tables )
+        for( HashMap<String,T> table : tables )
         {
             result = table.get( name );
             if( result!=null ) break;
@@ -72,7 +72,7 @@ public class SymbolTable<T>
      */
     public boolean add( String key, T value )
     {
-        Hashtable<String,T> top = tables.peekFirst();
+        HashMap<String,T> top = tables.peekFirst();
         T result = top.get(  key  );
         top.put( key, value );
         return result==null;

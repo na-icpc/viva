@@ -27,9 +27,8 @@ public class EOFController extends PatternListController
         boolean success = true;
         
         context.values.addLevel();
-        for(;;)
+        while( !context.input.atEOF() )
         {
-            if( context.input.atEOF() ) break;
             success &= patternList.test( context );
         }
         

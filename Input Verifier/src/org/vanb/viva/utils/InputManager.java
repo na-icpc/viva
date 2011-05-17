@@ -15,7 +15,7 @@ public class InputManager
     char ch;
     char eolchars[] = "\r\n".toCharArray();
     int eolcount;
-    boolean eof = false;
+    boolean eof = false, localeof = false;
    
     /**
      * Create an input controller for the specified file.
@@ -80,6 +80,12 @@ public class InputManager
         eolcount = 0;
         boolean blankerror = false;
         
+        if( localeof )
+        {
+            eof = true;
+            return;
+        }
+        
         if( tokenno != tokens.length )
         {
             context.err.println( "Unused tokens on line " + lineno );
@@ -97,7 +103,7 @@ public class InputManager
                 // Check for EOF
                 if( c<0 )
                 {
-                    eof = true;
+                    localeof = true;
                     break;
                 }
                 
@@ -149,7 +155,7 @@ public class InputManager
             {
                 context.err.println( "Blank line encountered on line " + lineno );
             }
-        } while( !eof && isblankline && !expectingEOF );
+        } while( !localeof && isblankline && !expectingEOF );
         tokenno = 0;
     }
 }

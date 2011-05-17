@@ -2,6 +2,8 @@ package org.vanb.viva.expressions;
 
 import java.util.*;
 
+import org.vanb.viva.utils.*;
+
 public class InlineFunctionNode extends VariableNode
 {
     private LinkedList<ExpressionNode> parameters;
@@ -34,4 +36,10 @@ public class InlineFunctionNode extends VariableNode
         
         return result;
     }
+    
+    public Object evaluate( VIVAContext context ) throws VIVAException
+    {
+        return null;   
+    }
+
 }

@@ -30,7 +30,7 @@ public abstract class NumberBinaryOperatorNode extends BinaryOperatorNode
         {
             throw new ParseException( "Bad right operand to numerical  operator: Expecting Double, Float, Long or Integer, got " + rhs.returnType().toString() );
         }
-
+        
         if( Double.class.equals( lhs.returnType() ) 
                 || Double.class.equals( rhs.returnType() ))
         {
@@ -59,6 +59,7 @@ public abstract class NumberBinaryOperatorNode extends BinaryOperatorNode
         Object result = null;
         Number l = (Number)left.evaluate( context );
         Number r = (Number)right.evaluate( context );
+        
         if( type.equals( Double.class ))
         {
             result = evaluate( l.doubleValue(), r.doubleValue() );   
@@ -73,7 +74,7 @@ public abstract class NumberBinaryOperatorNode extends BinaryOperatorNode
         }
         else
         {
-            result = evaluate( l.longValue(), r.longValue() );                           
+            result = evaluate( l.intValue(), r.intValue() );                           
         }
         
         return result;

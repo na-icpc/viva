@@ -37,7 +37,7 @@ public class SubscriptNode extends VariableNode
             }
             else
             {
-                context.showError( "Subscript " + subvalue + " is not an Integer for " + name + "[]" );
+                context.showError( "Subscript " + subvalue + "("+ subscript +") is not an Integer for " + name + "[]. It is a " + subvalue.getClass().getCanonicalName() );
             }
         }
         else

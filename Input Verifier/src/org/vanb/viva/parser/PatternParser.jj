@@ -478,7 +478,16 @@ ExpressionNode named( String name, boolean isCumulative ) :
     LinkedList<ExpressionNode> parms = new LinkedList<ExpressionNode>();
     Class<?> type;
 }
-{  (     "[" subscript=expression(isCumulative) "]"
+{  (
+     "#"
+     {         type = symbols.lookup( name );
+         if( type==null )
+         {
+             throw new ParseException( getPosition(token) + "Unknown identifier: " + name );
+         }
+         node = new CountNode( name );
+     } 
+  |      "[" subscript=expression(isCumulative) "]"
      {
          type = symbols.lookup( name );
          if( type==null )

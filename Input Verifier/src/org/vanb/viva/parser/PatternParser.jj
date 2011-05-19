@@ -437,13 +437,22 @@ ExpressionNode factor( boolean isCumulative ) :
   |
     token=< FLOATING_POINT_LITERAL >
     {
+        boolean isfloat = token.image.toUpperCase().endsWith( "F" );
         try
         {
-            value = new Double( token.image );
+            if( isfloat )
+            {
+                value = new Float( token.image );
+            }
+            else
+            {
+                value = new Double( token.image );
+            }
         }
         catch( Exception e )
         {
-            throw new ParseException( getPosition(token) + "Unable to parse " + token.image + " as a Double" );
+            throw new ParseException( getPosition(token) + "Unable to parse " + token.image
+                + " as a " + (isfloat ? "Float" : "Double") );
         }
         node = new ConstantNode( value );
     }

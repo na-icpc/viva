@@ -8,7 +8,7 @@ public abstract class NumberBinaryOperatorNode extends BinaryOperatorNode
 {
     private Class<?> type;
     protected static final double deps = 0.000001;
-    protected static final float feps = (float)0.000001;
+    protected static final float feps = 0.000001F;
     
     @Override
     public void instantiate( ExpressionNode lhs, ExpressionNode rhs ) throws ParseException

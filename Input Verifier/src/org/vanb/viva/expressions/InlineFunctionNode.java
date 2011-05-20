@@ -2,44 +2,25 @@ package org.vanb.viva.expressions;
 
 import java.util.*;
 
+import org.vanb.viva.functions.Function;
 import org.vanb.viva.utils.*;
 
-public class InlineFunctionNode extends VariableNode
+public class InlineFunctionNode extends FunctionNode
 {
-    private LinkedList<ExpressionNode> parameters;
-    
-    public InlineFunctionNode( String name, Class<?> type, LinkedList<ExpressionNode> parms )
+    public InlineFunctionNode( String name, Class<?> type, Function f, LinkedList<ExpressionNode> parms )
     {
-        super( name, type );
-        parameters = parms;
+        super( name, type, f, parms );
     }
     
-    public String toString()
-    {
-        String result = name + "(";
-        
-        boolean first = true;
-        for( ExpressionNode parm : parameters )
-        {
-            if( first )
-            {
-                first = false;   
-            }
-            else
-            {
-                result += ",";
-            }
-            result += parm.toString();
-        }
-        
-        result += ")";
-        
-        return result;
-    }
-    
+
     public Object evaluate( VIVAContext context ) throws VIVAException
     {
-        return null;   
+        LinkedList<Object> parmvalues = new LinkedList<Object>();
+        for( ExpressionNode parm : parameters )
+        {
+            parmvalues.add( parm.evaluate( context ) );
+        }
+        return function.run( context, parmvalues );   
     }
 
 }

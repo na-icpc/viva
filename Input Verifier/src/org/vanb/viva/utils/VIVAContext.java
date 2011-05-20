@@ -12,6 +12,8 @@ public class VIVAContext
     public int errcount, maxerrs;
     public boolean justTesting = false;
     public HashMap<String,Function> functions = new HashMap<String,Function>();
+    public double deps = 0.000001;
+    public float feps = 0.000001F;
     
     public VIVAContext()
     {

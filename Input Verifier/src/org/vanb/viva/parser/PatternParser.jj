@@ -4,6 +4,7 @@
 
 import org.vanb.viva.patterns.*;
 import org.vanb.viva.expressions.*;
+import org.vanb.viva.functions.*;
 import org.vanb.viva.utils.*;
 import java.util.*;
 
@@ -12,7 +13,14 @@ public class PatternParser{
 
     private String getPosition( Token token )
     {
-        return "At line " + token.beginLine + " column " + token.beginColumn + ": ";    }     
+        return "At line " + token.beginLine + " column " + token.beginColumn + ": ";    }
+
+    private HashMap<String,Function> functions = new HashMap<String,Function>();
+
+    public void setFunctions( HashMap<String,Function> f )
+    {
+        functions = f;
+    } 
 }PARSER_END( PatternParser )SKIP :{  " "| "\r"| "\t"| "\n"}TOKEN :
 {
   < INTEGER_LITERAL:
@@ -510,13 +518,25 @@ ExpressionNode named( String name, boolean isCumulative ) :
          node = new SubscriptNode( name, type, subscript );     }
   |
      "(" parm=expression(isCumulative) {parms.add(parm);} ("," parm=expression(isCumulative) {parms.add(parm);} )* ")"
-     {         type = symbols.lookup( name );
-         if( type==null )
+     {         Function function = functions.get( name );
+         if( function==null )
          {
-             throw new ParseException( getPosition(token) + "Unknown identifier: " + name );
+             throw new ParseException( getPosition(token) + "Unknown function: " + name );
          }
+
+         Class<?>[] parmtypes = new Class<?>[ parms.size() ];
+         int i=0;
+         for( ExpressionNode p : parms )
+         {
+             parmtypes[i++] = p.returnType();         }
+
+         type = function.returnType( parmtypes );
+         if( type==null )
+         {             throw new ParseException( getPosition(token) + "Function usage: " + function.usage() );
+         }
+         
          node = isCumulative ? new CumulativeFunctionNode( name, type, parms )
-                             : new InlineFunctionNode( name, type, parms );
+                             : new InlineFunctionNode( name, type, function, parms );
      }
   |
      {         type = symbols.lookup( name );

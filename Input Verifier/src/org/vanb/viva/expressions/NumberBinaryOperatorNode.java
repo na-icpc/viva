@@ -7,8 +7,8 @@ import org.vanb.viva.utils.*;
 public abstract class NumberBinaryOperatorNode extends BinaryOperatorNode
 {
     private Class<?> type;
-    protected static final double deps = 0.000001;
-    protected static final float feps = 0.000001F;
+    protected double deps = 0.000001;
+    protected float feps = 0.000001F;
     
     @Override
     public void instantiate( ExpressionNode lhs, ExpressionNode rhs ) throws ParseException
@@ -59,6 +59,9 @@ public abstract class NumberBinaryOperatorNode extends BinaryOperatorNode
         Object result = null;
         Number l = (Number)left.evaluate( context );
         Number r = (Number)right.evaluate( context );
+        
+        deps = context.deps;
+        feps = context.feps;
         
         if( type.equals( Double.class ))
         {

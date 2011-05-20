@@ -1,6 +1,7 @@
 package org.vanb.viva.functions;
 
-import java.util.List;
+import java.util.*;
+import org.vanb.viva.utils.*;
 
 public class LengthFunction implements Function
 {
@@ -13,19 +14,19 @@ public class LengthFunction implements Function
     }
 
     @Override
-    public Class<?>[] parameters()
+    public String usage()
     {
-        return parameters;
+        return "length(string)";
     }
 
     @Override
     public Class<?> returnType( Class<?>[] params )
     {
-        return params.length==1 && params[0]==String.class ? String.class : null;
+        return params.length==1 && params[0]==String.class ? Integer.class : null;
     }
     
     @Override
-    public Object run( List<Object> parameters )
+    public Object run( VIVAContext context, List<Object> parameters )
     {
         return ((String)parameters.get( 0 )).length();
     }

@@ -1,6 +1,7 @@
 package org.vanb.viva.functions;
 
 import java.util.*;
+import org.vanb.viva.utils.*;
 
 /** 
  * Interface for adding Functions
@@ -25,11 +26,11 @@ public interface Function
     Class<?> returnType( Class<?> params[] );
     
     /**
-     * What parameters is this function expecting?
+     * How do you use this Function?
      * 
-     * @return List of parameter types this Function expects
+     * @return A description of how to use this Function
      */
-    Class<?>[] parameters();
+    String usage();
     
     /**
      * Run this function.
@@ -37,5 +38,5 @@ public interface Function
      * @param parameters
      * @return The result of running the Function.
      */
-    Object run( List<Object> parameters );
+    Object run( VIVAContext context, List<Object> parameters );
 }

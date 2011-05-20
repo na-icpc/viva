@@ -18,6 +18,7 @@ public class VIVA
         try
         {
             PatternParser parser = new PatternParser( stream );
+            parser.setFunctions( context.functions );
             pattern = parser.multilinePattern();            
         }
         catch( Exception e )

@@ -12,7 +12,6 @@ public interface ExpressionNode
 	/**
 	 * Evaluate the expression rooted at this node.
 	 * @param context TODO
-	 * 
 	 * @return The value of this expression
 	 * @throws VIVAException TODO
 	 */
@@ -23,5 +22,5 @@ public interface ExpressionNode
      * 
      * @return The return type of this expression.
      */
-    public Class<?> returnType();
+    public Class<?> getReturnType();
 }

@@ -14,6 +14,7 @@ public class VIVAContext
     public HashMap<String,Function> functions = new HashMap<String,Function>();
     public double deps = 0.000001;
     public float feps = 0.000001F;
+    public int index = -1;
     
     public VIVAContext()
     {

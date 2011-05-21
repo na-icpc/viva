@@ -11,13 +11,13 @@ public class AndNode extends BinaryOperatorNode
         operator = "&&";
         left = lhs;
         right = rhs;
-        if( !lhs.returnType().equals( Boolean.class )) 
+        if( !lhs.getReturnType().equals( Boolean.class )) 
         {
-            throw new ParseException( "Bad left operand to && operator: Expecting Boolean, got " + lhs.returnType().toString() );
+            throw new ParseException( "Bad left operand to && operator: Expecting Boolean, got " + lhs.getReturnType().toString() );
         }
-        if( !rhs.returnType().equals( Boolean.class ))
+        if( !rhs.getReturnType().equals( Boolean.class ))
         {
-            throw new ParseException( "Bad right operand to && operator: Expecting Boolean, got " + lhs.returnType().toString() );
+            throw new ParseException( "Bad right operand to && operator: Expecting Boolean, got " + lhs.getReturnType().toString() );
         }
     }
 
@@ -33,7 +33,7 @@ public class AndNode extends BinaryOperatorNode
     }
 
     @Override
-    public Class<?> returnType()
+    public Class<?> getReturnType()
     {
         return Boolean.class;
     }

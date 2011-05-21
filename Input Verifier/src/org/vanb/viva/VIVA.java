@@ -78,6 +78,10 @@ public class VIVA
         VIVA viva = new VIVA();
         
         viva.addFunction( new LengthFunction() );
+        viva.addFunction( new DepsFunction() );
+        viva.addFunction( new FepsFunction() );
+        viva.addFunction( new UniqueFunction() );
+        viva.addFunction( new SumFunction() );
         
         viva.setPattern( new FileInputStream( "test.pattern" ) );
         

@@ -14,6 +14,7 @@ import java.util.*;
 public class SymbolTable<T>
 {
     private LinkedList<HashMap<String,T>> tables;
+    private LinkedList<Integer> counts;
     
     /**
      * Create a generic SymbolTable.
@@ -22,6 +23,9 @@ public class SymbolTable<T>
     {
         tables = new LinkedList<HashMap<String,T>>();
         tables.add( new HashMap<String,T>() );
+        
+        counts = new LinkedList<Integer>();
+        counts.add( 0 );
     }
     
     /**
@@ -30,6 +34,7 @@ public class SymbolTable<T>
     public void addLevel()
     {
         tables.addFirst( new HashMap<String,T>() );
+        counts.addFirst( 0 );
     }
     
     /**
@@ -41,6 +46,27 @@ public class SymbolTable<T>
         {
             tables.removeFirst();
         }
+        if( counts.size()>1 )
+        {
+            counts.removeFirst();
+        }
+    }
+    
+    /**
+     * Increment the number of iterations at this level.
+     */
+    public void incrementLevel()
+    {
+        counts.addFirst( counts.removeFirst() + 1 );
+    }
+    
+    /**
+     * Get the count of the number of iterations at this level.
+     * @return
+     */
+    public int getCount()
+    {
+        return counts.peekFirst();
     }
     
     /**
@@ -76,5 +102,16 @@ public class SymbolTable<T>
         T result = top.get(  key  );
         top.put( key, value );
         return result==null;
+    }
+    
+    /**
+     * Determine if the names variable is defined at the current (innermost) level
+     * 
+     * @param name variable name
+     * @return true if defined at the current level, otherwise false
+     */
+    public boolean atCurrentLevel( String name )
+    {
+        return tables.peekFirst().get( name ) != null;
     }
 }

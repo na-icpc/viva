@@ -23,20 +23,12 @@ public interface Function
      * @param params Parameter types
      * @return return type
      */
-    Class<?> returnType( Class<?> params[] );
+    Class<?> getReturnType( Class<?> params[] );
     
     /**
      * How do you use this Function?
      * 
      * @return A description of how to use this Function
      */
-    String usage();
-    
-    /**
-     * Run this function.
-     * 
-     * @param parameters
-     * @return The result of running the Function.
-     */
-    Object run( VIVAContext context, List<Object> parameters );
+    String getUsage();
 }

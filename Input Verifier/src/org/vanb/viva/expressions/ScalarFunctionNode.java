@@ -2,14 +2,17 @@ package org.vanb.viva.expressions;
 
 import java.util.*;
 
-import org.vanb.viva.functions.Function;
+import org.vanb.viva.functions.*;
 import org.vanb.viva.utils.*;
 
-public class InlineFunctionNode extends FunctionNode
+public class ScalarFunctionNode extends FunctionNode
 {
-    public InlineFunctionNode( String name, Class<?> type, Function f, LinkedList<ExpressionNode> parms )
+    private ScalarFunction function;
+    
+    public ScalarFunctionNode( String name, Class<?> type, ScalarFunction f, LinkedList<ExpressionNode> parms )
     {
-        super( name, type, f, parms );
+        super( name, type, parms );
+        function = f;
     }
     
 

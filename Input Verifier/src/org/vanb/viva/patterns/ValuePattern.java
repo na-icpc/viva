@@ -32,7 +32,7 @@ public abstract class ValuePattern implements Pattern
         {
             Object value = getValue( token );
             ValueManager vm = context.values.lookup( name );
-            if( vm==null )
+            if( vm==null || !context.values.atCurrentLevel( name ) )
             {
                 vm = new ValueManager();
                 context.values.add( name, vm );

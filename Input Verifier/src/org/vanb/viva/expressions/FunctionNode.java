@@ -7,13 +7,11 @@ import org.vanb.viva.functions.*;
 public class FunctionNode extends VariableNode
 {
     protected LinkedList<ExpressionNode> parameters;
-    protected Function function;
     
-    public FunctionNode( String name, Class<?> type, Function f, LinkedList<ExpressionNode> parms )
+    public FunctionNode( String name, Class<?> type, LinkedList<ExpressionNode> parms )
     {
         super( name, type );
         parameters = parms;
-        function = f;
     }
     
     public String toString()

@@ -20,10 +20,10 @@ public class ParenthesesNode implements ExpressionNode
     }
 
     @Override
-    public Class<?> returnType()
+    public Class<?> getReturnType()
     {
         // TODO Auto-generated method stub
-        return exp.returnType();
+        return exp.getReturnType();
     }
     
     public String toString()

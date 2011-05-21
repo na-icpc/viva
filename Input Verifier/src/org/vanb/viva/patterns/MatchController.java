@@ -50,6 +50,7 @@ public class MatchController extends PatternListController
             if( terminate ) break;
             
             context.input.resetLine();
+            context.values.incrementLevel();
             success &= patternList.test( context );
         }
         

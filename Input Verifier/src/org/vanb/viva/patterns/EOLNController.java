@@ -29,6 +29,7 @@ public class EOLNController extends PatternListController
         context.values.addLevel();
         while( !context.input.atEOLN() )
         {
+            context.values.incrementLevel();
             success &= patternList.test( context );
         }
         

@@ -140,12 +140,12 @@ Pattern singlePattern() :
 }
 {
   (
-    "{" [ "[" controller=qualifier() "]" ] { symbols.addLevel(); } plist=multilinePattern() [ "[" exp=constraint( true ) "]" ] "}"
+    "{" [ "[" controller=qualifier() "]" ] { symbols.addLevel(); } plist=multilinePattern()
+        [ "[" exp=constraint() { controller.addConstraint( exp ); } ( "," exp=constraint() { controller.addConstraint( exp ); } )* "]" ] "}"
     {
         if( controller==null ) controller = new EOFController();
         symbols.removeLevel();
         controller.setPatternList( plist );
-        if( exp!=null ) controller.addConstraint( exp );
         pattern = controller;
     }
   |       plist=simplePattern() ";"
@@ -163,7 +163,7 @@ Pattern singlePattern() :
     ExpressionNode exp = null;
 }{
   (
-    "*" exp=expression( false )
+    "*" exp=expression()
     {
         CountController count = new CountController();
         count.setCountExpression( exp );
@@ -192,12 +192,12 @@ PatternList simplePattern() :
 }
 {
   (
-	  (	    "<" [ "[" controller=qualifier() "]" ] { symbols.addLevel(); } innerlist=simplePattern() [ "[" exp=constraint( true ) "]" ] ">"
+	  (	    "<" [ "[" controller=qualifier() "]" ] { symbols.addLevel(); } innerlist=simplePattern() 
+            [ "[" exp=constraint() { controller.addConstraint( exp ); } ( "," exp=constraint() { controller.addConstraint( exp ); } )* "]" ] "}"
 	    {
 	        if( controller==null ) controller = new EOLNController();
 	        symbols.removeLevel();
 	        controller.setPatternList( innerlist );
-	        if( exp!=null ) controller.addConstraint( exp );
 	        plist.addPattern( controller );
 	    }
 	  )
@@ -217,13 +217,13 @@ PatternList simplePattern() :
 	          value = null;
 	      } 
 	      [
-	          "(" exp=constraint( false )
+	          "(" exp=constraint()
 			      {
 			          if( exp!=null ) plist.addConstraint( exp );
 			          exp = null;
 			      }
 			      (
-			            "," exp=constraint( false )
+			            "," exp=constraint()
 			            {			                if( exp!=null ) plist.addConstraint( exp );
 			                exp = null;
 			            }			      )*
@@ -250,15 +250,15 @@ ValuePattern type() :
   )
   {
       return pattern;  }
-}ExpressionNode constraint( boolean isCumulative ) :
+}ExpressionNode constraint() :
 {
     ExpressionNode lhs, rhs;
     BinaryOperatorNode op;
 }
 {
-  lhs=orConstraint( isCumulative ) 
+  lhs=orConstraint() 
   ( 
-      "||" rhs=orConstraint( isCumulative )
+      "||" rhs=orConstraint()
       {
           op = new OrNode();
           op.instantiate( lhs, rhs );
@@ -270,15 +270,15 @@ ValuePattern type() :
   }
 }
 
-ExpressionNode orConstraint( boolean isCumulative ) :
+ExpressionNode orConstraint() :
 {
     ExpressionNode lhs, rhs;
     BinaryOperatorNode op;
 }
 {
-  lhs=simpleConstraint( isCumulative ) 
+  lhs=simpleConstraint() 
   ( 
-      "&&" rhs=simpleConstraint( isCumulative )
+      "&&" rhs=simpleConstraint()
       {
           op = new AndNode();
           op.instantiate( lhs, rhs );
@@ -289,29 +289,32 @@ ExpressionNode orConstraint( boolean isCumulative ) :
       return lhs;
   }
 }
-ExpressionNode simpleConstraint( boolean isCumulative ) :
+ExpressionNode simpleConstraint() :
 {
     ExpressionNode lhs, rhs;
-    BinaryOperatorNode op, newop;
+    BinaryOperatorNode op=null, newop=null;
 }
 {
-  lhs=expression( isCumulative ) op=boolop() rhs=expression( isCumulative )
-  {
-      op.instantiate( lhs, rhs );
-      lhs = rhs;
-  }
+  lhs=expression() 
   ( 
-      newop=boolop() rhs=expression( isCumulative )
+      newop=boolop() rhs=expression()
       {
 	      newop.instantiate( lhs, rhs );
-	      BinaryOperatorNode andop = new AndNode();
-	      andop.instantiate( op, newop );
-	      op = andop;
+
+	      if( op==null )
+	      {
+	          op = newop;	      }
+	      else
+	      {	        
+		      BinaryOperatorNode andop = new AndNode();
+		      andop.instantiate( op, newop );
+		      op = andop;
+	      }
 	      lhs = rhs;
       }
   )*
   {
-      return op;
+      return op==null ? lhs : op;
   }}
 
 BinaryOperatorNode boolop() :
@@ -342,15 +345,15 @@ BinaryOperatorNode boolop() :
     }
 }
 
-ExpressionNode expression( boolean isCumulative ) :
+ExpressionNode expression() :
 {
     ExpressionNode lhs, rhs;
     BinaryOperatorNode op;
 }
 {
-  lhs=term(isCumulative) 
+  lhs=term() 
   ( 
-      op=addop() rhs=term(isCumulative)
+      op=addop() rhs=term()
       {
           op.instantiate( lhs, rhs );
           lhs = op;
@@ -374,15 +377,15 @@ BinaryOperatorNode addop() :
       return op;
   }}
 
-ExpressionNode term( boolean isCumulative ) :
+ExpressionNode term() :
 {
     ExpressionNode lhs, rhs;
     BinaryOperatorNode op;
 }
 {
-  lhs=factor(isCumulative) 
+  lhs=factor() 
   ( 
-      op=multop() rhs=factor(isCumulative)
+      op=multop() rhs=factor()
       {
           op.instantiate( lhs, rhs );
           lhs = op;
@@ -409,7 +412,7 @@ BinaryOperatorNode multop() :
   }
 }
 
-ExpressionNode factor( boolean isCumulative ) :
+ExpressionNode factor() :
 {
     Token token;
     ExpressionNode node;
@@ -418,7 +421,7 @@ ExpressionNode factor( boolean isCumulative ) :
 }
 {
   (
-    token=< IDENTIFIER >  node=named( token.image, isCumulative )
+    token=< IDENTIFIER >  node=named( token.image )
   |
     token=< INTEGER_LITERAL >
     {
@@ -481,14 +484,14 @@ ExpressionNode factor( boolean isCumulative ) :
         node = new ConstantNode( lit );
     }
   |
-    "(" node=expression(isCumulative) ")"
+    "(" node=expression() ")"
     {        node = new ParenthesesNode( node );
     }   )
   {
       return node;
   }}
 
-ExpressionNode named( String name, boolean isCumulative ) :
+ExpressionNode named( String name ) :
 {    ExpressionNode node = null;
     ExpressionNode subscript = null;
     ExpressionNode parm = null;
@@ -504,7 +507,7 @@ ExpressionNode named( String name, boolean isCumulative ) :
          }
          node = new CountNode( name );
      } 
-  |      "[" subscript=expression(isCumulative) "]"
+  |      "[" subscript=expression() "]"
      {
          type = symbols.lookup( name );
          if( type==null )
@@ -512,12 +515,12 @@ ExpressionNode named( String name, boolean isCumulative ) :
              throw new ParseException( getPosition(token) + "Unknown identifier: " + name );
          }
 
-         if( !subscript.returnType().equals( Integer.class ) )
-         {             throw new ParseException( getPosition(token) + "Subscript must be Integer, not " + subscript.returnType() );
+         if( !subscript.getReturnType().equals( Integer.class ) )
+         {             throw new ParseException( getPosition(token) + "Subscript must be Integer, not " + subscript.getReturnType() );
          }
          node = new SubscriptNode( name, type, subscript );     }
   |
-     "(" parm=expression(isCumulative) {parms.add(parm);} ("," parm=expression(isCumulative) {parms.add(parm);} )* ")"
+     "(" parm=expression() {parms.add(parm);} ("," parm=expression() {parms.add(parm);} )* ")"
      {         Function function = functions.get( name );
          if( function==null )
          {
@@ -528,15 +531,22 @@ ExpressionNode named( String name, boolean isCumulative ) :
          int i=0;
          for( ExpressionNode p : parms )
          {
-             parmtypes[i++] = p.returnType();         }
+             parmtypes[i++] = p.getReturnType();         }
 
-         type = function.returnType( parmtypes );
+         type = function.getReturnType( parmtypes );
          if( type==null )
-         {             throw new ParseException( getPosition(token) + "Function usage: " + function.usage() );
+         {             throw new ParseException( getPosition(token) + "Function usage: " + function.getUsage() );
          }
-         
-         node = isCumulative ? new CumulativeFunctionNode( name, type, parms )
-                             : new InlineFunctionNode( name, type, function, parms );
+
+         if( function instanceof ScalarFunction )
+         {             node = new ScalarFunctionNode( name, type, (ScalarFunction)function, parms );
+         }
+         else if( function instanceof VectorFunction )
+         {             node = new VectorFunctionNode( name, type, (VectorFunction)function, parms );
+         }
+         else
+         {             throw new ParseException( getPosition(token) + "Function " + function.getName() + " is neither Scalar nor Vector" );
+         }
      }
   |
      {         type = symbols.lookup( name );

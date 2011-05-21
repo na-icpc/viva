@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.vanb.viva.utils.VIVAContext;
 
-public class FepsFunction implements Function
+public class FepsFunction implements ScalarFunction
 {
 
     @Override
@@ -14,13 +14,13 @@ public class FepsFunction implements Function
     }
 
     @Override
-    public Class<?> returnType( Class<?>[] params )
+    public Class<?> getReturnType( Class<?>[] params )
     {
         return params.length==1 && params[0]==Float.class ? Boolean.class : null;
     }
 
     @Override
-    public String usage()
+    public String getUsage()
     {
         return "feps(float)";
     }

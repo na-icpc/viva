@@ -16,7 +16,7 @@ public class ConstantNode implements ExpressionNode
     }
 
     @Override
-    public Class<?> returnType()
+    public Class<?> getReturnType()
     {
         return value.getClass();
     }

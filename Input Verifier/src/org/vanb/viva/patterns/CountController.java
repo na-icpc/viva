@@ -53,6 +53,7 @@ public class CountController extends PatternListController
         context.values.addLevel();
         for( int i=0; i<c; i++ )
         {
+            context.values.incrementLevel();
             success &= patternList.test( context );
         }
         

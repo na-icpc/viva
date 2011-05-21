@@ -29,6 +29,7 @@ public class EOFController extends PatternListController
         context.values.addLevel();
         while( !context.input.atEOF() )
         {
+            context.values.incrementLevel();
             success &= patternList.test( context );
         }
         

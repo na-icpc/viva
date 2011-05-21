@@ -21,7 +21,14 @@ public class VariableNode implements ExpressionNode
         
         if( vm!=null )
         {
-            value = vm.getCurrentValue();      
+            if( context.values.atCurrentLevel( name ) && context.index>=0 )
+            {
+                value = vm.getNthValue( context.index ); 
+            }
+            else
+            {
+                value = vm.getCurrentValue();                      
+            }
         }
         else
         {
@@ -32,7 +39,7 @@ public class VariableNode implements ExpressionNode
     }
 
     @Override
-    public Class<?> returnType()
+    public Class<?> getReturnType()
     {
         return type;
     }

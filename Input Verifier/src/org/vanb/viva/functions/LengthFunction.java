@@ -3,7 +3,7 @@ package org.vanb.viva.functions;
 import java.util.*;
 import org.vanb.viva.utils.*;
 
-public class LengthFunction implements Function
+public class LengthFunction implements ScalarFunction
 {
     private static Class<?> parameters[] = { String.class };
     
@@ -14,13 +14,13 @@ public class LengthFunction implements Function
     }
 
     @Override
-    public String usage()
+    public String getUsage()
     {
         return "length(string)";
     }
 
     @Override
-    public Class<?> returnType( Class<?>[] params )
+    public Class<?> getReturnType( Class<?>[] params )
     {
         return params.length==1 && params[0]==String.class ? Integer.class : null;
     }

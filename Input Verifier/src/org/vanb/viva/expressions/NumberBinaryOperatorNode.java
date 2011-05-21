@@ -16,38 +16,38 @@ public abstract class NumberBinaryOperatorNode extends BinaryOperatorNode
         left =  lhs;
         right = rhs;
         
-        if( !lhs.returnType().equals( Double.class )
-                && !lhs.returnType().equals( Float.class )
-                && !lhs.returnType().equals( Integer.class )
-                && !lhs.returnType().equals( Long.class ) ) 
+        if( !lhs.getReturnType().equals( Double.class )
+                && !lhs.getReturnType().equals( Float.class )
+                && !lhs.getReturnType().equals( Integer.class )
+                && !lhs.getReturnType().equals( Long.class ) ) 
         {
-            throw new ParseException( "Bad left operand to " + operator + " operator: Expecting Double, Float, Long or Integer, got " + lhs.returnType().toString() );
+            throw new ParseException( "Bad left operand to " + operator + " operator: Expecting Double, Float, Long or Integer, got " + lhs.getReturnType().toString() );
         }
-        if( !rhs.returnType().equals( Double.class )
-                && !rhs.returnType().equals( Float.class )
-                && !rhs.returnType().equals( Integer.class )
-                && !rhs.returnType().equals( Long.class ) ) 
+        if( !rhs.getReturnType().equals( Double.class )
+                && !rhs.getReturnType().equals( Float.class )
+                && !rhs.getReturnType().equals( Integer.class )
+                && !rhs.getReturnType().equals( Long.class ) ) 
         {
-            throw new ParseException( "Bad right operand to numerical  operator: Expecting Double, Float, Long or Integer, got " + rhs.returnType().toString() );
+            throw new ParseException( "Bad right operand to numerical  operator: Expecting Double, Float, Long or Integer, got " + rhs.getReturnType().toString() );
         }
         
-        if( Double.class.equals( lhs.returnType() ) 
-                || Double.class.equals( rhs.returnType() ))
+        if( Double.class.equals( lhs.getReturnType() ) 
+                || Double.class.equals( rhs.getReturnType() ))
         {
             type = Double.class;
         }
-        else if( Float.class.equals( lhs.returnType() ) 
-                || Float.class.equals( rhs.returnType() ))
+        else if( Float.class.equals( lhs.getReturnType() ) 
+                || Float.class.equals( rhs.getReturnType() ))
         {
             type = Float.class;
         }
-        else if( Long.class.equals( lhs.returnType() ) 
-                || Long.class.equals( rhs.returnType() ))
+        else if( Long.class.equals( lhs.getReturnType() ) 
+                || Long.class.equals( rhs.getReturnType() ))
         {
             type = Long.class;
         }
-        else if( Integer.class.equals( lhs.returnType() ) 
-                || Integer.class.equals( rhs.returnType() ))
+        else if( Integer.class.equals( lhs.getReturnType() ) 
+                || Integer.class.equals( rhs.getReturnType() ))
         {
             type = Integer.class;
         }
@@ -89,7 +89,7 @@ public abstract class NumberBinaryOperatorNode extends BinaryOperatorNode
     public abstract Object evaluate( int l, int r );
 
     @Override
-    public Class<?> returnType()
+    public Class<?> getReturnType()
     {
         return type;
     }

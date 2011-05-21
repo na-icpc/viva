@@ -24,7 +24,7 @@ public class ConstraintList implements Pattern
         boolean success = true;
         for( ExpressionNode constraint : constraints )
         {
-            if( !constraint.returnType().equals( Boolean.class ) )
+            if( !constraint.getReturnType().equals( Boolean.class ) )
             {
                 success = false;
                 context.showError( "Constraing evaluates to non-Boolean" );

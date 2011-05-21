@@ -15,14 +15,14 @@ public class RegExpNode extends BinaryOperatorNode
         right = rhs;
         left = lhs;
         
-        if( !lhs.returnType().equals( String.class  ) )
+        if( !lhs.getReturnType().equals( String.class  ) )
         {
-            throw new ParseException( "Bad left operand to " + operator + " operator: Expecting String, got " + lhs.returnType().toString() );
+            throw new ParseException( "Bad left operand to " + operator + " operator: Expecting String, got " + lhs.getReturnType().toString() );
         }
         
-        if( !rhs.returnType().equals( String.class  ) )
+        if( !rhs.getReturnType().equals( String.class  ) )
         {
-            throw new ParseException( "Bad right operand to " + operator + " operator: Expecting String, got " + rhs.returnType().toString() );
+            throw new ParseException( "Bad right operand to " + operator + " operator: Expecting String, got " + rhs.getReturnType().toString() );
         }
         
         if( !(rhs instanceof ConstantNode) )
@@ -48,7 +48,7 @@ public class RegExpNode extends BinaryOperatorNode
     }
 
     @Override
-    public Class<?> returnType()
+    public Class<?> getReturnType()
     {
         return Boolean.class;
     }

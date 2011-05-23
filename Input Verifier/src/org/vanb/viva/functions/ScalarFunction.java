@@ -11,7 +11,7 @@ import org.vanb.viva.utils.*;
 public interface ScalarFunction extends Function
 {
     /**
-     * Run this function.
+     * Run this Function.
      * 
      * @param parameters
      * @return The result of running the Function.

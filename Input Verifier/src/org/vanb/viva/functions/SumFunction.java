@@ -22,7 +22,6 @@ public class SumFunction implements VectorFunction
     @Override
     public String getUsage()
     {
-        // TODO Auto-generated method stub
         return "sum( int or long or double or float )";
     }
 

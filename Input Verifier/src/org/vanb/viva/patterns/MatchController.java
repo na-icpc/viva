@@ -42,6 +42,7 @@ public class MatchController extends PatternListController
         context.values.addLevel();
         for(;;)
         {
+            // Check to see if the sentinel condition has been reached
             context.values.addLevel();
             context.justTesting = true;
             boolean terminate = terminatingPattern.test( context );
@@ -49,6 +50,7 @@ public class MatchController extends PatternListController
             context.values.removeLevel();
             if( terminate ) break;
             
+            // if not, reset the line and read it as data
             context.input.resetLine();
             context.values.incrementLevel();
             success &= patternList.test( context );

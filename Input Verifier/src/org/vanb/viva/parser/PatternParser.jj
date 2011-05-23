@@ -193,7 +193,7 @@ PatternList simplePattern() :
 {
   (
 	  (	    "<" [ "[" controller=qualifier() "]" ] { symbols.addLevel(); } innerlist=simplePattern() 
-            [ "[" exp=constraint() { controller.addConstraint( exp ); } ( "," exp=constraint() { controller.addConstraint( exp ); } )* "]" ] "}"
+            [ "[" exp=constraint() { controller.addConstraint( exp ); } ( "," exp=constraint() { controller.addConstraint( exp ); } )* "]" ] ">"
 	    {
 	        if( controller==null ) controller = new EOLNController();
 	        symbols.removeLevel();

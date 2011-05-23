@@ -19,6 +19,7 @@ public interface Function
     
     /** 
      * Given a list of parameter types, what will this Function return?
+     * This method should return null instead of a type if the parameters aren't right.
      * 
      * @param params Parameter types
      * @return return type

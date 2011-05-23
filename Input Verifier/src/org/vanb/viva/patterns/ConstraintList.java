@@ -27,7 +27,7 @@ public class ConstraintList implements Pattern
             if( !constraint.getReturnType().equals( Boolean.class ) )
             {
                 success = false;
-                context.showError( "Constraing evaluates to non-Boolean" );
+                context.showError( "Constraint evaluates to non-Boolean" );
             }
             else
             {

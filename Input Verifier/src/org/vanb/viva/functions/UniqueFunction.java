@@ -32,19 +32,24 @@ public class UniqueFunction implements VectorFunction
                 
         boolean unique = true;
         
+        // Go through each row 
         for( List<Object> row : parameters )
         {
+            // Build a "key" - a unique String representation of the row
             String key = "";
             for( Object object : row )
             {
                 key += object.toString() + " ";
             }
             
+            // Look to see if we've seen this row before
             if( rows.contains( key ) )
             {
                 unique = false;
                 break;
             }
+            
+            // if we haven't seen it before, add this row to the list of seen rows
             rows.add( key );
         }
         return unique;

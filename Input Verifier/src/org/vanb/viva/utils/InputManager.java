@@ -9,13 +9,10 @@ import java.io.*;
  */
 public class InputManager
 {
-    FileReader reader;
+    RandomAccessFile reader;
+    boolean eof = false, eoln = false;
+    long pos;
     int lineno, tokenno;
-    String tokens[];
-    char ch;
-    char eolchars[] = "\r\n".toCharArray();
-    int eolcount;
-    boolean eof = false, localeof = false;
    
     /**
      * Create an input controller for the specified file.
@@ -24,31 +21,95 @@ public class InputManager
      */
     public InputManager( String filename, VIVAContext context ) throws Exception
     {
-        reader = new FileReader( filename );    
-        lineno = tokenno = 0;
-        tokens = new String[0];
-        ch = ' ';
-        getNextLine( context, false );
+        reader = new RandomAccessFile( filename, "r" );    
+        pos = 0L;
+        lineno = 1;
+        tokenno = 0;
+    }
+    
+    private int nextch() throws IOException
+    {
+        int c = reader.read();
+        
+        // Check for EOF
+        if( c<0 )
+        {
+            eof = true;
+        }
+        else
+        {
+            String crlf = "";
+            // Check for EOLN
+            if( c=='\r' )
+            {
+                crlf += '\r';
+                eoln = true;
+                c = reader.read();
+                if( c!='\n' )
+                {
+                    reader.seek( reader.getFilePointer()-1 );
+                }
+                else
+                {
+                    crlf += '\n';
+                }
+                c = -2;
+            }
+            else if( c=='\n' )
+            {
+                crlf += '\n';
+                eoln = true;
+                c = -2;   
+            }
+            
+            if( crlf.length()>0 && !crlf.equals( System.getProperty("line.separator") ) )
+            {
+                System.err.println( "Bad Separator" );
+            }
+        }
+        return c;
     }
     
     /**
      * Get the next token on the current line.
-     * @param context TODO
      * 
+     * @param context Context
      * @return The next token
      * @throws Exception
      */
     public String getNextToken( VIVAContext context ) throws Exception
     {
+        int c = nextch();
+        String token = "";
+                
+        if( c==' ' )
+        {
+            context.err.println( "Extra blank(s) on line " + lineno );
+            while( c==' ' )
+            {
+                c = nextch();
+            }
+        }
+        
         if( eof )
         {
-            throw new Exception( "EOF encountered on line " + lineno );
+            throw new Exception( "Unexpected EOF encountered on line " + lineno );
         }
-        if( tokenno >= tokens.length )
+        else if( eoln )
         {
-            throw new Exception( "Too few tokens on line " + lineno );   
+            throw new Exception( "Unexpected EOLN encountered on line " + lineno );
         }
-        return tokens[tokenno++];
+        else
+        {
+            ++tokenno;
+            while( c!=' ' && !eof && !eoln )
+            {
+                token += (char)c;
+                c = nextch();
+            }
+        }
+                
+        return token;
     }
     
     /**
@@ -57,6 +118,14 @@ public class InputManager
     public void resetLine()
     {
         tokenno = 0;
+        try
+        {
+            reader.seek( pos );
+        }
+        catch( IOException ioe )
+        {
+            
+        }
     }
     
     public boolean atEOF()
@@ -66,96 +135,38 @@ public class InputManager
     
     public boolean atEOLN()
     {
-        return tokenno >= tokens.length;
+        return eoln;
     }
     
     /**
      * Read the next line, and perform formatting checks.
      * @param context TODO
      */
-    public void getNextLine( VIVAContext context, boolean expectingEOF ) throws Exception
+    public void getNextLine( VIVAContext context ) throws Exception
     {
-        boolean previousblank = Character.isWhitespace( ch );
-        StringBuilder sb = new StringBuilder();
-        eolcount = 0;
-        boolean blankerror = false;
+        boolean blanks = false;
+        boolean tokens = false;
         
-        if( localeof )
+        if( !eof )
         {
-            eof = true;
-            return;
-        }
-        
-        if( tokenno != tokens.length )
-        {
-            context.err.println( "Unused tokens on line " + lineno );
-        }
-        
-        boolean isblankline = false;
-        do
-        {
-            ++lineno;
-            int eolcount = 0;
-            for(;;)
+            if( !eoln )
             {
-                int c = reader.read();
-                
-                // Check for EOF
-                if( c<0 )
+                reader.seek( reader.getFilePointer()-1 );
+                for(;;)
                 {
-                    localeof = true;
-                    break;
+                    int c = nextch();
+                    if( c==' ' ) blanks = true;
+                    else if( c>=0 ) tokens = true;
+                    else break;
                 }
                 
-                // Convert to char
-                ch = (char) c;
-                
-                // Check for EOLN
-                if( ch==eolchars[eolcount] ) 
-                {
-                    ++eolcount; 
-                    if( eolcount==eolchars.length )
-                    {
-                        if( previousblank && sb.length()>0 )
-                        {
-                            context.err.println( "Blank(s) at the end of line " + lineno );
-                        }
-                        break;
-                    }
-                }
-                else 
-                {
-                    eolcount=0;
-                    boolean isblank = ch==' ';
-                    
-                    // Check for duplicate blanks
-                    if( isblank && previousblank && !blankerror )
-                    {
-                        blankerror = true;
-                        context.err.println( "Extra blank(s) on line " + lineno );
-                    }
-                    
-                    // Check for spurious chars
-                    else if( !isblank && (Character.isWhitespace( ch ) || Character.isISOControl( ch )) )
-                    {
-                        context.err.println( "Spurious character (" + ch + ") on line " + lineno );   
-                    }
-                    else
-                    {
-                        sb.append( ch );
-                    }
-                    
-                    previousblank = isblank;
-                } 
-            }  
-            
-            tokens = sb.toString().trim().split( "\\s+" );
-            isblankline = tokens.length==0 || (tokens.length==1 && tokens[0].length()==0);
-            if( !expectingEOF && isblankline )
-            {
-                context.err.println( "Blank line encountered on line " + lineno );
-            }
-        } while( !localeof && isblankline && !expectingEOF );
-        tokenno = 0;
+                if( blanks ) context.err.println( "Extra blanks at the end of line " + lineno );
+                if( tokens ) context.err.println( "Extra tokens at the end of line " + lineno );
+            }        
+            lineno++;
+            tokenno = 0;
+            pos = reader.getFilePointer();
+            eoln = false;
+        }
     }
 }

@@ -69,11 +69,7 @@ public class VIVA
             {
                 context.input = new InputManager( filename, context );
                 result = pattern.test( context );
-                if( !context.input.atEOF() )
-                {
-                    context.input.getNextLine( context );
-                    if( !context.input.atEOF() ) context.err.println( "Extra characters after input." );
-                }
+                context.input.eofChecks( context );
             }
             catch( Exception e )
             {

@@ -9,7 +9,7 @@ public class SingleLineController extends PatternListController
         boolean success = super.test( context );
         try
         {
-            context.input.getNextLine( context, false );
+            context.input.getNextLine( context );
         }
         catch( Exception e )
         {

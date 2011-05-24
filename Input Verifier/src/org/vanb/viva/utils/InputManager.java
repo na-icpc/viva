@@ -9,9 +9,10 @@ import java.io.*;
  */
 public class InputManager
 {
-    RandomAccessFile reader;
-    boolean eof = false, eoln = false;
-    long pos;
+    private RandomAccessFile reader;
+    private boolean eof = false, eoln = false;
+    private long pos;
+    private boolean firstparse = true;
     int lineno, tokenno;
    
     /**
@@ -27,7 +28,25 @@ public class InputManager
         tokenno = 0;
     }
     
-    private int nextch() throws IOException
+    /**
+     * Put one character back on the input.
+     * 
+     * @throws IOException
+     */
+    private void backch() throws IOException
+    {
+        reader.seek( reader.getFilePointer()-1 );
+    }
+    
+    /**
+     * Read a character, returning -1 on EOF and -2 on EOL. 
+     * Also set the "eof" and "eoln" flags.
+     * 
+     * @param context
+     * @return The input character, or -1 for eof, or -2 for eoln.
+     * @throws Exception
+     */
+    private int nextch( VIVAContext context ) throws Exception
     {
         int c = reader.read();
         
@@ -39,19 +58,21 @@ public class InputManager
         else
         {
             String crlf = "";
+            
             // Check for EOLN
+            // Will recognize three EOLN markers: \r, \n, or \r\n.
             if( c=='\r' )
             {
                 crlf += '\r';
                 eoln = true;
                 c = reader.read();
-                if( c!='\n' )
+                if( c=='\n' )
                 {
-                    reader.seek( reader.getFilePointer()-1 );
+                    crlf += '\n';
                 }
                 else
                 {
-                    crlf += '\n';
+                    backch();
                 }
                 c = -2;
             }
@@ -62,9 +83,12 @@ public class InputManager
                 c = -2;   
             }
             
-            if( crlf.length()>0 && !crlf.equals( System.getProperty("line.separator") ) )
+            // Check to make sure that the EOLN characters are what we expect on this platform.
+            if( crlf.length()>0 && !crlf.equals( context.lineSeparator ) && firstparse )
             {
-                System.err.println( "Bad Separator" );
+                String prettycrlf = crlf.replace( "\r", "\\r" ).replace( "\n", "\\n" );
+                String prettylinesep = context.lineSeparator.replace( "\r", "\\r" ).replace( "\n", "\\n" );
+                context.err.println( "Bad line separator on line " + lineno + ". Expecting " + prettylinesep + ", got " + prettycrlf );
             }
         }
         return c;
@@ -79,16 +103,15 @@ public class InputManager
      */
     public String getNextToken( VIVAContext context ) throws Exception
     {
-        int c = nextch();
+        int c = nextch( context );
         String token = "";
-                
+          
+        // The character pointer should be right at the beginning of the token.
+        // If we see blanks, then they're extra (bad) blanks.
         if( c==' ' )
         {
-            context.err.println( "Extra blank(s) on line " + lineno );
-            while( c==' ' )
-            {
-                c = nextch();
-            }
+            if( firstparse ) context.err.println( "Extra blank(s) on line " + lineno );
+            while( c==' ' ) c = nextch( context );
         }
         
         if( eof )
@@ -105,7 +128,7 @@ public class InputManager
             while( c!=' ' && !eof && !eoln )
             {
                 token += (char)c;
-                c = nextch();
+                c = nextch( context );
             }
         }
                 
@@ -118,6 +141,7 @@ public class InputManager
     public void resetLine()
     {
         tokenno = 0;
+        firstparse = false;
         try
         {
             reader.seek( pos );
@@ -151,22 +175,60 @@ public class InputManager
         {
             if( !eoln )
             {
-                reader.seek( reader.getFilePointer()-1 );
+                backch();
                 for(;;)
                 {
-                    int c = nextch();
+                    int c = nextch( context );
                     if( c==' ' ) blanks = true;
                     else if( c>=0 ) tokens = true;
                     else break;
                 }
                 
-                if( blanks ) context.err.println( "Extra blanks at the end of line " + lineno );
-                if( tokens ) context.err.println( "Extra tokens at the end of line " + lineno );
+                if( blanks  && firstparse ) context.err.println( "Extra blank(s) at the end of line " + lineno );
+                if( tokens  && firstparse ) context.err.println( "Extra token(s) at the end of line " + lineno );
             }        
             lineno++;
             tokenno = 0;
             pos = reader.getFilePointer();
             eoln = false;
+            firstparse = true;
+        }
+    }
+    
+    /**
+     * Check to see if there are any blank lines, extra spaces, or extra characters after all of the input has been parsed.
+     * 
+     * @param context
+     * @throws Exception
+     */
+    public void eofChecks( VIVAContext context ) throws Exception
+    {
+        if( !eof )
+        {
+            String message = "";
+            
+            if( eoln ) 
+            {
+                message = "Blank line at end of input. ";
+            }
+            else
+            {
+                backch();
+            }
+            
+            int c = nextch( context );                    
+            if( c==' ' )
+            {
+                if( c==' ' ) message = "Extra blank(s) at end of file";
+                while( c==' ' )
+                {
+                    c = nextch( context );
+                }
+            }
+
+            if( !eof ) message = "Extra characters after input.";
+            
+            context.err.println( message );
         }
     }
 }

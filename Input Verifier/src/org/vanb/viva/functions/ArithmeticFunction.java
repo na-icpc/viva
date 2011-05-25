@@ -26,10 +26,10 @@ public abstract class ArithmeticFunction implements ScalarFunction
         return name + "(double)";
     }
     
-    protected abstract double implementation( double parameter );
+    protected abstract double implementation( double parameter ) throws Exception;
 
     @Override
-    public Object run( VIVAContext context, List<Object> parameters )
+    public Object run( VIVAContext context, List<Object> parameters ) throws Exception
     {
         return new Double( implementation( ((Number)parameters.get( 0 )).doubleValue() ) );
     }

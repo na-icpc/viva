@@ -26,7 +26,7 @@ public class DepsFunction implements ScalarFunction
     }
 
     @Override
-    public Object run( VIVAContext context, List<Object> parameters )
+    public Object run( VIVAContext context, List<Object> parameters ) throws Exception
     {
         context.deps = (Double)parameters.get( 0 );
         return true;

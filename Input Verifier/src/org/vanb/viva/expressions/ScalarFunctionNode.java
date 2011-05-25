@@ -23,7 +23,18 @@ public class ScalarFunctionNode extends FunctionNode
         {
             parmvalues.add( parm.evaluate( context ) );
         }
-        return function.run( context, parmvalues );   
+        
+        Object result = null;
+        try
+        {
+            result = function.run( context, parmvalues );
+        }
+        catch( Exception e )
+        {
+            context.throwException( e.getMessage() );   
+        }
+        
+        return result;    
     }
 
 }

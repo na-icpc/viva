@@ -26,7 +26,7 @@ public class UniqueFunction implements VectorFunction
     }
 
     @Override
-    public Object run( VIVAContext context, List<List<Object>> parameters )
+    public Object run( VIVAContext context, List<List<Object>> parameters ) throws Exception
     {
         HashSet<String> rows = new HashSet<String>();
                 

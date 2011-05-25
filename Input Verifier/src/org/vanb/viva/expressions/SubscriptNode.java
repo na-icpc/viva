@@ -32,17 +32,17 @@ public class SubscriptNode extends VariableNode
                 }
                 else
                 {
-                    context.showError( "Subscript " + n + " is out of range for " + name + "[] " + vm );
+                    context.throwException( "Subscript " + n + " is out of range for " + name + "[] " + vm );
                 }
             }
             else
             {
-                context.showError( "Subscript " + subvalue + "("+ subscript +") is not an Integer for " + name + "[]. It is a " + subvalue.getClass().getSimpleName() );
+                context.throwException( "Subscript " + subvalue + "("+ subscript +") is not an Integer for " + name + "[]. It is a " + subvalue.getClass().getSimpleName() );
             }
         }
         else
         {
-            context.showError( "Cannot find value for " + name + "[]" );
+            context.throwException( "Cannot find value for " + name + "[]" );
         }
         
         return value==null ? new Integer(0) : value;

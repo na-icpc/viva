@@ -17,7 +17,7 @@ public class VariableNode implements ExpressionNode
     public Object evaluate( VIVAContext context ) throws VIVAException
     {
         ValueManager vm = context.values.lookup( name );
-        Object value;
+        Object value = null;
         
         if( vm!=null )
         {
@@ -32,9 +32,9 @@ public class VariableNode implements ExpressionNode
         }
         else
         {
-            context.showError( "Cannot find value for " + name + ", using 0" );
-            value = new Integer( 0 );
+            context.throwException( "Cannot find value for " + name );
         }
+        
         return value;
     }
 

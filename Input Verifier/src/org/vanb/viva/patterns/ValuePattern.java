@@ -41,7 +41,7 @@ public abstract class ValuePattern implements Pattern
         }
         catch( Exception e )
         {
-            context.showError( "Unable to parse value as " + getType() );
+            context.showError( "Unable to parse value as " + getType().getSimpleName() );
             success = false;
         }
         

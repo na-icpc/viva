@@ -1,8 +1,6 @@
 package org.vanb.viva.expressions;
 
-import org.vanb.viva.utils.VIVAContext;
-import org.vanb.viva.utils.VIVAException;
-import org.vanb.viva.utils.ValueManager;
+import org.vanb.viva.utils.*;
 
 public class CountNode extends VariableNode
 {
@@ -27,9 +25,9 @@ public class CountNode extends VariableNode
         }
         else
         {
-            context.showError( "Cannot find count for " + name + ", using 0" );
-            value = new Integer( 0 );
+            context.throwException( "Cannot find count for " + name );
         }
+        
         return value;
     }
 

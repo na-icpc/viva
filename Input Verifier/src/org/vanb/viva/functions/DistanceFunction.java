@@ -31,7 +31,7 @@ public class DistanceFunction implements ScalarFunction
     }
 
     @Override
-    public Object run( VIVAContext context, List<Object> parameters )
+    public Object run( VIVAContext context, List<Object> parameters ) throws Exception
     {
         double x1 = ((Number)parameters.get( 0 )).doubleValue();
         double y1 = ((Number)parameters.get( 1 )).doubleValue();

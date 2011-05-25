@@ -63,30 +63,37 @@ public abstract class NumberBinaryOperatorNode extends BinaryOperatorNode
         deps = context.deps;
         feps = context.feps;
         
-        if( type.equals( Double.class ))
+        try
         {
-            result = evaluate( l.doubleValue(), r.doubleValue() );   
+            if( type.equals( Double.class ))
+            {
+                result = evaluate( l.doubleValue(), r.doubleValue() );   
+            }
+            else if( type.equals( Float.class ) )
+            {
+                result = evaluate( l.floatValue(), r.floatValue() );               
+            }
+            else if( type.equals( Long.class ) )
+            {
+                result = evaluate( l.longValue(), r.longValue() );               
+            }
+            else
+            {
+                result = evaluate( l.intValue(), r.intValue() );                           
+            }
         }
-        else if( type.equals( Float.class ) )
+        catch( Exception e )
         {
-            result = evaluate( l.floatValue(), r.floatValue() );               
-        }
-        else if( type.equals( Long.class ) )
-        {
-            result = evaluate( l.longValue(), r.longValue() );               
-        }
-        else
-        {
-            result = evaluate( l.intValue(), r.intValue() );                           
+            context.throwException( e.getMessage() );  
         }
         
         return result;
     }
     
-    public abstract Object evaluate( double l, double r );
-    public abstract Object evaluate( float l, float r );
-    public abstract Object evaluate( long l, long r );
-    public abstract Object evaluate( int l, int r );
+    public abstract Object evaluate( double l, double r ) throws Exception;
+    public abstract Object evaluate( float l, float r ) throws Exception;
+    public abstract Object evaluate( long l, long r ) throws Exception;
+    public abstract Object evaluate( int l, int r ) throws Exception;
 
     @Override
     public Class<?> getReturnType()

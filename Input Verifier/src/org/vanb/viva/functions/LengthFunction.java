@@ -26,7 +26,7 @@ public class LengthFunction implements ScalarFunction
     }
     
     @Override
-    public Object run( VIVAContext context, List<Object> parameters )
+    public Object run( VIVAContext context, List<Object> parameters ) throws Exception
     {
         return ((String)parameters.get( 0 )).length();
     }

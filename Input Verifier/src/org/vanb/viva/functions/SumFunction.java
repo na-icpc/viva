@@ -26,7 +26,7 @@ public class SumFunction implements VectorFunction
     }
 
     @Override
-    public Object run( VIVAContext context, List<List<Object>> parameters )
+    public Object run( VIVAContext context, List<List<Object>> parameters ) throws Exception
     {
         int intsum = 0;
         long longsum = 0L;

@@ -30,7 +30,17 @@ public class VectorFunctionNode extends FunctionNode
         
         context.index = -1;
         
-        return function.run( context, rows );   
+        Object result = null;
+        try
+        {
+            result = function.run( context, rows );
+        }
+        catch( Exception e )
+        {
+            context.throwException( e.getMessage() );   
+        }
+        
+        return result;    
     }
 
 }

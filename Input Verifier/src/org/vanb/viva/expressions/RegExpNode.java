@@ -17,12 +17,12 @@ public class RegExpNode extends BinaryOperatorNode
         
         if( !lhs.getReturnType().equals( String.class  ) )
         {
-            throw new ParseException( "Bad left operand to " + operator + " operator: Expecting String, got " + lhs.getReturnType().toString() );
+            throw new ParseException( "Bad left operand to " + operator + " operator: Expecting String, got " + lhs.getReturnType().getSimpleName() );
         }
         
         if( !rhs.getReturnType().equals( String.class  ) )
         {
-            throw new ParseException( "Bad right operand to " + operator + " operator: Expecting String, got " + rhs.getReturnType().toString() );
+            throw new ParseException( "Bad right operand to " + operator + " operator: Expecting String, got " + rhs.getReturnType().getSimpleName() );
         }
         
         if( !(rhs instanceof ConstantNode) )

@@ -21,14 +21,14 @@ public abstract class NumberBinaryOperatorNode extends BinaryOperatorNode
                 && !lhs.getReturnType().equals( Integer.class )
                 && !lhs.getReturnType().equals( Long.class ) ) 
         {
-            throw new ParseException( "Bad left operand to " + operator + " operator: Expecting Double, Float, Long or Integer, got " + lhs.getReturnType().toString() );
+            throw new ParseException( "Bad left operand to " + operator + " operator: Expecting Double, Float, Long or Integer, got " + lhs.getReturnType().getSimpleName() );
         }
         if( !rhs.getReturnType().equals( Double.class )
                 && !rhs.getReturnType().equals( Float.class )
                 && !rhs.getReturnType().equals( Integer.class )
                 && !rhs.getReturnType().equals( Long.class ) ) 
         {
-            throw new ParseException( "Bad right operand to numerical  operator: Expecting Double, Float, Long or Integer, got " + rhs.getReturnType().toString() );
+            throw new ParseException( "Bad right operand to numerical  operator: Expecting Double, Float, Long or Integer, got " + rhs.getReturnType().getSimpleName() );
         }
         
         if( Double.class.equals( lhs.getReturnType() ) 

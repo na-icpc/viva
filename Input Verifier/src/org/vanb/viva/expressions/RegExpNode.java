@@ -32,7 +32,12 @@ public class RegExpNode extends BinaryOperatorNode
         
         try
         {
-            pattern = java.util.regex.Pattern.compile( (String)rhs.evaluate( null ) );
+            // A bit of an eccentricity here - the parser follows Java conventions for
+            // string constants, meaning that any backslash has to be doubled.
+            // Java turns double backslashes into a single backslash. So,
+            // we've got to do that, too.
+            String token = ((String)rhs.evaluate( null )).replace( "\\\\", "\\" );
+            pattern = java.util.regex.Pattern.compile( token );
         }
         catch( Exception e )
         {

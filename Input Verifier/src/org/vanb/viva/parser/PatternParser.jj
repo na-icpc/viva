@@ -6,6 +6,7 @@ import org.vanb.viva.patterns.*;
 import org.vanb.viva.expressions.*;
 import org.vanb.viva.functions.*;
 import org.vanb.viva.utils.*;
+import org.vanb.viva.*;
 import java.util.*;
 
 public class PatternParser{
@@ -99,7 +100,7 @@ TOKEN :
 |
   < #LETTER:
       [  // all chars for which Character.isIdentifierStart is true
-         "$",
+         // "$",
          "A"-"Z",
          "_",
          "a"-"z"
@@ -108,7 +109,7 @@ TOKEN :
 |
   < #PART_LETTER:
       [  // all chars for which Character.isIdentifierPart is true
-         "$",
+         // "$",
          "0"-"9",
          "A"-"Z",
          "_",
@@ -549,12 +550,23 @@ ExpressionNode named( String name ) :
          }
      }
   |
-     {         type = symbols.lookup( name );
+     "$"
+     {
+         type = symbols.lookup( name );
          if( type==null )
          {
              throw new ParseException( getPosition(token) + "Unknown identifier: " + name );
          }
-         node = new VariableNode( name, type );
+         node = new VariableNode( name, String.class, false );
+     }     
+  |
+     {
+         type = symbols.lookup( name );
+         if( type==null )
+         {
+             throw new ParseException( getPosition(token) + "Unknown identifier: " + name );
+         }
+         node = new VariableNode( name, type, true );
      }     
   )
   {

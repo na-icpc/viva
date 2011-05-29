@@ -3,7 +3,9 @@ package org.vanb.viva.parser;
 
 import org.vanb.viva.patterns.*;
 import org.vanb.viva.expressions.*;
+import org.vanb.viva.functions.*;
 import org.vanb.viva.utils.*;
+import org.vanb.viva.*;
 import java.util.*;
 
 public class PatternParser implements PatternParserConstants {
@@ -12,6 +14,13 @@ public class PatternParser implements PatternParserConstants {
     private String getPosition( Token token )
     {
         return "At line " + token.beginLine + " column " + token.beginColumn + ": ";
+    }
+
+    private HashMap<String,Function> functions = new HashMap<String,Function>();
+
+    public void setFunctions( HashMap<String,Function> f )
+    {
+        functions = f;
     }
 
   final public PatternList multilinePattern() throws ParseException {
@@ -24,7 +33,7 @@ public class PatternParser implements PatternParserConstants {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case IDENTIFIER:
       case 25:
-      case 32:
+      case 33:
         ;
         break;
       default:
@@ -59,30 +68,44 @@ public class PatternParser implements PatternParserConstants {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 26:
         jj_consume_token(26);
-        exp = constraint(true);
+        exp = constraint();
+                                 controller.addConstraint( exp );
+        label_2:
+        while (true) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          case 28:
+            ;
+            break;
+          default:
+            jj_la1[2] = jj_gen;
+            break label_2;
+          }
+          jj_consume_token(28);
+          exp = constraint();
+                                                                                             controller.addConstraint( exp );
+        }
         jj_consume_token(27);
         break;
       default:
-        jj_la1[2] = jj_gen;
+        jj_la1[3] = jj_gen;
         ;
       }
-      jj_consume_token(28);
+      jj_consume_token(29);
         if( controller==null ) controller = new EOFController();
         symbols.removeLevel();
         controller.setPatternList( plist );
-        if( exp!=null ) controller.addConstraint( exp );
         pattern = controller;
       break;
     case IDENTIFIER:
-    case 32:
+    case 33:
       plist = simplePattern();
-      jj_consume_token(29);
+      jj_consume_token(30);
         controller = new SingleLineController();
         controller.setPatternList( plist );
         pattern = controller;
       break;
     default:
-      jj_la1[3] = jj_gen;
+      jj_la1[4] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -95,15 +118,15 @@ public class PatternParser implements PatternParserConstants {
     Pattern term=null;
     ExpressionNode exp = null;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 30:
-      jj_consume_token(30);
-      exp = expression(false);
+    case 31:
+      jj_consume_token(31);
+      exp = expression();
         CountController count = new CountController();
         count.setCountExpression( exp );
         pattern = count;
       break;
-    case 31:
-      jj_consume_token(31);
+    case 32:
+      jj_consume_token(32);
          symbols.addLevel();
       term = simplePattern();
         symbols.removeLevel();
@@ -112,7 +135,7 @@ public class PatternParser implements PatternParserConstants {
         pattern = match;
       break;
     default:
-      jj_la1[4] = jj_gen;
+      jj_la1[5] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -127,11 +150,11 @@ public class PatternParser implements PatternParserConstants {
     ExpressionNode exp = null;
     Token token;
     ValuePattern value = null;
-    label_2:
+    label_3:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 32:
-        jj_consume_token(32);
+      case 33:
+        jj_consume_token(33);
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 26:
           jj_consume_token(26);
@@ -139,7 +162,7 @@ public class PatternParser implements PatternParserConstants {
           jj_consume_token(27);
           break;
         default:
-          jj_la1[5] = jj_gen;
+          jj_la1[6] = jj_gen;
           ;
         }
                                                      symbols.addLevel();
@@ -147,29 +170,43 @@ public class PatternParser implements PatternParserConstants {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 26:
           jj_consume_token(26);
-          exp = constraint(true);
+          exp = constraint();
+                                     controller.addConstraint( exp );
+          label_4:
+          while (true) {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+            case 28:
+              ;
+              break;
+            default:
+              jj_la1[7] = jj_gen;
+              break label_4;
+            }
+            jj_consume_token(28);
+            exp = constraint();
+                                                                                                 controller.addConstraint( exp );
+          }
           jj_consume_token(27);
           break;
         default:
-          jj_la1[6] = jj_gen;
+          jj_la1[8] = jj_gen;
           ;
         }
-        jj_consume_token(33);
+        jj_consume_token(34);
                 if( controller==null ) controller = new EOLNController();
                 symbols.removeLevel();
                 controller.setPatternList( innerlist );
-                if( exp!=null ) controller.addConstraint( exp );
                 plist.addPattern( controller );
         break;
       case IDENTIFIER:
         token = jj_consume_token(IDENTIFIER);
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case 34:
-          jj_consume_token(34);
+        case 35:
+          jj_consume_token(35);
           value = type();
           break;
         default:
-          jj_la1[7] = jj_gen;
+          jj_la1[9] = jj_gen;
           ;
         }
                   String name = token.image;
@@ -183,46 +220,46 @@ public class PatternParser implements PatternParserConstants {
                   }
                   value = null;
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case 35:
-          jj_consume_token(35);
-          exp = constraint(false);
+        case 36:
+          jj_consume_token(36);
+          exp = constraint();
                                   if( exp!=null ) plist.addConstraint( exp );
                                   exp = null;
-          label_3:
+          label_5:
           while (true) {
             switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-            case 36:
+            case 28:
               ;
               break;
             default:
-              jj_la1[8] = jj_gen;
-              break label_3;
+              jj_la1[10] = jj_gen;
+              break label_5;
             }
-            jj_consume_token(36);
-            exp = constraint(false);
+            jj_consume_token(28);
+            exp = constraint();
                                         if( exp!=null ) plist.addConstraint( exp );
                                         exp = null;
           }
           jj_consume_token(37);
           break;
         default:
-          jj_la1[9] = jj_gen;
+          jj_la1[11] = jj_gen;
           ;
         }
         break;
       default:
-        jj_la1[10] = jj_gen;
+        jj_la1[12] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case IDENTIFIER:
-      case 32:
+      case 33:
         ;
         break;
       default:
-        jj_la1[11] = jj_gen;
-        break label_2;
+        jj_la1[13] = jj_gen;
+        break label_3;
       }
     }
       {if (true) return plist;}
@@ -257,7 +294,7 @@ public class PatternParser implements PatternParserConstants {
                     pattern = new StringPattern();
       break;
     default:
-      jj_la1[12] = jj_gen;
+      jj_la1[14] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -265,22 +302,22 @@ public class PatternParser implements PatternParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public ExpressionNode constraint(boolean isCumulative) throws ParseException {
+  final public ExpressionNode constraint() throws ParseException {
     ExpressionNode lhs, rhs;
     BinaryOperatorNode op;
-    lhs = orConstraint(isCumulative);
-    label_4:
+    lhs = orConstraint();
+    label_6:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 38:
         ;
         break;
       default:
-        jj_la1[13] = jj_gen;
-        break label_4;
+        jj_la1[15] = jj_gen;
+        break label_6;
       }
       jj_consume_token(38);
-      rhs = orConstraint(isCumulative);
+      rhs = orConstraint();
           op = new OrNode();
           op.instantiate( lhs, rhs );
           lhs = op;
@@ -289,22 +326,22 @@ public class PatternParser implements PatternParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public ExpressionNode orConstraint(boolean isCumulative) throws ParseException {
+  final public ExpressionNode orConstraint() throws ParseException {
     ExpressionNode lhs, rhs;
     BinaryOperatorNode op;
-    lhs = simpleConstraint(isCumulative);
-    label_5:
+    lhs = simpleConstraint();
+    label_7:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 39:
         ;
         break;
       default:
-        jj_la1[14] = jj_gen;
-        break label_5;
+        jj_la1[16] = jj_gen;
+        break label_7;
       }
       jj_consume_token(39);
-      rhs = simpleConstraint(isCumulative);
+      rhs = simpleConstraint();
           op = new AndNode();
           op.instantiate( lhs, rhs );
           lhs = op;
@@ -313,20 +350,16 @@ public class PatternParser implements PatternParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public ExpressionNode simpleConstraint(boolean isCumulative) throws ParseException {
+  final public ExpressionNode simpleConstraint() throws ParseException {
     ExpressionNode lhs, rhs;
-    BinaryOperatorNode op, newop;
-    lhs = expression(isCumulative);
-    op = boolop();
-    rhs = expression(isCumulative);
-      op.instantiate( lhs, rhs );
-      lhs = rhs;
-    label_6:
+    BinaryOperatorNode op=null, newop=null;
+    lhs = expression();
+    label_8:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 31:
       case 32:
       case 33:
+      case 34:
       case 40:
       case 41:
       case 42:
@@ -336,18 +369,26 @@ public class PatternParser implements PatternParserConstants {
         ;
         break;
       default:
-        jj_la1[15] = jj_gen;
-        break label_6;
+        jj_la1[17] = jj_gen;
+        break label_8;
       }
       newop = boolop();
-      rhs = expression(isCumulative);
+      rhs = expression();
               newop.instantiate( lhs, rhs );
-              BinaryOperatorNode andop = new AndNode();
-              andop.instantiate( op, newop );
-              op = andop;
+
+              if( op==null )
+              {
+                  op = newop;
+              }
+              else
+              {
+                      BinaryOperatorNode andop = new AndNode();
+                      andop.instantiate( op, newop );
+                      op = andop;
+              }
               lhs = rhs;
     }
-      {if (true) return op;}
+      {if (true) return op==null ? lhs : op;}
     throw new Error("Missing return statement in function");
   }
 
@@ -355,12 +396,12 @@ public class PatternParser implements PatternParserConstants {
     BinaryOperatorNode op = null;
     Token token;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 33:
-      token = jj_consume_token(33);
+    case 34:
+      token = jj_consume_token(34);
                     op = new GreaterThanNode(); op.operator = token.image;
       break;
-    case 32:
-      token = jj_consume_token(32);
+    case 33:
+      token = jj_consume_token(33);
                     op = new LessThanNode(); op.operator = token.image;
       break;
     case 40:
@@ -371,8 +412,8 @@ public class PatternParser implements PatternParserConstants {
       token = jj_consume_token(41);
                      op = new LessThanEqualToNode(); op.operator = token.image;
       break;
-    case 31:
-      token = jj_consume_token(31);
+    case 32:
+      token = jj_consume_token(32);
                     op = new EqualToNode(); op.operator = token.image;
       break;
     case 42:
@@ -392,7 +433,7 @@ public class PatternParser implements PatternParserConstants {
                      op = new RegExpNode(); op.operator = token.image;
       break;
     default:
-      jj_la1[16] = jj_gen;
+      jj_la1[18] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -400,11 +441,11 @@ public class PatternParser implements PatternParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public ExpressionNode expression(boolean isCumulative) throws ParseException {
+  final public ExpressionNode expression() throws ParseException {
     ExpressionNode lhs, rhs;
     BinaryOperatorNode op;
-    lhs = term(isCumulative);
-    label_7:
+    lhs = term();
+    label_9:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 46:
@@ -412,11 +453,11 @@ public class PatternParser implements PatternParserConstants {
         ;
         break;
       default:
-        jj_la1[17] = jj_gen;
-        break label_7;
+        jj_la1[19] = jj_gen;
+        break label_9;
       }
       op = addop();
-      rhs = term(isCumulative);
+      rhs = term();
           op.instantiate( lhs, rhs );
           lhs = op;
     }
@@ -437,7 +478,7 @@ public class PatternParser implements PatternParserConstants {
                   op = new MinusNode(); op.operator = token.image;
       break;
     default:
-      jj_la1[18] = jj_gen;
+      jj_la1[20] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -445,23 +486,23 @@ public class PatternParser implements PatternParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public ExpressionNode term(boolean isCumulative) throws ParseException {
+  final public ExpressionNode term() throws ParseException {
     ExpressionNode lhs, rhs;
     BinaryOperatorNode op;
-    lhs = factor(isCumulative);
-    label_8:
+    lhs = factor();
+    label_10:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 30:
+      case 31:
       case 48:
         ;
         break;
       default:
-        jj_la1[19] = jj_gen;
-        break label_8;
+        jj_la1[21] = jj_gen;
+        break label_10;
       }
       op = multop();
-      rhs = factor(isCumulative);
+      rhs = factor();
           op.instantiate( lhs, rhs );
           lhs = op;
     }
@@ -473,8 +514,8 @@ public class PatternParser implements PatternParserConstants {
     BinaryOperatorNode op = null;
     Token token;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 30:
-      token = jj_consume_token(30);
+    case 31:
+      token = jj_consume_token(31);
                   op = new TimesNode(); op.operator = token.image;
       break;
     case 48:
@@ -482,7 +523,7 @@ public class PatternParser implements PatternParserConstants {
                   op = new DivideNode(); op.operator = token.image;
       break;
     default:
-      jj_la1[20] = jj_gen;
+      jj_la1[22] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -490,7 +531,7 @@ public class PatternParser implements PatternParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public ExpressionNode factor(boolean isCumulative) throws ParseException {
+  final public ExpressionNode factor() throws ParseException {
     Token token;
     ExpressionNode node;
     Object value;
@@ -498,7 +539,7 @@ public class PatternParser implements PatternParserConstants {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IDENTIFIER:
       token = jj_consume_token(IDENTIFIER);
-      node = named(token.image, isCumulative);
+      node = named(token.image);
       break;
     case INTEGER_LITERAL:
       token = jj_consume_token(INTEGER_LITERAL);
@@ -524,13 +565,22 @@ public class PatternParser implements PatternParserConstants {
       break;
     case FLOATING_POINT_LITERAL:
       token = jj_consume_token(FLOATING_POINT_LITERAL);
+        boolean isfloat = token.image.toUpperCase().endsWith( "F" );
         try
         {
-            value = new Double( token.image );
+            if( isfloat )
+            {
+                value = new Float( token.image );
+            }
+            else
+            {
+                value = new Double( token.image );
+            }
         }
         catch( Exception e )
         {
-            {if (true) throw new ParseException( getPosition(token) + "Unable to parse " + token.image + " as a Double" );}
+            {if (true) throw new ParseException( getPosition(token) + "Unable to parse " + token.image
+                + " as a " + (isfloat ? "Float" : "Double") );}
         }
         node = new ConstantNode( value );
       break;
@@ -548,14 +598,14 @@ public class PatternParser implements PatternParserConstants {
         if( lit.endsWith( "\u005c"" ) ) lit = lit.substring( 0, lit.length()-1);
         node = new ConstantNode( lit );
       break;
-    case 35:
-      jj_consume_token(35);
-      node = expression(isCumulative);
+    case 36:
+      jj_consume_token(36);
+      node = expression();
       jj_consume_token(37);
         node = new ParenthesesNode( node );
       break;
     default:
-      jj_la1[21] = jj_gen;
+      jj_la1[23] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -563,16 +613,25 @@ public class PatternParser implements PatternParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public ExpressionNode named(String name, boolean isCumulative) throws ParseException {
+  final public ExpressionNode named(String name) throws ParseException {
     ExpressionNode node = null;
     ExpressionNode subscript = null;
     ExpressionNode parm = null;
     LinkedList<ExpressionNode> parms = new LinkedList<ExpressionNode>();
     Class<?> type;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case 49:
+      jj_consume_token(49);
+         type = symbols.lookup( name );
+         if( type==null )
+         {
+             {if (true) throw new ParseException( getPosition(token) + "Unknown identifier: " + name );}
+         }
+         node = new CountNode( name );
+      break;
     case 26:
       jj_consume_token(26);
-      subscript = expression(isCumulative);
+      subscript = expression();
       jj_consume_token(27);
          type = symbols.lookup( name );
          if( type==null )
@@ -580,47 +639,80 @@ public class PatternParser implements PatternParserConstants {
              {if (true) throw new ParseException( getPosition(token) + "Unknown identifier: " + name );}
          }
 
-         if( !subscript.returnType().equals( Integer.class ) )
+         if( !subscript.getReturnType().equals( Integer.class ) )
          {
-             {if (true) throw new ParseException( getPosition(token) + "Subscript must be Integer, not " + subscript.returnType() );}
+             {if (true) throw new ParseException( getPosition(token) + "Subscript must be Integer, not " + subscript.getReturnType() );}
          }
          node = new SubscriptNode( name, type, subscript );
       break;
-    case 35:
-      jj_consume_token(35);
-      parm = expression(isCumulative);
-                                        parms.add(parm);
-      label_9:
+    case 36:
+      jj_consume_token(36);
+      parm = expression();
+                            parms.add(parm);
+      label_11:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case 36:
+        case 28:
           ;
           break;
         default:
-          jj_la1[22] = jj_gen;
-          break label_9;
+          jj_la1[24] = jj_gen;
+          break label_11;
         }
-        jj_consume_token(36);
-        parm = expression(isCumulative);
-                                                                                              parms.add(parm);
+        jj_consume_token(28);
+        parm = expression();
+                                                                      parms.add(parm);
       }
       jj_consume_token(37);
+         Function function = functions.get( name );
+         if( function==null )
+         {
+             {if (true) throw new ParseException( getPosition(token) + "Unknown function: " + name );}
+         }
+
+         Class<?>[] parmtypes = new Class<?>[ parms.size() ];
+         int i=0;
+         for( ExpressionNode p : parms )
+         {
+             parmtypes[i++] = p.getReturnType();
+         }
+
+         type = function.getReturnType( parmtypes );
+         if( type==null )
+         {
+             {if (true) throw new ParseException( getPosition(token) + "Function usage: " + function.getUsage() );}
+         }
+
+         if( function instanceof ScalarFunction )
+         {
+             node = new ScalarFunctionNode( name, type, (ScalarFunction)function, parms );
+         }
+         else if( function instanceof VectorFunction )
+         {
+             node = new VectorFunctionNode( name, type, (VectorFunction)function, parms );
+         }
+         else
+         {
+             {if (true) throw new ParseException( getPosition(token) + "Function " + function.getName() + " is neither Scalar nor Vector" );}
+         }
+      break;
+    case 50:
+      jj_consume_token(50);
          type = symbols.lookup( name );
          if( type==null )
          {
              {if (true) throw new ParseException( getPosition(token) + "Unknown identifier: " + name );}
          }
-         node = isCumulative ? new CumulativeFunctionNode( name, type, parms )
-                             : new InlineFunctionNode( name, type, parms );
+         node = new VariableNode( name, String.class, false );
       break;
     default:
-      jj_la1[23] = jj_gen;
+      jj_la1[25] = jj_gen;
          type = symbols.lookup( name );
          if( type==null )
          {
              {if (true) throw new ParseException( getPosition(token) + "Unknown identifier: " + name );}
          }
-         node = new VariableNode( name, type );
+         node = new VariableNode( name, type, true );
     }
       {if (true) return node;}
     throw new Error("Missing return statement in function");
@@ -635,7 +727,7 @@ public class PatternParser implements PatternParserConstants {
   public Token jj_nt;
   private int jj_ntk;
   private int jj_gen;
-  final private int[] jj_la1 = new int[24];
+  final private int[] jj_la1 = new int[26];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
@@ -643,10 +735,10 @@ public class PatternParser implements PatternParserConstants {
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x2400000,0x4000000,0x4000000,0x2400000,0xc0000000,0x4000000,0x4000000,0x0,0x0,0x0,0x400000,0x400000,0x3f0000,0x0,0x0,0x80000000,0x80000000,0x0,0x0,0x40000000,0x40000000,0x40c220,0x0,0x4000000,};
+      jj_la1_0 = new int[] {0x2400000,0x4000000,0x10000000,0x4000000,0x2400000,0x80000000,0x4000000,0x10000000,0x4000000,0x0,0x10000000,0x0,0x400000,0x400000,0x3f0000,0x0,0x0,0x0,0x0,0x0,0x0,0x80000000,0x80000000,0x40c220,0x10000000,0x4000000,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x1,0x0,0x0,0x1,0x0,0x0,0x0,0x4,0x10,0x8,0x1,0x1,0x0,0x40,0x80,0x3f03,0x3f03,0xc000,0xc000,0x10000,0x10000,0x8,0x10,0x8,};
+      jj_la1_1 = new int[] {0x2,0x0,0x0,0x0,0x2,0x1,0x0,0x0,0x0,0x8,0x0,0x10,0x2,0x2,0x0,0x40,0x80,0x3f07,0x3f07,0xc000,0xc000,0x10000,0x10000,0x10,0x0,0x60010,};
    }
 
   /** Constructor with InputStream. */
@@ -660,7 +752,7 @@ public class PatternParser implements PatternParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 24; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -674,7 +766,7 @@ public class PatternParser implements PatternParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 24; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -684,7 +776,7 @@ public class PatternParser implements PatternParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 24; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -694,7 +786,7 @@ public class PatternParser implements PatternParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 24; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -703,7 +795,7 @@ public class PatternParser implements PatternParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 24; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -712,7 +804,7 @@ public class PatternParser implements PatternParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 24; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
   }
 
   private Token jj_consume_token(int kind) throws ParseException {
@@ -763,12 +855,12 @@ public class PatternParser implements PatternParserConstants {
   /** Generate ParseException. */
   public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[49];
+    boolean[] la1tokens = new boolean[51];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 24; i++) {
+    for (int i = 0; i < 26; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -780,7 +872,7 @@ public class PatternParser implements PatternParserConstants {
         }
       }
     }
-    for (int i = 0; i < 49; i++) {
+    for (int i = 0; i < 51; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

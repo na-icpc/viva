@@ -5,39 +5,45 @@ import java.util.*;
 public class ValueManager
 {
     private Vector<Object> values;
-    private Object current;
+    private Vector<String> tokens;
+    private Object currentValue;
+    private String currentToken;
     private int count;
     
     public ValueManager()
     {
         values = new Vector<Object>();
-        current = null;
+        tokens = new Vector<String>();
+        currentValue = null;
+        currentToken = null;
         count = 0;
     }
     
-    public void addValue( Object v )
+    public void addValue( Object value, String token )
     {
-        values.add( v );
-        current = v;
+        values.add( value );
+        tokens.add( token );
+        currentValue = value;
+        currentToken = token;
         ++count;
     }
     
-    public Object getCurrentValue()
+    public Object getCurrent( boolean wantValue )
     {
-        return current;
+        return wantValue ? currentValue : currentToken;
     }
-    
-    public Object getNthValue( int n )
+        
+    public Object getNth( int n, boolean wantValue )
     {
         Object result = null;
         if( n>=0 && n<count )
         {
-            result = values.get( n );   
+            result = wantValue ? values.get( n ) : tokens.get( n );   
         }
         
         return result;
     }
-    
+        
     public int getCount()
     {
         return count;
@@ -45,6 +51,6 @@ public class ValueManager
     
     public String toString()
     {
-        return "ValueManager:" + values + " " + current + " " + count;
+        return "ValueManager:" + values + " " + currentValue + " " + count;
     }
 }

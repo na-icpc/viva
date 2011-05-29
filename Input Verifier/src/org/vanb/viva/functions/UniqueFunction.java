@@ -2,6 +2,7 @@ package org.vanb.viva.functions;
 
 import java.util.*;
 
+import org.vanb.viva.VectorFunction;
 import org.vanb.viva.utils.VIVAContext;
 
 public class UniqueFunction implements VectorFunction

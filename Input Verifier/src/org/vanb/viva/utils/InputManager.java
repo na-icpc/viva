@@ -11,7 +11,7 @@ public class InputManager
 {
     private RandomAccessFile reader;
     private boolean eof = false, eoln = false;
-    private long pos;
+    private long lineStart;
     private boolean firstparse = true;
     int lineno, tokenno;
    
@@ -23,7 +23,7 @@ public class InputManager
     public InputManager( String filename, VIVAContext context ) throws Exception
     {
         reader = new RandomAccessFile( filename, "r" );    
-        pos = 0L;
+        lineStart = 0L;
         lineno = 1;
         tokenno = 0;
     }
@@ -105,7 +105,7 @@ public class InputManager
     {
         int c = nextch( context );
         String token = "";
-          
+                 
         // The character pointer should be right at the beginning of the token.
         // If we see blanks, then they're extra (bad) blanks.
         if( c==' ' )
@@ -139,12 +139,14 @@ public class InputManager
      * Reset the current line back to the beginning.
      */
     public void resetLine()
-    {
-        tokenno = 0;
-        firstparse = false;
+    {       
         try
         {
-            reader.seek( pos );
+            reader.seek( lineStart );
+            tokenno = 0;
+            firstparse = false;
+            eoln = false;
+            eof = false;
         }
         catch( IOException ioe )
         {
@@ -189,7 +191,7 @@ public class InputManager
             }        
             lineno++;
             tokenno = 0;
-            pos = reader.getFilePointer();
+            lineStart = reader.getFilePointer();
             eoln = false;
             firstparse = true;
         }

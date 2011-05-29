@@ -10,7 +10,7 @@ public class FunctionNode extends VariableNode
     
     public FunctionNode( String name, Class<?> type, LinkedList<ExpressionNode> parms )
     {
-        super( name, type );
+        super( name, type, true );
         parameters = parms;
     }
     

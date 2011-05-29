@@ -6,11 +6,13 @@ public class VariableNode implements ExpressionNode
 {
     protected String name;
     protected Class<?> type;
+    protected boolean wantValue;
     
-    public VariableNode( String n, Class<?> t )
+    public VariableNode( String n, Class<?> t, boolean v )
     {
         name = n;
         type = t;
+        wantValue = v;
     }
     
     @Override
@@ -23,18 +25,17 @@ public class VariableNode implements ExpressionNode
         {
             if( context.values.atCurrentLevel( name ) && context.index>=0 )
             {
-                value = vm.getNthValue( context.index ); 
+                value = vm.getNth( context.index, wantValue ); 
             }
             else
             {
-                value = vm.getCurrentValue();                      
+                value = vm.getCurrent( wantValue );                      
             }
         }
         else
         {
             context.throwException( "Cannot find value for " + name );
         }
-        
         return value;
     }
 
@@ -46,7 +47,7 @@ public class VariableNode implements ExpressionNode
     
     public String toString()
     {
-        return name;
+        return name + (wantValue?"":"$");
     }
 
 }

@@ -1,6 +1,7 @@
-package org.vanb.viva.functions;
+package org.vanb.viva;
 
 import java.util.*;
+
 import org.vanb.viva.utils.*;
 
 /** 

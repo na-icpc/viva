@@ -84,11 +84,21 @@ public class VIVA
     }
     
     /**
-     * Add a Function to be use in VIVA's constraints.
+     * Add a Scalar Function to be use in VIVA's constraints.
      * 
      * @param function The function to add
      */
-    public void addFunction( Function function )
+    public void addFunction( ScalarFunction function )
+    {
+        context.addFunction( function );
+    }
+    
+    /**
+     * Add a Vector Function to be use in VIVA's constraints.
+     * 
+     * @param function The function to add
+     */
+    public void addFunction( VectorFunction function )
     {
         context.addFunction( function );
     }

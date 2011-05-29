@@ -2,6 +2,7 @@ package org.vanb.viva.expressions;
 
 import java.util.*;
 
+import org.vanb.viva.VectorFunction;
 import org.vanb.viva.functions.*;
 import org.vanb.viva.utils.*;
 

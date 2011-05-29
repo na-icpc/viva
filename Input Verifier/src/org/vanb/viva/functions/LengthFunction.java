@@ -1,6 +1,8 @@
 package org.vanb.viva.functions;
 
 import java.util.*;
+
+import org.vanb.viva.ScalarFunction;
 import org.vanb.viva.utils.*;
 
 public class LengthFunction implements ScalarFunction

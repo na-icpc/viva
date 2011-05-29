@@ -6,7 +6,7 @@ public class CountNode extends VariableNode
 {
     public CountNode( String n )
     {
-        super( n, Integer.class );
+        super( n, Integer.class, true );
     }
     
     public String toString()

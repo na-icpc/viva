@@ -37,7 +37,7 @@ public abstract class ValuePattern implements Pattern
                 vm = new ValueManager();
                 context.values.add( name, vm );
             }
-            vm.addValue( value );
+            vm.addValue( value, token );
         }
         catch( Exception e )
         {

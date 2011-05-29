@@ -84,6 +84,7 @@ public interface PatternParserConstants {
     "\"{\"",
     "\"[\"",
     "\"]\"",
+    "\",\"",
     "\"}\"",
     "\";\"",
     "\"*\"",
@@ -92,7 +93,6 @@ public interface PatternParserConstants {
     "\">\"",
     "\":\"",
     "\"(\"",
-    "\",\"",
     "\")\"",
     "\"||\"",
     "\"&&\"",
@@ -105,6 +105,8 @@ public interface PatternParserConstants {
     "\"+\"",
     "\"-\"",
     "\"/\"",
+    "\"#\"",
+    "\"$\"",
   };
 
 }

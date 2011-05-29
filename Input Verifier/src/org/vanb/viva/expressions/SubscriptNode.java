@@ -10,7 +10,7 @@ public class SubscriptNode extends VariableNode
     
     public SubscriptNode( String name, Class<?> type, ExpressionNode sub )
     {
-        super( name, type );
+        super( name, type, true );
         subscript = sub;
     }
     
@@ -28,7 +28,7 @@ public class SubscriptNode extends VariableNode
                 int n = (Integer)subvalue;
                 if( n>=0 && n<vm.getCount() )
                 {
-                    value = vm.getNthValue( n );
+                    value = vm.getNth( n, true );
                 }
                 else
                 {

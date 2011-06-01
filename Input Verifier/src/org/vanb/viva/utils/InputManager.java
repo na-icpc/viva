@@ -9,11 +9,28 @@ import java.io.*;
  */
 public class InputManager
 {
+    private class State
+    {
+        long pos = 0L;
+        boolean eof = false, eoln = false, lastfixed = false;
+        int lineno = 1, tokenno = 0;
+        
+        public void set( State s )
+        {
+            pos = s.pos;
+            eof = s.eof;
+            eoln = s.eoln;
+            lastfixed = s.lastfixed;
+            lineno = s.lineno;
+            tokenno = s.tokenno;
+        }
+    }
+    
+    State state = new State();
+    State line = new State();
+    State anchor = new State();
+    
     private RandomAccessFile reader;
-    private boolean eof = false, eoln = false;
-    private long lineStart;
-    private boolean firstparse = true;
-    int lineno, tokenno;
    
     /**
      * Create an input controller for the specified file.
@@ -23,9 +40,6 @@ public class InputManager
     public InputManager( String filename, VIVAContext context ) throws Exception
     {
         reader = new RandomAccessFile( filename, "r" );    
-        lineStart = 0L;
-        lineno = 1;
-        tokenno = 0;
     }
     
     /**
@@ -53,7 +67,7 @@ public class InputManager
         // Check for EOF
         if( c<0 )
         {
-            eof = true;
+            state.eof = true;
         }
         else
         {
@@ -64,7 +78,7 @@ public class InputManager
             if( c=='\r' )
             {
                 crlf += '\r';
-                eoln = true;
+                state.eoln = true;
                 c = reader.read();
                 if( c=='\n' )
                 {
@@ -79,16 +93,16 @@ public class InputManager
             else if( c=='\n' )
             {
                 crlf += '\n';
-                eoln = true;
+                state.eoln = true;
                 c = -2;   
             }
             
             // Check to make sure that the EOLN characters are what we expect on this platform.
-            if( crlf.length()>0 && !crlf.equals( context.lineSeparator ) && firstparse )
+            if( crlf.length()>0 && !crlf.equals( context.lineSeparator ) )
             {
                 String prettycrlf = crlf.replace( "\r", "\\r" ).replace( "\n", "\\n" );
                 String prettylinesep = context.lineSeparator.replace( "\r", "\\r" ).replace( "\n", "\\n" );
-                context.err.println( "Bad line separator on line " + lineno + ". Expecting " + prettylinesep + ", got " + prettycrlf );
+                context.showError( "Bad line separator. Expecting " + prettylinesep + ", got " + prettycrlf );
             }
         }
         return c;
@@ -110,43 +124,81 @@ public class InputManager
         // If we see blanks, then they're extra (bad) blanks.
         if( c==' ' )
         {
-            if( firstparse ) context.err.println( "Extra blank(s) on line " + lineno );
+            context.showError( "Extra blank(s)" );
             while( c==' ' ) c = nextch( context );
         }
         
-        if( eof )
+        if( state.eof )
         {
-            throw new Exception( "Unexpected EOF encountered on line " + lineno );
+            context.throwException( "Unexpected EOF encountered" );
+            token = null;
         }
-        else if( eoln )
+        else if( state.eoln )
         {
-            throw new Exception( "Unexpected EOLN encountered on line " + lineno );
+            context.throwException( "Unexpected EOLN encountered" );
+            token = null;
         }
         else
         {
-            ++tokenno;
-            while( c!=' ' && !eof && !eoln )
+            state.tokenno++;
+            while( c!=' ' && !state.eof && !state.eoln )
             {
                 token += (char)c;
                 c = nextch( context );
             }
         }
-                
+           
+        state.lastfixed = false;
         return token;
     }
     
+    public String getToEOLN( VIVAContext context ) throws Exception
+    {
+        String result = "";
+        while( !state.eoln && !state.eof )
+        {
+            int c = nextch( context );
+            if( state.eoln || state.eof ) break;
+            result += (char)c;
+        }
+        
+        state.tokenno++;
+        state.lastfixed = false;
+        return result;
+    }
+    
+    public String getFixedField( VIVAContext context, int width ) throws Exception
+    {
+        String result = "";
+                
+        for( int i=0; i<width; i++ )
+        {
+            int c = nextch( context );
+            
+            if( state.eoln || state.eof  )
+            {
+                context.showError( "Encountered " + (state.eoln ? "EOLN" : "EOF") 
+                        + " after reading only " + i + " chars of a field of width " + width );
+                break;
+            }
+            
+            result += (char)c;
+        }
+           
+        state.tokenno++;
+        state.lastfixed = true;
+        return result;
+    }
+      
     /**
      * Reset the current line back to the beginning.
      */
     public void resetLine()
-    {       
+    {
+        state.set( line );
         try
         {
-            reader.seek( lineStart );
-            tokenno = 0;
-            firstparse = false;
-            eoln = false;
-            eof = false;
+            reader.seek( state.pos );
         }
         catch( IOException ioe )
         {
@@ -154,14 +206,33 @@ public class InputManager
         }
     }
     
+    public void setAnchor() throws Exception
+    {
+        anchor.set( state );
+        anchor.pos = reader.getFilePointer();
+    }
+    
+    public void returnToAnchor()
+    {
+        state.set( anchor );
+        try
+        {
+            reader.seek( state.pos );
+        }
+        catch( IOException ioe )
+        {
+            
+        }
+    }
+        
     public boolean atEOF()
     {
-        return eof;
+        return state.eof;
     }
     
     public boolean atEOLN()
     {
-        return eoln;
+        return state.eoln;
     }
     
     /**
@@ -173,9 +244,14 @@ public class InputManager
         boolean blanks = false;
         boolean tokens = false;
         
-        if( !eof )
+        if( !state.eof && !state.eoln && state.lastfixed )
         {
-            if( !eoln )
+            nextch( context );
+        }
+        
+        if( !state.eof )
+        {
+            if( !state.eoln )
             {
                 backch();
                 for(;;)
@@ -186,14 +262,16 @@ public class InputManager
                     else break;
                 }
                 
-                if( blanks  && firstparse ) context.err.println( "Extra blank(s) at the end of line " + lineno );
-                if( tokens  && firstparse ) context.err.println( "Extra token(s) at the end of line " + lineno );
+                if( blanks ) context.showError( "Extra blank(s) at the end of line " + state.lineno );
+                if( tokens ) context.showError( "Extra token(s) at the end of line " + state.lineno );
             }        
-            lineno++;
-            tokenno = 0;
-            lineStart = reader.getFilePointer();
-            eoln = false;
-            firstparse = true;
+            state.lineno++;
+            state.tokenno = 0;
+            state.eoln = false;
+            state.lastfixed = false;
+            
+            line.set( state );
+            line.pos = reader.getFilePointer();
         }
     }
     
@@ -205,11 +283,16 @@ public class InputManager
      */
     public void eofChecks( VIVAContext context ) throws Exception
     {
-        if( !eof )
+        if( !state.eof && state.lastfixed )
+        {
+            nextch( context );
+        }
+        
+        if( !state.eof )
         {
             String message = "";
             
-            if( eoln ) 
+            if( state.eoln ) 
             {
                 message = "Blank line at end of input. ";
             }
@@ -228,9 +311,19 @@ public class InputManager
                 }
             }
 
-            if( !eof ) message = "Extra characters after input.";
+            if( !state.eof ) message = "Extra characters after input.";
             
             context.err.println( message );
         }
+    }
+    
+    public int getLine()
+    {
+        return state.lineno;
+    }
+    
+    public int getToken()
+    {
+        return state.tokenno;
     }
 }

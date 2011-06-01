@@ -115,6 +115,10 @@ public class VIVA
         addFunction( new SumFunction() );
         addFunction( new DistanceFunction() );
         addFunction( new SquareRootFunction() );   
+        addFunction( new NaturalLogFunction() );   
+        addFunction( new Log10Function() );   
+        addFunction( new Log2Function() );   
+        addFunction( new TesterFunction() );   
     }
 
     /**

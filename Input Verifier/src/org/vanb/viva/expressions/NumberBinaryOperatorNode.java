@@ -28,7 +28,7 @@ public abstract class NumberBinaryOperatorNode extends BinaryOperatorNode
                 && !rhs.getReturnType().equals( Integer.class )
                 && !rhs.getReturnType().equals( Long.class ) ) 
         {
-            throw new ParseException( "Bad right operand to numerical  operator: Expecting Double, Float, Long or Integer, got " + rhs.getReturnType().getSimpleName() );
+            throw new ParseException( "Bad right operand to " + operator + " operator: Expecting Double, Float, Long or Integer, got " + rhs.getReturnType().getSimpleName() );
         }
         
         if( Double.class.equals( lhs.getReturnType() ) 

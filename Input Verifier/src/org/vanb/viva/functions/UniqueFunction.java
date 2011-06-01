@@ -40,7 +40,7 @@ public class UniqueFunction implements VectorFunction
             String key = "";
             for( Object object : row )
             {
-                key += object.toString() + " ";
+                key += object.toString() + "\256";
             }
             
             // Look to see if we've seen this row before

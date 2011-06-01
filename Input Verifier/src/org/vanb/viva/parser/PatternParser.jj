@@ -121,12 +121,7 @@ TOKEN :
     PatternList plist = new PatternList();
     Pattern p; 
 }{
-  ( 
-      p=singlePattern()   
-      { 
-          plist.addPattern( p );
-      } 
-  )+
+  ( p=singlePattern() { plist.addPattern( p ); } )+
   {
       return plist;
   }
@@ -135,21 +130,22 @@ TOKEN :
 Pattern singlePattern() :
 {
     Pattern pattern;
-    PatternListController controller=null;
+    PatternListController controller=new EOFController();
     PatternList plist;
     ExpressionNode exp=null;
+    List<Pattern> choices = new LinkedList<Pattern>();
 }
 {
   (
     "{" [ "[" controller=qualifier() "]" ] { symbols.addLevel(); } plist=multilinePattern()
         [ "[" exp=constraint() { controller.addConstraint( exp ); } ( "," exp=constraint() { controller.addConstraint( exp ); } )* "]" ] "}"
     {
-        if( controller==null ) controller = new EOFController();
         symbols.removeLevel();
         controller.setPatternList( plist );
         pattern = controller;
     }
-  |       plist=simplePattern() ";"
+//  |//    "?" { symbols.addLevel(); } plist=multilinePattern() { symbols.removeLevel(); choices.add(plist); }//    ( "/" { symbols.addLevel(); } plist=multilinePattern() { symbols.removeLevel(); choices.add(plist); } )* "?"//    {//        pattern = new ChoicePattern( choices );//    }
+  |     plist=simplePattern() ";"
     {
         controller = new SingleLineController();
         controller.setPatternList( plist );
@@ -186,29 +182,36 @@ PatternList simplePattern() :
 {
     PatternList plist = new PatternList();
     PatternList innerlist = null;
-    PatternListController controller = null;
+    PatternListController controller = new EOLNController();
     ExpressionNode exp = null;
     Token token;
     ValuePattern value = null;
+    boolean fixedfield = false;
 }
 {
   (
 	  (	    "<" [ "[" controller=qualifier() "]" ] { symbols.addLevel(); } innerlist=simplePattern() 
             [ "[" exp=constraint() { controller.addConstraint( exp ); } ( "," exp=constraint() { controller.addConstraint( exp ); } )* "]" ] ">"
 	    {
-	        if( controller==null ) controller = new EOLNController();
 	        symbols.removeLevel();
 	        controller.setPatternList( innerlist );
 	        plist.addPattern( controller );
 	    }
 	  )
 	  |
+	      "@" "|" [exp=expression()] "|"
+	      {
+	          plist.addPattern( new SpacesPattern( exp ) );
+	      }
+	  | 
 	  ( 
-	      token=< IDENTIFIER > [ ":" value=type() ]
+	      token=< IDENTIFIER > [ ":" value=type() ] [ "|" [exp=expression()] "|" {fixedfield = true;} ]
 	      {
 	          String name = token.image;
 	          if( value==null ) value = new IntegerPattern();
 	          value.setName( name );
+	          value.setFixedField( fixedfield );
+	          value.setWidth( exp );
 	          plist.addPattern( value );
 	          boolean unique = symbols.add( name, value.getType() );
 	          if( !unique )
@@ -340,7 +343,7 @@ BinaryOperatorNode boolop() :
     |
       token = "<>" { op = new NotEqualToNode(); op.operator = token.image; }
     |
-      token = "%"  { op = new RegExpNode(); op.operator = token.image; }       )
+      token = "%%"  { op = new RegExpNode(); op.operator = token.image; }       )
     {
         return op;
     }
@@ -407,6 +410,8 @@ BinaryOperatorNode multop() :
     token = "*" { op = new TimesNode(); op.operator = token.image; }
   |
     token = "/" { op = new DivideNode(); op.operator = token.image; }
+  |
+    token = "%" { op = new ModNode(); op.operator = token.image; }
   )
   {
       return op;

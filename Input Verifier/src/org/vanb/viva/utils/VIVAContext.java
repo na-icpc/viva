@@ -28,15 +28,18 @@ public class VIVAContext
  
     public void throwException( String message ) throws VIVAException
     {
-        throw new VIVAException( "At line " + input.lineno + " token " + input.tokenno + ": " + message, 
-                input.lineno, input.tokenno );
+        if( !justTesting )
+        {
+            throw new VIVAException( "At line " + input.getLine() + " token " + input.getToken() + ": " + message, 
+                    input.getLine(), input.getToken() );
+        }
     }
     
     public void showError( String message ) throws VIVAException
     {
         if( !justTesting )
         {
-            err.println( "At line " + input.lineno + " token " + input.tokenno + ": " + message );
+            err.println( "At line " + input.getLine() + " token " + input.getToken() + ": " + message );
             ++errcount;
             if( errcount>=maxerrs )
             {

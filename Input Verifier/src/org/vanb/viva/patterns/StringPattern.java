@@ -13,4 +13,10 @@ public class StringPattern extends ValuePattern
     {
         return String.class;
     }
+      
+    public Object getDefaultValue()
+    {
+        return "";
+    }
+
 }

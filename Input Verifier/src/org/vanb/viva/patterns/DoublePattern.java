@@ -17,11 +17,16 @@ public class DoublePattern extends ValuePattern
     @Override
     public Object getValue( String token ) throws Exception
     {
-        return new Double( token );
+        return new Double( token.trim() );
     }
     
     public Class<?> getType()
     {
         return Double.class;
+    }
+    
+    public Object getDefaultValue()
+    {
+        return new Double( 0 );
     }
 }

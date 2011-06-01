@@ -5,7 +5,7 @@ public class IntegerPattern extends ValuePattern
 {
     public Object getValue( String token ) throws Exception
     {
-        return new Integer( token );
+        return new Integer( token.trim() );
     }
     
     
@@ -13,4 +13,10 @@ public class IntegerPattern extends ValuePattern
     {
         return Integer.class;
     }
+       
+    public Object getDefaultValue()
+    {
+        return new Integer( 0 );
+    }
+
 }

@@ -199,13 +199,13 @@ PatternList simplePattern() :
 	    }
 	  )
 	  |
-	      "@" "|" [exp=expression()] "|"
+	      "@" [exp=expression()] "@"
 	      {
 	          plist.addPattern( new SpacesPattern( exp ) );
 	      }
 	  | 
 	  ( 
-	      token=< IDENTIFIER > [ ":" value=type() ] [ "|" [exp=expression()] "|" {fixedfield = true;} ]
+	      token=< IDENTIFIER > [ ":" value=type() ] [ "@[" [exp=expression()] "]" {fixedfield = true;} ]
 	      {
 	          String name = token.image;
 	          if( value==null ) value = new IntegerPattern();
@@ -262,12 +262,22 @@ ValuePattern type() :
 {
   lhs=orConstraint() 
   ( 
-      "||" rhs=orConstraint()
-      {
-          op = new OrNode();
-          op.instantiate( lhs, rhs );
-          lhs = op;
-      }
+	  (
+	      "||"  rhs=orConstraint()
+	      {
+	          op = new OrNode();
+	          op.instantiate( lhs, rhs );
+	          lhs = op;
+	      }
+	  )
+	  |
+	  (	      "^^"  rhs=orConstraint()
+	      {
+	          op = new XorNode();
+	          op.instantiate( lhs, rhs );
+	          lhs = op;
+	      }
+	  )
   )*
   {
       return lhs;
@@ -376,6 +386,8 @@ BinaryOperatorNode addop() :
   (    token = "+" { op = new PlusNode(); op.operator = token.image; }
   |
     token = "-" { op = new MinusNode(); op.operator = token.image; }
+  |    token = "|" { op = new BitwiseOrNode(); op.operator = token.image; }
+  |    token = "^" { op = new BitwiseXorNode(); op.operator = token.image; }
   )
   {
       return op;
@@ -412,6 +424,8 @@ BinaryOperatorNode multop() :
     token = "/" { op = new DivideNode(); op.operator = token.image; }
   |
     token = "%" { op = new ModNode(); op.operator = token.image; }
+  |
+    token = "&" { op = new BitwiseAndNode(); op.operator = token.image; }
   )
   {
       return op;
@@ -424,23 +438,81 @@ ExpressionNode factor() :
     ExpressionNode node;
     Object value;
     String lit;
+    UnaryOperatorNode op;
 }
 {
   (
     token=< IDENTIFIER >  node=named( token.image )
   |
-    token=< INTEGER_LITERAL >
+    op=unop() node=factor()
+    {        op.instantiate( node );
+        node = op;
+    }
+  |   
+    node=constant()
+  |
+    "(" node=constraint() ")"
+    {        node = new ParenthesesNode( node );
+    }   )
+  {
+      return node;
+  }}
+
+UnaryOperatorNode unop() :
+{
+    UnaryOperatorNode op = null;
+    Token token;
+}
+{
+  (
+    token = "!" { op = new NotNode(); op.operator = token.image; }
+  |
+    token = "-" { op = new NegativeNode(); op.operator = token.image; }
+  |
+    token = "~" { op = new BitwiseNotNode(); op.operator = token.image; }
+  )
+  {
+      return op;
+  }
+}
+
+
+ExpressionNode constant() :
+{
+    Token token;
+    Object value = null;
+    String lit;
+}
+{
+  (    token=< INTEGER_LITERAL >
     {
-        boolean islong = token.image.toUpperCase().endsWith( "L" );
+        String actual = token.image.toUpperCase();
+        boolean islong = actual.endsWith( "L" );
+        int radix = 10;
+
+        // See if constant is octal or hex
+        if( actual.startsWith( "0" ) && actual.length()>1 )
+        {            actual = actual.substring( 1 );
+            if( actual.startsWith( "X" ) )
+            {
+                actual = actual.substring( 1 );
+                radix = 16;            }
+            else
+            {
+                radix = 8;
+            } 
+        }
+
         try
         {
             if( islong )
             {
-                value = new Long( token.image.substring( 0, token.image.length()-1 ) );
+                actual = actual.substring( 0, token.image.length()-1 );
+                value = Long.valueOf( actual, radix );
             }
             else
             {
-                value = new Integer( token.image );
+                value = Integer.valueOf( actual, radix );
             }
         }
         catch( Exception e )
@@ -448,8 +520,6 @@ ExpressionNode factor() :
             throw new ParseException( getPosition(token) + "Unable to parse " + token.image 
                 + " as " + (islong ? "a Long" : "an Integer") );
         }
-        
-        node = new ConstantNode( value );
     }
   |
     token=< FLOATING_POINT_LITERAL >
@@ -471,7 +541,6 @@ ExpressionNode factor() :
             throw new ParseException( getPosition(token) + "Unable to parse " + token.image
                 + " as a " + (isfloat ? "Float" : "Double") );
         }
-        node = new ConstantNode( value );
     }
   |
     token=< CHARACTER_LITERAL >
@@ -479,7 +548,6 @@ ExpressionNode factor() :
         lit = token.image;
         if( lit.startsWith( "'" ) ) lit = lit.substring(1);
         value = new Integer( (int)(lit.charAt(0)) );
-        node = new ConstantNode( value );
     }
   |
     token=< STRING_LITERAL >
@@ -487,15 +555,13 @@ ExpressionNode factor() :
         lit = token.image;
         if( lit.startsWith( "\"" ) ) lit = lit.substring(1);
         if( lit.endsWith( "\"" ) ) lit = lit.substring( 0, lit.length()-1);
-        node = new ConstantNode( lit );
+        value = lit;
     }
-  |
-    "(" node=expression() ")"
-    {        node = new ParenthesesNode( node );
-    }   )
+  )
   {
-      return node;
-  }}
+      return new ConstantNode( value );  }
+}
+  
 
 ExpressionNode named( String name ) :
 {    ExpressionNode node = null;
@@ -526,7 +592,7 @@ ExpressionNode named( String name ) :
          }
          node = new SubscriptNode( name, type, subscript );     }
   |
-     "(" parm=expression() {parms.add(parm);} ("," parm=expression() {parms.add(parm);} )* ")"
+     "(" parm=constraint() {parms.add(parm);} ("," parm=constraint() {parms.add(parm);} )* ")"
      {         Function function = functions.get( name );
          if( function==null )
          {

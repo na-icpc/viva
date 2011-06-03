@@ -73,6 +73,11 @@ public class InputManager
         {
             String crlf = "";
             
+            if( c>127 )
+            {
+                context.showError( "Non-ASCII character (" + c + ")" );
+            }
+            
             // Check for EOLN
             // Will recognize three EOLN markers: \r, \n, or \r\n.
             if( c=='\r' )

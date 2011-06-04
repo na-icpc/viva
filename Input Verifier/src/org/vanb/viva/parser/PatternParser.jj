@@ -426,6 +426,12 @@ BinaryOperatorNode multop() :
     token = "%" { op = new ModNode(); op.operator = token.image; }
   |
     token = "&" { op = new BitwiseAndNode(); op.operator = token.image; }
+  |
+    token = "<<" { op = new ShiftNode(); op.operator = token.image; }
+  |
+    token = ">>" { op = new ShiftNode(); op.operator = token.image; }
+  |
+    token = ">>>" { op = new ShiftNode(); op.operator = token.image; }
   )
   {
       return op;

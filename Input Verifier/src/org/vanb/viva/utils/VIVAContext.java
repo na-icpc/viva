@@ -3,8 +3,8 @@ package org.vanb.viva.utils;
 import java.io.*;
 import java.util.*;
 
-import org.vanb.viva.Function;
-import org.vanb.viva.functions.*;
+import org.vanb.viva.*;
+import org.vanb.viva.expressions.*;
 
 public class VIVAContext
 {

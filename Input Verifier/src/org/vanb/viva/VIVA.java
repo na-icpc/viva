@@ -29,7 +29,7 @@ public class VIVA
         {
             PatternParser parser = new PatternParser( stream );
             parser.setFunctions( context.functions );
-            pattern = parser.multilinePattern();            
+            pattern = parser.start();            
         }
         catch( Exception e )
         {

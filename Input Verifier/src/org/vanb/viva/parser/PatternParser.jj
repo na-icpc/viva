@@ -21,7 +21,7 @@ public class PatternParser{
     public void setFunctions( HashMap<String,Function> f )
     {
         functions = f;
-    } 
+    }    
 }PARSER_END( PatternParser )SKIP :{  " "| "\r"| "\t"| "\n"}TOKEN :
 {
   < INTEGER_LITERAL:
@@ -117,6 +117,28 @@ TOKEN :
       ]
   >
 }
+PatternList start() :
+{    PatternList plist = new PatternList();
+    PatternList params;
+    PatternList multi;
+}
+{    params=parameters() multi=multilinePattern()
+    {
+        plist.addPattern( params );
+        plist.addPattern( multi );        return plist;
+    }
+}
+
+PatternList parameters() :
+{
+    PatternList plist = new PatternList();    Token token;
+    ExpressionNode value;
+}
+{
+    (
+      "#" ( token=<IDENTIFIER> "=" value=constraint() { plist.addPattern( new ParameterPattern( token.image, value) ); } )* "#"    )?
+    {
+        return plist;    }}
 PatternList multilinePattern() :{ 
     PatternList plist = new PatternList();
     Pattern p; 

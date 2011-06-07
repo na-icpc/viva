@@ -1,7 +1,6 @@
 package org.vanb.viva.expressions;
 
-import org.vanb.viva.utils.*;
-import org.vanb.viva.parser.ParseException;
+import org.vanb.viva.parser.*;
 
 public abstract class UnaryOperatorNode implements ExpressionNode
 {

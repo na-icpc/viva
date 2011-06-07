@@ -1,11 +1,13 @@
 package org.vanb.viva;
 
 import org.vanb.viva.parser.*;
+import org.vanb.viva.parameters.*;
 import org.vanb.viva.patterns.*;
 import org.vanb.viva.utils.*;
 import org.vanb.viva.functions.*;
 
 import java.io.*;
+import java.util.*;
 
 /**
  * VIVA: vanb's Input Verification Assistant
@@ -17,6 +19,18 @@ public class VIVA
     
     private Pattern pattern = null;
     private VIVAContext context = new VIVAContext();
+    public static HashMap<String,Parameter> parameters;
+    
+    /**
+     * Static constructor to build parameters
+     */
+    static
+    {
+        parameters = new HashMap<String,Parameter>();
+        parameters.put( "deps", new DoubleRangeParameter( 0.0, Double.MAX_VALUE ) );
+        parameters.put( "feps", new FloatRangeParameter( 0.0F, Float.MAX_VALUE ) );
+        parameters.put( "bool", new StringListParameter( new String[]{ "true", "false", "t", "f", "yes", "no", "y", "n", "0", "1" } ) );
+    }
     
     /**
      * Tell VIVA the pattern to use.

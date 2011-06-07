@@ -6,9 +6,9 @@ import org.vanb.viva.expressions.*;
 public class ParameterPattern implements Pattern
 {
     String name;
-    ExpressionNode value;
+    Object value;
     
-    public ParameterPattern( String n, ExpressionNode v)
+    public ParameterPattern( String n, Object v )
     {
         name = n;
         value = v;
@@ -17,8 +17,7 @@ public class ParameterPattern implements Pattern
     @Override
     public boolean test( VIVAContext context ) throws VIVAException
     {
-        Object result = value.evaluate( context );
-        System.err.println( "Trying to set " + name + " to " + result + " (" + value + ")" );
+        System.err.println( "Trying to set " + name + " to " + value );
         return true;
     }
 

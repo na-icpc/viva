@@ -3,7 +3,6 @@ package org.vanb.viva.expressions;
 import java.util.*;
 
 import org.vanb.viva.ScalarFunction;
-import org.vanb.viva.functions.*;
 import org.vanb.viva.utils.*;
 
 public class ScalarFunctionNode extends FunctionNode

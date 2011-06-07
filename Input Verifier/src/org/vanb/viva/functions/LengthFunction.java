@@ -7,8 +7,6 @@ import org.vanb.viva.utils.*;
 
 public class LengthFunction implements ScalarFunction
 {
-    private static Class<?> parameters[] = { String.class };
-    
     @Override
     public String getName()
     {

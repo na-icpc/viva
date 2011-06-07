@@ -2,8 +2,6 @@ package org.vanb.viva.expressions;
 
 import java.util.*;
 
-import org.vanb.viva.functions.*;
-
 public class FunctionNode extends VariableNode
 {
     protected LinkedList<ExpressionNode> parameters;

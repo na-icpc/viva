@@ -1,7 +1,6 @@
 package org.vanb.viva.patterns;
 
 import org.vanb.viva.utils.*;
-import org.vanb.viva.expressions.*;
 
 public class ParameterPattern implements Pattern
 {

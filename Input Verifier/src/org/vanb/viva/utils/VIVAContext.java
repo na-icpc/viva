@@ -4,7 +4,6 @@ import java.io.*;
 import java.util.*;
 
 import org.vanb.viva.*;
-import org.vanb.viva.expressions.*;
 
 public class VIVAContext
 {

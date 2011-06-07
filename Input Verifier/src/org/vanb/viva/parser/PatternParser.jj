@@ -2,6 +2,7 @@
  * JavaCC template file created by SF JavaCC plugin 1.5.17+ wizard for JavaCC 1.5.0+
  */options{  JDK_VERSION = "1.6";  static = false;}PARSER_BEGIN( PatternParser )package org.vanb.viva.parser;
 
+import org.vanb.viva.parameters.*;
 import org.vanb.viva.patterns.*;
 import org.vanb.viva.expressions.*;
 import org.vanb.viva.functions.*;
@@ -131,14 +132,52 @@ PatternList start() :
 
 PatternList parameters() :
 {
-    PatternList plist = new PatternList();    Token token;
-    ExpressionNode value;
-}
+    PatternList plist = new PatternList();
+    Pattern pattern;}
 {
     (
-      "#" ( token=<IDENTIFIER> "=" value=constraint() { plist.addPattern( new ParameterPattern( token.image, value) ); } )* "#"    )?
+      "#" (  pattern=parameter() { plist.addPattern( pattern ); } )* "#"    )?
     {
         return plist;    }}
+
+Pattern parameter() :
+{    Pattern pattern;
+    Token token;
+    ExpressionNode value;
+}
+{    token=<IDENTIFIER> "=" value=constant()
+    {
+        String name = token.image;
+        Parameter parameter = VIVA.parameters.get( name );
+        if( parameter==null )
+        {             throw new ParseException( getPosition(token) + "Unknown parameter '" + name + "'" );
+        }
+
+        Class<?> expectedType = parameter.getType(); 
+        Class<?> returnType = value.getReturnType();
+        if( !expectedType.isAssignableFrom( returnType ) )
+        {             throw new ParseException( getPosition(token) + "Parameter '" + name + "' expected value of type " + expectedType.getSimpleName()
+                 + ", got " + returnType.getSimpleName() );
+        }
+
+        Object eval;
+
+        try
+        {            eval = value.evaluate( null );
+        }
+        catch( Exception e )
+        {             throw new ParseException( getPosition(token) + "Unable to parse value " + value + " for parameter '" + name + "'" );
+        }
+        
+        if( parameter.isvalid( eval ) )
+        {             pattern = new ParameterPattern( name, eval );
+        }
+        else
+        {             throw new ParseException( getPosition(token) + "Parameter '" + name + "' " + parameter.usage() );
+        }
+
+        return pattern;    }
+}
 PatternList multilinePattern() :{ 
     PatternList plist = new PatternList();
     Pattern p; 

@@ -29,7 +29,7 @@ public class FepsFunction implements ScalarFunction
     @Override
     public Object run( VIVAContext context, List<Object> parameters ) throws Exception
     {
-        context.feps = (Float)parameters.get( 0 );
+        context.setParameter( "feps", parameters.get( 0 ) );
         return true;
     }
 

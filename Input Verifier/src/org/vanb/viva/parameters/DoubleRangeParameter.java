@@ -4,9 +4,9 @@ public class DoubleRangeParameter extends Parameter
 {
     double lo, hi;
     
-    public DoubleRangeParameter( double low, double high )
+    public DoubleRangeParameter( double low, double high, double dv )
     {
-        super( Double.class );
+        super( Double.class, dv );
         lo = low;
         hi = high;
     }

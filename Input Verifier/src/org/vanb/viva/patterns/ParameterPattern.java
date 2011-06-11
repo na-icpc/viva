@@ -16,7 +16,7 @@ public class ParameterPattern implements Pattern
     @Override
     public boolean test( VIVAContext context ) throws VIVAException
     {
-        System.err.println( "Trying to set " + name + " to " + value );
+        context.setParameter( name, value );
         return true;
     }
 

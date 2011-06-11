@@ -4,9 +4,9 @@ public class FloatRangeParameter extends Parameter
 {
     float lo, hi;
     
-    public FloatRangeParameter( float low, float high )
+    public FloatRangeParameter( float low, float high, float dv )
     {
-        super( Float.class );
+        super( Float.class, dv );
         lo = low;
         hi = high;
     }

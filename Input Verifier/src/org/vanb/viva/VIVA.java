@@ -27,9 +27,11 @@ public class VIVA
     static
     {
         parameters = new HashMap<String,Parameter>();
-        parameters.put( "deps", new DoubleRangeParameter( 0.0, Double.MAX_VALUE ) );
-        parameters.put( "feps", new FloatRangeParameter( 0.0F, Float.MAX_VALUE ) );
-        parameters.put( "bool", new StringListParameter( new String[]{ "true", "false", "t", "f", "yes", "no", "y", "n", "0", "1" } ) );
+        parameters.put( "deps", new DoubleRangeParameter( 0.0, Double.MAX_VALUE, 0.000001 ) );
+        parameters.put( "feps", new FloatRangeParameter( 0.0F, Float.MAX_VALUE, 0.000001F ) );
+        parameters.put( "ignoreeoln", new StringListParameter( Parameter.truefalse, 1 ) );
+        parameters.put( "ignoreblanks", new StringListParameter( Parameter.truefalse, 1 ) );
+        parameters.put( "maxerrs", new IntegerRangeParameter( 0, Integer.MAX_VALUE, 25 ) );
     }
     
     /**
@@ -133,6 +135,16 @@ public class VIVA
         addFunction( new Log10Function() );   
         addFunction( new Log2Function() );   
         addFunction( new TesterFunction() );   
+        addFunction( new IfFunction() );   
+        addFunction( new ConcatenateFunction() );   
+        addFunction( new ToStringFunction() );   
+        addFunction( new ToIntegerFunction() );   
+        
+        for( String name : parameters.keySet() )
+        {
+            Parameter parameter = parameters.get( name );
+            context.setParameter( name, parameter.getDefaultValue() );
+        }
     }
 
     /**

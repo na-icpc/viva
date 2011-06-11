@@ -6,9 +6,9 @@ public class StringListParameter extends Parameter
 {
     String values[];
     
-    public StringListParameter( String vs[] )
+    public StringListParameter( String vs[], int i )
     {
-        super( String.class );
+        super( String.class, vs[i] );
         values = Arrays.copyOf( vs, vs.length );
     }
     

@@ -4,9 +4,9 @@ public class LongRangeParameter extends Parameter
 {
     long lo, hi;
     
-    public LongRangeParameter( long low, long high )
+    public LongRangeParameter( long low, long high, long dv )
     {
-        super( Long.class );
+        super( Long.class, dv );
         lo = low;
         hi = high;
     }

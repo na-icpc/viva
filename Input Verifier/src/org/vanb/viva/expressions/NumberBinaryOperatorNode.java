@@ -60,8 +60,8 @@ public abstract class NumberBinaryOperatorNode extends BinaryOperatorNode
         Number l = (Number)left.evaluate( context );
         Number r = (Number)right.evaluate( context );
         
-        deps = context.deps;
-        feps = context.feps;
+        deps = (Double)context.getParameter( "deps" );
+        feps = (Float)context.getParameter( "feps" );
         
         try
         {

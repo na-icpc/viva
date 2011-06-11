@@ -2,6 +2,8 @@ package org.vanb.viva.utils;
 
 import java.io.*;
 
+import org.vanb.viva.parameters.Parameter;
+
 /**
  * Control the input: get lines, tokenize them, report simple formatting errors.
  * 
@@ -112,7 +114,7 @@ public class InputManager
         }
         return c;
     }
-    
+        
     /**
      * Get the next token on the current line.
      * 
@@ -122,15 +124,51 @@ public class InputManager
      */
     public String getNextToken( VIVAContext context ) throws Exception
     {
-        int c = nextch( context );
+        int c=0; 
+        if( !state.eoln && !state.eof )
+        {
+            c = nextch( context );
+        }
         String token = "";
+        
+        boolean ignoreblanks = Parameter.isTrue( context.getParameter( "ignoreblanks" ) );
+        boolean ignoreeoln = Parameter.isTrue( context.getParameter( "ignoreeoln" ) );
                  
         // The character pointer should be right at the beginning of the token.
         // If we see blanks, then they're extra (bad) blanks.
         if( c==' ' )
         {
-            context.showError( "Extra blank(s)" );
+            if( !ignoreblanks ) context.showError( "Extra blank(s)" );
             while( c==' ' ) c = nextch( context );
+        }
+                
+        if( ignoreeoln )
+        {
+            if( state.eoln && !state.eof ) 
+            {
+                getNextLine( context );
+                c = nextch( context );
+                if( c==' ' )
+                {
+                    if( !ignoreblanks ) context.showError( "Extra blank(s)" );
+                    while( c==' ' ) c = nextch( context );
+                }
+            }
+            
+            if( state.eoln )
+            {
+                context.showError( "Blank Line(s)" );
+                while( state.eoln && !state.eof ) 
+                {
+                    getNextLine( context );
+                    c = nextch( context );
+                    if( c==' ' )
+                    {
+                        if( !ignoreblanks ) context.showError( "Extra blank(s)" );
+                        while( c==' ' ) c = nextch( context );
+                    }
+                }                
+            }
         }
         
         if( state.eof )
@@ -248,7 +286,8 @@ public class InputManager
     {
         boolean blanks = false;
         boolean tokens = false;
-        
+        boolean ignoreblanks = Parameter.isTrue( context.getParameter( "ignoreblanks" ) );
+
         if( !state.eof && !state.eoln && state.lastfixed )
         {
             nextch( context );
@@ -267,8 +306,8 @@ public class InputManager
                     else break;
                 }
                 
-                if( blanks ) context.showError( "Extra blank(s) at the end of line " + state.lineno );
-                if( tokens ) context.showError( "Extra token(s) at the end of line " + state.lineno );
+                if( blanks && !ignoreblanks ) context.showError( "Extra blank(s) at the end of line"  );
+                if( tokens ) context.showError( "Extra token(s) at the end of line" );
             }        
             state.lineno++;
             state.tokenno = 0;

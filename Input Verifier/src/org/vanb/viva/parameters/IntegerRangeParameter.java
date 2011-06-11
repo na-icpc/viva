@@ -4,9 +4,9 @@ public class IntegerRangeParameter extends Parameter
 {
     int lo, hi;
     
-    public IntegerRangeParameter( int low, int high )
+    public IntegerRangeParameter( int low, int high, int dv )
     {
-        super( Integer.class );
+        super( Integer.class, dv );
         lo = low;
         hi = high;
     }

@@ -10,19 +10,27 @@ public class VIVAContext
     public PrintStream err = System.out;
     public InputManager input;
     public SymbolTable<ValueManager> values;
-    public int errcount, maxerrs;
+    public int errcount;
     public boolean justTesting = false;
     public HashMap<String,Function> functions = new HashMap<String,Function>();
-    public double deps = 0.000001;
-    public float feps = 0.000001F;
     public int index = -1;
-    public String lineSeparator = System.getProperty( "line.separator" );  
+    public String lineSeparator = System.getProperty( "line.separator" ); 
+    public HashMap<String,Object> parameters = new HashMap<String,Object>();
     
     public VIVAContext()
     {
         values = new SymbolTable<ValueManager>();
         errcount = 0;
-        maxerrs = 25;
+    }
+    
+    public void setParameter( String param, Object value )
+    {
+        parameters.put( param, value );
+    }
+    
+    public Object getParameter( String param )
+    {
+        return parameters.get( param );
     }
  
     public void throwException( String message ) throws VIVAException
@@ -40,7 +48,7 @@ public class VIVAContext
         {
             err.println( "At line " + input.getLine() + " token " + input.getToken() + ": " + message );
             ++errcount;
-            if( errcount>=maxerrs )
+            if( errcount>=(Integer)getParameter( "maxerrs" ) )
             {
                 throwException( "Too many errors. Exiting." );
             }

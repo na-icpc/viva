@@ -17,5 +17,5 @@ public interface ScalarFunction extends Function
      * @param parameters
      * @return The result of running the Function.
      */
-    Object run( VIVAContext context, List<Object> parameters ) throws Exception;
+    public Object run( VIVAContext context, List<Object> parameters ) throws Exception;
 }

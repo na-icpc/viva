@@ -1,8 +1,7 @@
-package org.vanb.viva.functions;
+package org.vanb.viva;
 
 import java.util.List;
 
-import org.vanb.viva.ScalarFunction;
 import org.vanb.viva.utils.VIVAContext;
 
 public abstract class ArithmeticFunction implements ScalarFunction

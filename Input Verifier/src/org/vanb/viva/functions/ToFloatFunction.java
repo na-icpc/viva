@@ -5,24 +5,24 @@ import java.util.List;
 import org.vanb.viva.ScalarFunction;
 import org.vanb.viva.utils.VIVAContext;
 
-public class ToIntegerFunction implements ScalarFunction
+public class ToFloatFunction implements ScalarFunction
 {
     @Override
     public String getName()
     {
-        return "tointeger";
+        return "tofloat";
     }
 
     @Override
     public Class<?> getReturnType( Class<?>[] params )
     {
-        return params.length==1 ? Integer.class : null;
+        return params.length==1 ? Float.class : null;
     }
 
     @Override
     public String getUsage()
     {
-        return "tointeger(arg)";
+        return "tofloat(arg)";
     }
 
     @Override
@@ -30,26 +30,26 @@ public class ToIntegerFunction implements ScalarFunction
             throws Exception
     {
         Object param = parameters.get( 0 );
-        Integer result;
+        Float result;
         try
         {
             if( Number.class.isAssignableFrom( param.getClass() ))
             {
                 Number value = (Number)param;
-                result = value.intValue();
+                result = value.floatValue();
             }
             else if( param.getClass()==Boolean.class )
             {
-                result = (Boolean)param ? 1 : 0;
+                result = (Boolean)param ? 1.0F : 0.0F;
             }
             else
             {
-                result = new Integer( param.toString() ); 
+                result = new Float( param.toString() ); 
             }
         }
         catch( Exception e )
         {
-            throw new Exception( "Could not convert '" + param + "' to an Integer"  );
+            throw new Exception( "Could not convert '" + param + "' to a Float"  );
         }
         
         return result;

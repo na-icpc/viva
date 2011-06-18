@@ -17,5 +17,5 @@ public interface VectorFunction extends Function
      * @param list of rows of parameter values
      * @return The result of running the Function.
      */
-    Object run( VIVAContext context, List<List<Object>> parameters ) throws Exception;
+    public Object run( VIVAContext context, List<List<Object>> parameters ) throws Exception;
 }

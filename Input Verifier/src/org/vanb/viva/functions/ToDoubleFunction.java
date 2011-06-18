@@ -5,24 +5,24 @@ import java.util.List;
 import org.vanb.viva.ScalarFunction;
 import org.vanb.viva.utils.VIVAContext;
 
-public class ToIntegerFunction implements ScalarFunction
+public class ToDoubleFunction implements ScalarFunction
 {
     @Override
     public String getName()
     {
-        return "tointeger";
+        return "todouble";
     }
 
     @Override
     public Class<?> getReturnType( Class<?>[] params )
     {
-        return params.length==1 ? Integer.class : null;
+        return params.length==1 ? Double.class : null;
     }
 
     @Override
     public String getUsage()
     {
-        return "tointeger(arg)";
+        return "todouble(arg)";
     }
 
     @Override
@@ -30,28 +30,29 @@ public class ToIntegerFunction implements ScalarFunction
             throws Exception
     {
         Object param = parameters.get( 0 );
-        Integer result;
+        Double result;
         try
         {
             if( Number.class.isAssignableFrom( param.getClass() ))
             {
                 Number value = (Number)param;
-                result = value.intValue();
+                result = value.doubleValue();
             }
             else if( param.getClass()==Boolean.class )
             {
-                result = (Boolean)param ? 1 : 0;
+                result = (Boolean)param ? 1.0 : 0.0;
             }
             else
             {
-                result = new Integer( param.toString() ); 
+                result = new Double( param.toString() ); 
             }
         }
         catch( Exception e )
         {
-            throw new Exception( "Could not convert '" + param + "' to an Integer"  );
+            throw new Exception( "Could not convert '" + param + "' to a Double"  );
         }
         
         return result;
     }
+
 }

@@ -12,7 +12,7 @@ public interface Function
      * 
      * @return the name
      */
-    String getName();
+    public String getName();
     
     /** 
      * Given a list of parameter types, what will this Function return?
@@ -21,12 +21,12 @@ public interface Function
      * @param params Parameter types
      * @return return type
      */
-    Class<?> getReturnType( Class<?> params[] );
+    public Class<?> getReturnType( Class<?> params[] );
     
     /**
      * How do you use this Function?
      * 
      * @return A description of how to use this Function
      */
-    String getUsage();
+    public String getUsage();
 }

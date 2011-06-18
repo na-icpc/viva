@@ -124,21 +124,40 @@ public class VIVA
      */
     public VIVA()
     {
-        addFunction( new LengthFunction() );
+        addFunction( new ArcCosineFunction() );   
+        addFunction( new ArcSineFunction() );   
+        addFunction( new ArcTangent2Function() );   
+        addFunction( new ArcTangentFunction() );   
+        addFunction( new ConcatenateFunction() );   
+        addFunction( new CosineFunction() );   
         addFunction( new DepsFunction() );
-        addFunction( new FepsFunction() );
-        addFunction( new UniqueFunction() );
-        addFunction( new SumFunction() );
         addFunction( new DistanceFunction() );
-        addFunction( new SquareRootFunction() );   
-        addFunction( new NaturalLogFunction() );   
+        addFunction( new EulersNumberToPowerFunction() );
+        addFunction( new FepsFunction() );
+        addFunction( new HyperbolicCosineFunction() );   
+        addFunction( new HyperbolicSineFunction() );   
+        addFunction( new HyperbolicTangentFunction() );   
+        addFunction( new IfFunction() );   
+        addFunction( new LeftJustificationFunction() );
+        addFunction( new LengthFunction() );
         addFunction( new Log10Function() );   
         addFunction( new Log2Function() );   
+        addFunction( new NaturalLogFunction() );   
+        addFunction( new PowerFunction() );   
+        addFunction( new RightJustificationFunction() );   
+        addFunction( new SineFunction() );   
+        addFunction( new SquareRootFunction() );   
+        addFunction( new SumFunction() );
+        addFunction( new TangentFunction() );   
         addFunction( new TesterFunction() );   
-        addFunction( new IfFunction() );   
-        addFunction( new ConcatenateFunction() );   
-        addFunction( new ToStringFunction() );   
+        addFunction( new ToDegreesFunction() );   
+        addFunction( new ToDoubleFunction() );   
+        addFunction( new ToFloatFunction() );   
         addFunction( new ToIntegerFunction() );   
+        addFunction( new ToLongFunction() );   
+        addFunction( new ToRadiansFunction() );   
+        addFunction( new ToStringFunction() );   
+        addFunction( new UniqueFunction() );
         
         for( String name : parameters.keySet() )
         {

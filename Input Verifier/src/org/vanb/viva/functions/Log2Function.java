@@ -1,5 +1,7 @@
 package org.vanb.viva.functions;
 
+import org.vanb.viva.ArithmeticFunction;
+
 public class Log2Function extends ArithmeticFunction
 {
     private static final double log10of2 = Math.log10( 2.0 );

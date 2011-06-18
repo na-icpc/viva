@@ -5,24 +5,24 @@ import java.util.List;
 import org.vanb.viva.ScalarFunction;
 import org.vanb.viva.utils.VIVAContext;
 
-public class ToIntegerFunction implements ScalarFunction
+public class ToLongFunction implements ScalarFunction
 {
     @Override
     public String getName()
     {
-        return "tointeger";
+        return "tolong";
     }
 
     @Override
     public Class<?> getReturnType( Class<?>[] params )
     {
-        return params.length==1 ? Integer.class : null;
+        return params.length==1 ? Long.class : null;
     }
 
     @Override
     public String getUsage()
     {
-        return "tointeger(arg)";
+        return "tolong(arg)";
     }
 
     @Override
@@ -30,26 +30,26 @@ public class ToIntegerFunction implements ScalarFunction
             throws Exception
     {
         Object param = parameters.get( 0 );
-        Integer result;
+        Long result;
         try
         {
             if( Number.class.isAssignableFrom( param.getClass() ))
             {
                 Number value = (Number)param;
-                result = value.intValue();
+                result = value.longValue();
             }
             else if( param.getClass()==Boolean.class )
             {
-                result = (Boolean)param ? 1 : 0;
+                result = (Boolean)param ? 1L : 0L;
             }
             else
             {
-                result = new Integer( param.toString() ); 
+                result = new Long( param.toString() ); 
             }
         }
         catch( Exception e )
         {
-            throw new Exception( "Could not convert '" + param + "' to an Integer"  );
+            throw new Exception( "Could not convert '" + param + "' to a Long"  );
         }
         
         return result;

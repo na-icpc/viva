@@ -1,5 +1,7 @@
 package org.vanb.viva.functions;
 
+import org.vanb.viva.ArithmeticFunction;
+
 public class Log10Function extends ArithmeticFunction
 {
     public Log10Function()

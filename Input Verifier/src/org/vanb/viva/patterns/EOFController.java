@@ -31,6 +31,7 @@ public class EOFController extends PatternListController
         {
             context.values.incrementLevel();
             success &= patternList.test( context );
+            if( !success && context.testLevel>0 ) break;
         }
         
         success &= constraints.test( context );

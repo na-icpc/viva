@@ -45,6 +45,13 @@ public class CountController extends PatternListController
         {
             c = (Integer)count.evaluate( context );
         }
+        catch( VIVAException ve )
+        {
+            String msg = ve.getMessage();
+            int p = msg.indexOf( ':' );
+            if( p>=0 ) msg = msg.substring( p+1 );
+            context.throwException( msg );            
+        }
         catch( Exception e )
         {
             context.throwException( e.getMessage() );
@@ -55,6 +62,7 @@ public class CountController extends PatternListController
         {
             context.values.incrementLevel();
             success &= patternList.test( context );
+            if( !success && context.testLevel>0 ) break;
         }
         
         success &= constraints.test( context );

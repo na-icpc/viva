@@ -17,14 +17,7 @@ public class ChoicePattern implements Pattern
     {
         Pattern choice = null;
         
-        try
-        {
-            context.input.setAnchor();
-        }
-        catch( Exception e )
-        {
-            context.throwException( e.getMessage() );
-        }
+        context.input.dropAnchor();
         
         for( Pattern pattern : choices  )
         {
@@ -33,9 +26,9 @@ public class ChoicePattern implements Pattern
             // until we know which choice we're going to use.
             choice = pattern;
             context.values.addLevel();
-            context.justTesting = true;
+            context.testLevel++;
             boolean itworks = pattern.test( context );
-            context.justTesting = false;
+            context.testLevel--;
             context.values.removeLevel();
             context.input.returnToAnchor();
             

@@ -1,6 +1,7 @@
 package org.vanb.viva.utils;
 
 import java.io.*;
+import java.util.*;
 
 import org.vanb.viva.parameters.Parameter;
 
@@ -26,11 +27,17 @@ public class InputManager
             lineno = s.lineno;
             tokenno = s.tokenno;
         }
+        
+        public String toString()
+        {
+            return "{lineno=" + lineno + " tokenno=" + tokenno 
+                + " pos=" + pos + " eof=" + eof + " eoln=" + eoln + " lastfixed=" + lastfixed + "}";
+        }
     }
     
     State state = new State();
-    State line = new State();
-    State anchor = new State();
+    LinkedList<State> anchors = new LinkedList<State>();
+    VIVAContext context;
     
     private RandomAccessFile reader;
    
@@ -39,9 +46,10 @@ public class InputManager
      * 
      * @param filename Name of the file
      */
-    public InputManager( String filename, VIVAContext context ) throws Exception
+    public InputManager( String filename, VIVAContext c ) throws Exception
     {
         reader = new RandomAccessFile( filename, "r" );    
+        context = c;
     }
     
     /**
@@ -62,7 +70,7 @@ public class InputManager
      * @return The input character, or -1 for eof, or -2 for eoln.
      * @throws Exception
      */
-    private int nextch( VIVAContext context ) throws Exception
+    private int nextch() throws Exception
     {
         int c = reader.read();
         
@@ -122,12 +130,12 @@ public class InputManager
      * @return The next token
      * @throws Exception
      */
-    public String getNextToken( VIVAContext context ) throws Exception
+    public String getNextToken() throws Exception
     {
         int c=0; 
         if( !state.eoln && !state.eof )
         {
-            c = nextch( context );
+            c = nextch();
         }
         String token = "";
         
@@ -139,19 +147,19 @@ public class InputManager
         if( c==' ' )
         {
             if( !ignoreblanks ) context.showError( "Extra blank(s)" );
-            while( c==' ' ) c = nextch( context );
+            while( c==' ' ) c = nextch();
         }
                 
         if( ignoreeoln )
         {
             if( state.eoln && !state.eof ) 
             {
-                getNextLine( context );
-                c = nextch( context );
+                getNextLine();
+                c = nextch();
                 if( c==' ' )
                 {
                     if( !ignoreblanks ) context.showError( "Extra blank(s)" );
-                    while( c==' ' ) c = nextch( context );
+                    while( c==' ' ) c = nextch();
                 }
             }
             
@@ -160,12 +168,12 @@ public class InputManager
                 context.showError( "Blank Line(s)" );
                 while( state.eoln && !state.eof ) 
                 {
-                    getNextLine( context );
-                    c = nextch( context );
+                    getNextLine();
+                    c = nextch();
                     if( c==' ' )
                     {
                         if( !ignoreblanks ) context.showError( "Extra blank(s)" );
-                        while( c==' ' ) c = nextch( context );
+                        while( c==' ' ) c = nextch();
                     }
                 }                
             }
@@ -187,7 +195,7 @@ public class InputManager
             while( c!=' ' && !state.eof && !state.eoln )
             {
                 token += (char)c;
-                c = nextch( context );
+                c = nextch();
             }
         }
            
@@ -195,12 +203,12 @@ public class InputManager
         return token;
     }
     
-    public String getToEOLN( VIVAContext context ) throws Exception
+    public String getToEOLN() throws Exception
     {
         String result = "";
         while( !state.eoln && !state.eof )
         {
-            int c = nextch( context );
+            int c = nextch();
             if( state.eoln || state.eof ) break;
             result += (char)c;
         }
@@ -210,13 +218,13 @@ public class InputManager
         return result;
     }
     
-    public String getFixedField( VIVAContext context, int width ) throws Exception
+    public String getFixedField( int width ) throws Exception
     {
         String result = "";
                 
         for( int i=0; i<width; i++ )
         {
-            int c = nextch( context );
+            int c = nextch();
             
             if( state.eoln || state.eof  )
             {
@@ -232,39 +240,45 @@ public class InputManager
         state.lastfixed = true;
         return result;
     }
-      
-    /**
-     * Reset the current line back to the beginning.
-     */
-    public void resetLine()
+          
+    public void dropAnchor() throws VIVAException
     {
-        state.set( line );
-        try
-        {
-            reader.seek( state.pos );
-        }
-        catch( IOException ioe )
-        {
-            
-        }
-    }
-    
-    public void setAnchor() throws Exception
-    {
+        State anchor = new State();
         anchor.set( state );
-        anchor.pos = reader.getFilePointer();
-    }
-    
-    public void returnToAnchor()
-    {
-        state.set( anchor );
         try
         {
+            anchor.pos = reader.getFilePointer();
+        }
+        catch( IOException ioe )
+        {
+            context.throwException( "Couldn't drop anchor " + anchor + ": " + ioe.getMessage() );
+        }
+        anchors.addFirst( anchor );
+    }
+    
+    public void returnToAnchor() throws VIVAException
+    {
+        try
+        {
+            State anchor = anchors.getFirst();
+            state.set( anchor );
             reader.seek( state.pos );
         }
         catch( IOException ioe )
         {
-            
+            context.throwException( "Couldn't return to anchor: " + ioe.getMessage() );            
+        }
+    }
+    
+    public void raiseAnchor() throws VIVAException
+    {
+        if( anchors.size()==0 )
+        {
+            context.throwException( "There are no anchors to raise." );
+        }
+        else
+        {
+            anchors.removeFirst();
         }
     }
         
@@ -282,7 +296,7 @@ public class InputManager
      * Read the next line, and perform formatting checks.
      * @param context TODO
      */
-    public void getNextLine( VIVAContext context ) throws Exception
+    public void getNextLine() throws Exception
     {
         boolean blanks = false;
         boolean tokens = false;
@@ -290,7 +304,7 @@ public class InputManager
 
         if( !state.eof && !state.eoln && state.lastfixed )
         {
-            nextch( context );
+            nextch();
         }
         
         if( !state.eof )
@@ -300,7 +314,7 @@ public class InputManager
                 backch();
                 for(;;)
                 {
-                    int c = nextch( context );
+                    int c = nextch();
                     if( c==' ' ) blanks = true;
                     else if( c>=0 ) tokens = true;
                     else break;
@@ -313,9 +327,6 @@ public class InputManager
             state.tokenno = 0;
             state.eoln = false;
             state.lastfixed = false;
-            
-            line.set( state );
-            line.pos = reader.getFilePointer();
         }
     }
     
@@ -325,11 +336,11 @@ public class InputManager
      * @param context
      * @throws Exception
      */
-    public void eofChecks( VIVAContext context ) throws Exception
+    public void eofChecks() throws Exception
     {
         if( !state.eof && state.lastfixed )
         {
-            nextch( context );
+            nextch();
         }
         
         if( !state.eof )
@@ -345,13 +356,13 @@ public class InputManager
                 backch();
             }
             
-            int c = nextch( context );                    
+            int c = nextch();                    
             if( c==' ' )
             {
                 if( c==' ' ) message = "Extra blank(s) at end of file";
                 while( c==' ' )
                 {
-                    c = nextch( context );
+                    c = nextch();
                 }
             }
 

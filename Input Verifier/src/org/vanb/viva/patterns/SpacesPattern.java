@@ -34,6 +34,13 @@ public class SpacesPattern extends ValuePattern
         {
             token = getToken( context );
         }
+        catch( VIVAException ve )
+        {
+            String msg = ve.getMessage();
+            int p = msg.indexOf( ':' );
+            if( p>=0 ) msg = msg.substring( p+1 );
+            context.throwException( msg );            
+        }
         catch( Exception e )
         {
             context.throwException( e.getMessage() );

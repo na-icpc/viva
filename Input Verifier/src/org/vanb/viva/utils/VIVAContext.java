@@ -11,7 +11,7 @@ public class VIVAContext
     public InputManager input;
     public SymbolTable<ValueManager> values;
     public int errcount;
-    public boolean justTesting = false;
+    public int testLevel = 0;
     public HashMap<String,Function> functions = new HashMap<String,Function>();
     public int index = -1;
     public String lineSeparator = System.getProperty( "line.separator" ); 
@@ -35,7 +35,7 @@ public class VIVAContext
  
     public void throwException( String message ) throws VIVAException
     {
-        if( !justTesting )
+        if( testLevel==0 )
         {
             throw new VIVAException( "At line " + input.getLine() + " token " + input.getToken() + ": " + message, 
                     input.getLine(), input.getToken() );
@@ -44,7 +44,7 @@ public class VIVAContext
     
     public void showError( String message ) throws VIVAException
     {
-        if( !justTesting )
+        if( testLevel==0 )
         {
             err.println( "At line " + input.getLine() + " token " + input.getToken() + ": " + message );
             ++errcount;

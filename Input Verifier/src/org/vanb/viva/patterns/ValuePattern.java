@@ -32,7 +32,7 @@ public abstract class ValuePattern implements Pattern
         {
             if( width==null )
             {
-                token = context.input.getToEOLN( context );
+                token = context.input.getToEOLN();
             }
             else
             {
@@ -44,15 +44,15 @@ public abstract class ValuePattern implements Pattern
                 }
                 else
                 {
-                    token = context.input.getFixedField( context, w );
+                    token = context.input.getFixedField( w );
                 }
             }
         }
         else
         {
-            token = context.input.getNextToken( context );
+            token = context.input.getNextToken();
         }
-        
+                
         return token;
     }
     
@@ -66,9 +66,15 @@ public abstract class ValuePattern implements Pattern
         {
             token = getToken( context );
         }
+        catch( VIVAException ve )
+        {
+            String msg = ve.getMessage();
+            int p = msg.indexOf( ':' );
+            if( p>=0 ) msg = msg.substring( p+1 );
+            context.throwException( msg );            
+        }
         catch( Exception e )
         {
-            e.printStackTrace();
             context.throwException( e.getMessage() );
         }
         

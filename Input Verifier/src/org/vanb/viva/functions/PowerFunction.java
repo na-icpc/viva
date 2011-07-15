@@ -7,7 +7,13 @@ import org.vanb.viva.utils.VIVAContext;
 
 public class PowerFunction implements ScalarFunction
 {
-
+    public String NotANumber( double x )
+    {
+        return x==Double.NaN ? "NaN" : 
+               x==Double.NEGATIVE_INFINITY ? "-Infinity" :
+               x==Double.POSITIVE_INFINITY ? "Infinity" : null;
+    }
+    
     @Override
     public String getName()
     {
@@ -34,8 +40,27 @@ public class PowerFunction implements ScalarFunction
             throws Exception
     {
         double argument = ((Number)parameters.get(0)).doubleValue();
+        String nan = NotANumber( argument );
+        if( nan!=null )
+        {
+            throw new Exception( "First parameter to pow() is " + nan + "." );
+        }
+        
         double exponent = ((Number)parameters.get(1)).doubleValue();
-        return Math.pow( argument, exponent );
+        nan = NotANumber( argument );
+        if( nan!=null )
+        {
+            throw new Exception( "Second parameter to pow() is " + nan + "." );
+        }
+        
+        double result = Math.pow( argument, exponent );
+        nan = NotANumber( result );
+        if( nan!=null )
+        {
+            throw new Exception( "Result of pow(" + argument + "," + exponent + ") is " + nan + "." );
+        }
+        
+        return result;
     }
 
 }

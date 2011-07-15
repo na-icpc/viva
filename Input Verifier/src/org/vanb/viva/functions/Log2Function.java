@@ -8,7 +8,7 @@ public class Log2Function extends ArithmeticFunction
     
     public Log2Function()
     {
-        name = "log10of2";
+        name = "log2";
     }
     
     @Override
@@ -16,7 +16,7 @@ public class Log2Function extends ArithmeticFunction
     {
         if( parameter<0.0 )
         {
-            throw new Exception( "Parameter to log10of2() is <0" );
+            throw new Exception( "Parameter to log2() is <0" );
         }
         
         return Math.log10( parameter ) / log10of2;

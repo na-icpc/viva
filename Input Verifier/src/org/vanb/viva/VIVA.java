@@ -38,20 +38,26 @@ public class VIVA
      * Tell VIVA the pattern to use.
      * 
      * @param stream Input stream with the pattern
+     * @return true if the pattern parsed successfully, otherwise false
      */
-    public void setPattern( InputStream stream )
+    public boolean setPattern( InputStream stream )
     {
+        boolean success = true;
         try
         {
             PatternParser parser = new PatternParser( stream );
             parser.setFunctions( context.functions );
-            pattern = parser.start();            
+            pattern = parser.start();
+            success = true;
         }
         catch( Exception e )
         {
             pattern = null;
             context.err.println( "Pattern parsing failed: " + e.getMessage() );
+            success = false;
         }
+        
+        return success;
     }
     
     /**
@@ -90,11 +96,11 @@ public class VIVA
             catch( Exception e )
             {
                 context.err.println( "Fatal error: " + e.getMessage() );
-                e.printStackTrace();
                 context.err.println( "Processing stopped." );
                 result = false;
             }
         }
+        context.err.println( "<<<<< DONE Testing file: " + filename + " >>>>>" );
         
         return result;
     }
@@ -173,20 +179,22 @@ public class VIVA
      */
     public static void main( String[] args ) throws Exception
     {
-        VIVA viva = new VIVA();
-                
-        viva.setPattern( new FileInputStream( args.length>0 ? args[0] : "test.pattern" ) );
-        
-        if( args.length>1 )
+        if( args.length==0 )
         {
-            for( int i=1; i<args.length; i++ )
-            {
-                viva.testInputFile( args[i] );
-            }
+            System.out.println( "Usage: VIVA <pattern file> (<input file>)*");
         }
         else
         {
-            viva.testInputFile( "test.judge" );
+            VIVA viva = new VIVA();                    
+            viva.setPattern( new FileInputStream( args[0] ) );
+            
+            if( args.length>1 )
+            {
+                for( int i=1; i<args.length; i++ )
+                {
+                    viva.testInputFile( args[i] );
+                }
+            }
         }
     }
 }

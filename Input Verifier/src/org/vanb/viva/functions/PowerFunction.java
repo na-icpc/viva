@@ -7,7 +7,7 @@ import org.vanb.viva.utils.VIVAContext;
 
 public class PowerFunction implements ScalarFunction
 {
-    public String NotANumber( double x )
+    private String NotANumber( double x )
     {
         return x==Double.NaN ? "NaN" : 
                x==Double.NEGATIVE_INFINITY ? "-Infinity" :

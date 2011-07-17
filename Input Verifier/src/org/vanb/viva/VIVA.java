@@ -50,7 +50,7 @@ public class VIVA
             pattern = parser.start();
             success = true;
         }
-        catch( Exception e )
+        catch( Throwable e )
         {
             pattern = null;
             context.err.println( "Pattern parsing failed: " + e.getMessage() );
@@ -78,7 +78,8 @@ public class VIVA
      */
     public boolean testInputFile( String filename )
     {
-        context.err.println( "<<<<< Testing file: " + filename + " >>>>>" );
+        context.err.println( "<<< Testing file: " + filename + " >>>" );
+        context.errcount = 0;
         boolean result = true;
         if( pattern==null )
         {
@@ -100,7 +101,7 @@ public class VIVA
                 result = false;
             }
         }
-        context.err.println( "<<<<< DONE Testing file: " + filename + " >>>>>" );
+        context.err.println( "<<< DONE Testing file: " + filename + " >>>" );
         
         return result;
     }

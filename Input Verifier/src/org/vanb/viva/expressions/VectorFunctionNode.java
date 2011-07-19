@@ -17,6 +17,7 @@ public class VectorFunctionNode extends FunctionNode
     
     public Object evaluate( VIVAContext context ) throws VIVAException
     {
+        int saveindex = context.index;
         List<List<Object>> rows = new LinkedList<List<Object>>();
         for( context.index=0; context.index < context.values.getCount(); ++context.index )
         {
@@ -28,7 +29,7 @@ public class VectorFunctionNode extends FunctionNode
             rows.add( parmvalues );
         }
         
-        context.index = -1;
+        context.index = saveindex;
         
         Object result = null;
         try

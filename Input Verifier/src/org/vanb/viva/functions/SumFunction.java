@@ -2,6 +2,7 @@ package org.vanb.viva.functions;
 
 import java.util.List;
 
+import org.vanb.viva.ArithmeticFunction;
 import org.vanb.viva.VectorFunction;
 import org.vanb.viva.utils.VIVAContext;
 
@@ -46,6 +47,9 @@ public class SumFunction implements VectorFunction
             else if( type==Double.class ) doublesum += addend.doubleValue(); 
             else if( type==Float.class ) floatsum += addend.floatValue();                        
         }
+        
+        ArithmeticFunction.nanCheck( doublesum, "sum()" );
+        ArithmeticFunction.nanCheck( floatsum, "sum()" );
                 
         Object value = null;
         if( type==Integer.class ) value = new Integer(intsum); 

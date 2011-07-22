@@ -45,7 +45,7 @@ public abstract class ArithmeticFunction implements ScalarFunction
     @Override
     public String getUsage()
     {
-        return name + "(double)";
+        return name + "(number)";
     }
     
     protected abstract double implementation( double parameter ) throws Exception;

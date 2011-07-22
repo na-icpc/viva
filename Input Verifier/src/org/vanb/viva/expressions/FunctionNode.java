@@ -2,7 +2,11 @@ package org.vanb.viva.expressions;
 
 import java.util.*;
 
-public class FunctionNode extends VariableNode
+import org.vanb.viva.utils.VIVAContext;
+import org.vanb.viva.utils.VIVAException;
+import org.vanb.viva.utils.ValueManager;
+
+public abstract class FunctionNode extends VariableNode
 {
     protected LinkedList<ExpressionNode> parameters;
     
@@ -34,4 +38,50 @@ public class FunctionNode extends VariableNode
         
         return result;
     }
+    
+    public Object evaluate( VIVAContext context ) throws VIVAException
+    {
+        Object value; 
+        
+        String name = toString();
+        
+        ValueManager vm = context.values.lookup( name );
+        if( vm==null || !context.values.atCurrentLevel( name ) )
+        {
+            vm = new ValueManager();
+            context.values.add( name, vm );
+            
+            value = getValue( context );
+            vm.addValue( value, name );
+        }
+        else
+        {
+            if( context.index>=0 && this instanceof ScalarFunctionNode )
+            {
+                if( vm.getCount() <= context.index )
+                {
+                    value = getValue( context );
+                    vm.addValue( value, name );                
+                    
+                }
+                else
+                {
+                    value = vm.getNth( context.index, true ); 
+                }
+            }
+            else if( vm.getCount() < context.values.getCount() && this instanceof ScalarFunctionNode )
+            {
+                value = getValue( context );
+                vm.addValue( value, name );                
+            }
+            else
+            {
+                value = vm.getCurrent( true );                      
+            }
+        }
+        
+        return value;
+    }
+    
+    public abstract Object getValue( VIVAContext context ) throws VIVAException;
 }

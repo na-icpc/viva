@@ -2,18 +2,11 @@ package org.vanb.viva.functions;
 
 import java.util.List;
 
-import org.vanb.viva.ScalarFunction;
-import org.vanb.viva.utils.VIVAContext;
+import org.vanb.viva.*;
+import org.vanb.viva.utils.*;
 
 public class PowerFunction implements ScalarFunction
-{
-    private String NotANumber( double x )
-    {
-        return x==Double.NaN ? "NaN" : 
-               x==Double.NEGATIVE_INFINITY ? "-Infinity" :
-               x==Double.POSITIVE_INFINITY ? "Infinity" : null;
-    }
-    
+{    
     @Override
     public String getName()
     {
@@ -39,26 +32,11 @@ public class PowerFunction implements ScalarFunction
     public Object run( VIVAContext context, List<Object> parameters )
             throws Exception
     {
-        double argument = ((Number)parameters.get(0)).doubleValue();
-        String nan = NotANumber( argument );
-        if( nan!=null )
-        {
-            throw new Exception( "First parameter to pow() is " + nan + "." );
-        }
-        
+        double argument = ((Number)parameters.get(0)).doubleValue();        
         double exponent = ((Number)parameters.get(1)).doubleValue();
-        nan = NotANumber( argument );
-        if( nan!=null )
-        {
-            throw new Exception( "Second parameter to pow() is " + nan + "." );
-        }
         
         double result = Math.pow( argument, exponent );
-        nan = NotANumber( result );
-        if( nan!=null )
-        {
-            throw new Exception( "Result of pow(" + argument + "," + exponent + ") is " + nan + "." );
-        }
+        ArithmeticFunction.nanCheck( result, "pow(" + argument + "," + exponent + ")" );
         
         return result;
     }

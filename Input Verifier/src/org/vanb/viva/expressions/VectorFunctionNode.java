@@ -15,7 +15,7 @@ public class VectorFunctionNode extends FunctionNode
         function = f;
     }
     
-    public Object evaluate( VIVAContext context ) throws VIVAException
+    public Object getValue( VIVAContext context ) throws VIVAException
     {
         int saveindex = context.index;
         List<List<Object>> rows = new LinkedList<List<Object>>();

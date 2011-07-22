@@ -16,9 +16,9 @@ public class TesterFunction implements VectorFunction
         {
             for( Object p : row )
             {
-                System.err.print( "<" + p + ">" );
+                context.err.print( "<" + p + ">" );
             }
-            System.err.println();
+            context.err.println();
         }
         return new Boolean(true);
     }

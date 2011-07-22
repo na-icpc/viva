@@ -57,7 +57,7 @@ public class ValueManager
     }
         
     /**
-     * Get the nth vValue or Token from teh input.
+     * Get the nth Value or Token from the input.
      * 
      * @param n Desired index
      * @param wantValue true if the value is desired, false if the Token is wanted.

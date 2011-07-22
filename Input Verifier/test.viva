@@ -1,4 +1,5 @@
 # deps=0.15 feps=0.1f #
 {
-    x:double y:double (pow(pow(x,y),y)>0.0); 
+    x:double y:double; 
+    [test(x)]
 }

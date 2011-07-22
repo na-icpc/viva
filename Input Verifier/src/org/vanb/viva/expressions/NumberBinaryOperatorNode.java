@@ -2,6 +2,7 @@ package org.vanb.viva.expressions;
 
 import org.vanb.viva.parser.ParseException;
 
+import org.vanb.viva.*;
 import org.vanb.viva.utils.*;
 
 public abstract class NumberBinaryOperatorNode extends BinaryOperatorNode
@@ -67,11 +68,17 @@ public abstract class NumberBinaryOperatorNode extends BinaryOperatorNode
         {
             if( type.equals( Double.class ))
             {
-                result = evaluate( l.doubleValue(), r.doubleValue() );   
+                double left = l.doubleValue();
+                double right = r.doubleValue();
+                result = evaluate( left, right );
+                ArithmeticFunction.nanCheck( ((Double)result).doubleValue(), toString() + " (" + left + " " + operator + " " + right + ")" );
             }
             else if( type.equals( Float.class ) )
             {
-                result = evaluate( l.floatValue(), r.floatValue() );               
+                float left = l.floatValue();
+                float right = r.floatValue();
+                result = evaluate( left, right );
+                ArithmeticFunction.nanCheck( ((Float)result).floatValue(), toString() + " (" + left + " " + operator + " " + right + ")" );
             }
             else if( type.equals( Long.class ) )
             {

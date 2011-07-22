@@ -16,7 +16,7 @@ public class ScalarFunctionNode extends FunctionNode
     }
     
 
-    public Object evaluate( VIVAContext context ) throws VIVAException
+    public Object getValue( VIVAContext context ) throws VIVAException
     {
         LinkedList<Object> parmvalues = new LinkedList<Object>();
         for( ExpressionNode parm : parameters )

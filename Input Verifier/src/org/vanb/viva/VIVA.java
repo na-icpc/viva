@@ -174,7 +174,7 @@ public class VIVA
     }
 
     /**
-     * The main() is just for testing.
+     * The main() for command-line VIVA.
      * 
      * @param args Command-line args - the first is a file with the pattern, the rest are input files to test.
      */

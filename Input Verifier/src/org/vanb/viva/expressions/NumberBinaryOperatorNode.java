@@ -68,17 +68,11 @@ public abstract class NumberBinaryOperatorNode extends BinaryOperatorNode
         {
             if( type.equals( Double.class ))
             {
-                double left = l.doubleValue();
-                double right = r.doubleValue();
-                result = evaluate( left, right );
-                ArithmeticFunction.nanCheck( ((Double)result).doubleValue(), toString() + " (" + left + " " + operator + " " + right + ")" );
+                result = evaluate( l.doubleValue(), r.doubleValue() );
             }
             else if( type.equals( Float.class ) )
             {
-                float left = l.floatValue();
-                float right = r.floatValue();
-                result = evaluate( left, right );
-                ArithmeticFunction.nanCheck( ((Float)result).floatValue(), toString() + " (" + left + " " + operator + " " + right + ")" );
+                result = evaluate( l.floatValue(), r.floatValue() );
             }
             else if( type.equals( Long.class ) )
             {
@@ -88,9 +82,19 @@ public abstract class NumberBinaryOperatorNode extends BinaryOperatorNode
             {
                 result = evaluate( l.intValue(), r.intValue() );                           
             }
+            
+            if( result instanceof Double )
+            {
+                ArithmeticFunction.nanCheck( ((Double)result).doubleValue(), toString() + " (" + left + " " + operator + " " + right + ")" );                
+            }
+            else if( result instanceof Float )
+            {
+                ArithmeticFunction.nanCheck( ((Float)result).floatValue(), toString() + " (" + left + " " + operator + " " + right + ")" );
+            }
         }
         catch( Exception e )
         {
+            context.err.println( this );
             context.throwException( e.getMessage() );  
         }
         

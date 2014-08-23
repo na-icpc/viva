@@ -1,0 +1,712 @@
+/**
+ * JavaCC template file created by SF JavaCC plugin 1.5.17+ wizard for JavaCC 1.5.0+
+ */options{  JDK_VERSION = "1.6";  static = false;}PARSER_BEGIN( PatternParser )package org.vanb.viva.parser;
+
+import org.vanb.viva.parameters.*;
+import org.vanb.viva.patterns.*;
+import org.vanb.viva.expressions.*;
+import org.vanb.viva.functions.*;
+import org.vanb.viva.utils.*;
+import org.vanb.viva.*;
+import java.util.*;
+
+public class PatternParser{
+    private SymbolTable<Class<?>> symbols = new SymbolTable<Class<?>>();
+
+    private String getPosition( Token token )
+    {
+        return "At line " + token.beginLine + " column " + token.beginColumn + ": ";    }
+
+    private HashMap<String,Function> functions = new HashMap<String,Function>();
+
+    public void setFunctions( HashMap<String,Function> f )
+    {
+        functions = f;
+    }    
+}PARSER_END( PatternParser )SKIP :{  " "| "\r"| "\t"| "\n"}TOKEN :
+{
+  < INTEGER_LITERAL:
+        <DECIMAL_LITERAL> (["l","L"])?
+      | <HEX_LITERAL> (["l","L"])?
+      | <OCTAL_LITERAL> (["l","L"])?
+  >
+|
+  < #DECIMAL_LITERAL: ["1"-"9"] (["0"-"9"])* >
+|
+  < #HEX_LITERAL: "0" ["x","X"] (["0"-"9","a"-"f","A"-"F"])+ >
+|
+  < #OCTAL_LITERAL: "0" (["0"-"7"])* >
+|
+  < FLOATING_POINT_LITERAL:
+        <DECIMAL_FLOATING_POINT_LITERAL>
+      | <HEXADECIMAL_FLOATING_POINT_LITERAL>
+  >
+|
+  < #DECIMAL_FLOATING_POINT_LITERAL:
+        (["0"-"9"])+ "." (["0"-"9"])* (<DECIMAL_EXPONENT>)? (["f","F","d","D"])?
+      | "." (["0"-"9"])+ (<DECIMAL_EXPONENT>)? (["f","F","d","D"])?
+      | (["0"-"9"])+ <DECIMAL_EXPONENT> (["f","F","d","D"])?
+      | (["0"-"9"])+ (<DECIMAL_EXPONENT>)? ["f","F","d","D"]
+  >
+|
+  < #DECIMAL_EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ >
+|
+  < #HEXADECIMAL_FLOATING_POINT_LITERAL:
+        "0" ["x", "X"] (["0"-"9","a"-"f","A"-"F"])+ (".")? <HEXADECIMAL_EXPONENT> (["f","F","d","D"])?
+      | "0" ["x", "X"] (["0"-"9","a"-"f","A"-"F"])* "." (["0"-"9","a"-"f","A"-"F"])+ <HEXADECIMAL_EXPONENT> (["f","F","d","D"])?
+  >
+|
+  < #HEXADECIMAL_EXPONENT: ["p","P"] (["+","-"])? (["0"-"9"])+ >
+|
+  < CHARACTER_LITERAL:
+      "'"
+      (   (~["'","\\","\n","\r"])
+        | ("\\"
+            ( ["n","t","b","r","f","\\","'","\""]
+            | ["0"-"7"] ( ["0"-"7"] )?
+            | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+            )
+          )
+      )
+      "'"
+  >
+|
+  < STRING_LITERAL:
+      "\""
+      (   (~["\"","\\","\n","\r"])
+        | ("\\"
+            ( ["n","t","b","r","f","\\","'","\""]
+            | ["0"-"7"] ( ["0"-"7"] )?
+            | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+            )
+          )
+      )*
+      "\""
+  >
+}
+
+/* IDENTIFIERS */
+TOKEN :
+{    < DOUBLE : "double" >
+|   < INTEGER : "integer" >
+|   < INT : "int" >
+|   < LONG : "long" >
+|   < FLOAT : "float" >
+|   < STRING : "string" >
+}
+
+TOKEN :
+{
+  < IDENTIFIER: <LETTER> (<PART_LETTER>)* >
+|
+  < #LETTER:
+      [  // all chars for which Character.isIdentifierStart is true
+         // "$",
+         "A"-"Z",
+         "_",
+         "a"-"z"
+      ]
+  >
+|
+  < #PART_LETTER:
+      [  // all chars for which Character.isIdentifierPart is true
+         // "$",
+         "0"-"9",
+         "A"-"Z",
+         "_",
+         "a"-"z"
+      ]
+  >
+}
+PatternList start() :
+{    PatternList plist = new PatternList();
+    PatternList params;
+    PatternList multi;
+}
+{    params=parameters() multi=multilinePattern()
+    {
+        plist.addPattern( params );
+        plist.addPattern( multi );        return plist;
+    }
+}
+
+PatternList parameters() :
+{
+    PatternList plist = new PatternList();
+    Pattern pattern;}
+{
+    (
+      "#" (  pattern=parameter() { plist.addPattern( pattern ); } )* "#"    )?
+    {
+        return plist;    }}
+
+Pattern parameter() :
+{    Pattern pattern;
+    Token token;
+    ExpressionNode value;
+}
+{    token=<IDENTIFIER> "=" value=constant()
+    {
+        String name = token.image;
+        Parameter parameter = VIVA.parameters.get( name );
+        if( parameter==null )
+        {             throw new ParseException( getPosition(token) + "Unknown parameter '" + name + "'" );
+        }
+
+        Class<?> expectedType = parameter.getType(); 
+        Class<?> returnType = value.getReturnType();
+        if( !expectedType.isAssignableFrom( returnType ) )
+        {             throw new ParseException( getPosition(token) + "Parameter '" + name + "' expected value of type " + expectedType.getSimpleName()
+                 + ", got " + returnType.getSimpleName() );
+        }
+
+        Object eval;
+
+        try
+        {            eval = value.evaluate( null );
+        }
+        catch( Exception e )
+        {             throw new ParseException( getPosition(token) + "Unable to parse value " + value + " for parameter '" + name + "'" );
+        }
+        
+        if( parameter.isvalid( eval ) )
+        {             pattern = new ParameterPattern( name, eval );
+        }
+        else
+        {             throw new ParseException( getPosition(token) + "Parameter '" + name + "' " + parameter.usage() );
+        }
+
+        return pattern;    }
+}
+PatternList multilinePattern() :{ 
+    PatternList plist = new PatternList();
+    Pattern p; 
+}{
+  ( p=singlePattern() { plist.addPattern( p ); } )+
+  {
+      return plist;
+  }
+}
+
+Pattern singlePattern() :
+{
+    Pattern pattern;
+    PatternListController controller=new EOFController();
+    PatternList plist;
+    ExpressionNode exp=null;
+    List<Pattern> choices = new LinkedList<Pattern>();
+}
+{
+  (
+    "{" [ "[" controller=qualifier() "]" ] { symbols.addLevel(); } plist=multilinePattern()
+        [ "[" exp=constraint() { controller.addConstraint( exp ); } ( "," exp=constraint() { controller.addConstraint( exp ); } )* "]" ] "}"
+    {
+        symbols.removeLevel();
+        controller.setPatternList( plist );
+        pattern = controller;
+    }
+//  |//    "?" { symbols.addLevel(); } plist=multilinePattern() { symbols.removeLevel(); choices.add(plist); }//    ( "/" { symbols.addLevel(); } plist=multilinePattern() { symbols.removeLevel(); choices.add(plist); } )* "?"//    {//        pattern = new ChoicePattern( choices );//    }
+  |     plist=simplePattern() ";"
+    {
+        controller = new SingleLineController();
+        controller.setPatternList( plist );
+        pattern = controller;
+    }
+  )
+  {
+      return pattern;
+  }}PatternListController qualifier() :{
+    PatternListController pattern=null;
+    Pattern term=null;
+    ExpressionNode exp = null;
+}{
+  (
+    "*" exp=expression()
+    {
+        CountController count = new CountController();
+        count.setCountExpression( exp );
+        pattern = count;
+    }
+  |
+    "=" {symbols.addLevel();} term=simplePattern()
+    {
+        symbols.removeLevel();
+        MatchController match = new MatchController();
+        match.setTerminatingPattern( term );
+        pattern = match;
+    }  )
+  {
+      return pattern;
+  } }
+
+PatternList simplePattern() :
+{
+    PatternList plist = new PatternList();
+    PatternList innerlist = null;
+    PatternListController controller = new EOLNController();
+    ExpressionNode exp = null;
+    Token token;
+    ValuePattern value = null;
+    boolean fixedfield = false;
+}
+{
+  (
+	  (	    "<" [ "[" controller=qualifier() "]" ] { symbols.addLevel(); } innerlist=simplePattern() 
+            [ "[" exp=constraint() { controller.addConstraint( exp ); } ( "," exp=constraint() { controller.addConstraint( exp ); } )* "]" ] ">"
+	    {
+	        symbols.removeLevel();
+	        controller.setPatternList( innerlist );
+	        plist.addPattern( controller );
+	    }
+	  )
+	  |
+	      "@" [exp=expression()] "@"
+	      {
+	          plist.addPattern( new SpacesPattern( exp ) );
+	      }
+	  | 
+	  ( 
+	      token=< IDENTIFIER > [ ":" value=type() ] [ "@[" [exp=expression()] "]" {fixedfield = true;} ]
+	      {
+	          String name = token.image;
+	          if( value==null ) value = new IntegerPattern();
+	          value.setName( name );
+	          value.setFixedField( fixedfield );
+	          value.setWidth( exp );
+	          plist.addPattern( value );
+	          boolean unique = symbols.add( name, value.getType() );
+	          if( !unique )
+	          {
+	              throw new ParseException( getPosition(token) + "Variable " + name + " is already defined." );
+	          }
+	          value = null;
+	      } 
+	      [
+	          "(" exp=constraint()
+			      {
+			          if( exp!=null ) plist.addConstraint( exp );
+			          exp = null;
+			      }
+			      (
+			            "," exp=constraint()
+			            {			                if( exp!=null ) plist.addConstraint( exp );
+			                exp = null;
+			            }			      )*
+		      ")"
+	      ] 
+	   )
+  )+
+  {
+      return plist;
+  }
+}
+
+ValuePattern type() :
+{
+  ValuePattern pattern = null;
+}
+{  (
+      < DOUBLE >  { pattern = new DoublePattern(); }
+  |   < FLOAT >   { pattern = new FloatPattern(); }
+  |   < LONG >    { pattern = new LongPattern(); }
+  |   < INT >     { pattern = new IntegerPattern(); }
+  |   < INTEGER > { pattern = new IntegerPattern(); }
+  |   < STRING >  { pattern = new StringPattern(); }
+  )
+  {
+      return pattern;  }
+}ExpressionNode constraint() :
+{
+    ExpressionNode lhs, rhs;
+    BinaryOperatorNode op;
+}
+{
+  lhs=orConstraint() 
+  ( 
+	  (
+	      "||"  rhs=orConstraint()
+	      {
+	          op = new OrNode();
+	          op.instantiate( lhs, rhs );
+	          lhs = op;
+	      }
+	  )
+	  |
+	  (	      "^^"  rhs=orConstraint()
+	      {
+	          op = new XorNode();
+	          op.instantiate( lhs, rhs );
+	          lhs = op;
+	      }
+	  )
+  )*
+  {
+      return lhs;
+  }
+}
+
+ExpressionNode orConstraint() :
+{
+    ExpressionNode lhs, rhs;
+    BinaryOperatorNode op;
+}
+{
+  lhs=simpleConstraint() 
+  ( 
+      "&&" rhs=simpleConstraint()
+      {
+          op = new AndNode();
+          op.instantiate( lhs, rhs );
+          lhs = op;
+      }
+  )*
+  {
+      return lhs;
+  }
+}
+ExpressionNode simpleConstraint() :
+{
+    ExpressionNode lhs, rhs;
+    BinaryOperatorNode op=null, newop=null;
+}
+{
+  lhs=expression() 
+  ( 
+      newop=boolop() rhs=expression()
+      {
+	      newop.instantiate( lhs, rhs );
+
+	      if( op==null )
+	      {
+	          op = newop;	      }
+	      else
+	      {	        
+		      BinaryOperatorNode andop = new AndNode();
+		      andop.instantiate( op, newop );
+		      op = andop;
+	      }
+	      lhs = rhs;
+      }
+  )*
+  {
+      return op==null ? lhs : op;
+  }}
+
+BinaryOperatorNode boolop() :
+{
+    BinaryOperatorNode op = null;
+    Token token;
+}
+{    (
+      token = ">" { op = new GreaterThanNode(); op.operator = token.image; }
+    |
+      token = "<" { op = new LessThanNode(); op.operator = token.image; }
+    |
+      token = ">=" { op = new GreaterThanEqualToNode(); op.operator = token.image; }
+    |
+      token = "<=" { op = new LessThanEqualToNode(); op.operator = token.image; }
+    |
+      token = "=" { op = new EqualToNode(); op.operator = token.image; }
+    |
+      token = "==" { op = new EqualToNode(); op.operator = token.image; }
+    |
+      token = "!=" { op = new NotEqualToNode(); op.operator = token.image; }
+    |
+      token = "<>" { op = new NotEqualToNode(); op.operator = token.image; }
+    |
+      token = "%%"  { op = new RegExpNode(); op.operator = token.image; }       )
+    {
+        return op;
+    }
+}
+
+ExpressionNode expression() :
+{
+    ExpressionNode lhs, rhs;
+    BinaryOperatorNode op;
+}
+{
+  lhs=term() 
+  ( 
+      op=addop() rhs=term()
+      {
+          op.instantiate( lhs, rhs );
+          lhs = op;
+      } 
+  )*
+  {
+      return lhs;
+  }
+}
+
+BinaryOperatorNode addop() :
+{
+    BinaryOperatorNode op = null;
+    Token token;
+}{
+  (    token = "+" { op = new PlusNode(); op.operator = token.image; }
+  |
+    token = "-" { op = new MinusNode(); op.operator = token.image; }
+  |    token = "|" { op = new BitwiseOrNode(); op.operator = token.image; }
+  |    token = "^" { op = new BitwiseXorNode(); op.operator = token.image; }
+  )
+  {
+      return op;
+  }}
+
+ExpressionNode term() :
+{
+    ExpressionNode lhs, rhs;
+    BinaryOperatorNode op;
+}
+{
+  lhs=factor() 
+  ( 
+      op=multop() rhs=factor()
+      {
+          op.instantiate( lhs, rhs );
+          lhs = op;
+      } 
+  )*
+  {
+      return lhs;
+  }
+}
+
+BinaryOperatorNode multop() :
+{
+    BinaryOperatorNode op = null;
+    Token token;
+}
+{
+  (
+    token = "*" { op = new TimesNode(); op.operator = token.image; }
+  |
+    token = "/" { op = new DivideNode(); op.operator = token.image; }
+  |
+    token = "%" { op = new ModNode(); op.operator = token.image; }
+  |
+    token = "&" { op = new BitwiseAndNode(); op.operator = token.image; }
+  |
+    token = "<<" { op = new ShiftNode(); op.operator = token.image; }
+  |
+    token = ">>" { op = new ShiftNode(); op.operator = token.image; }
+  |
+    token = ">>>" { op = new ShiftNode(); op.operator = token.image; }
+  )
+  {
+      return op;
+  }
+}
+
+ExpressionNode factor() :
+{
+    Token token;
+    ExpressionNode node, fnode;
+    Object value;
+    String lit;
+    UnaryOperatorNode op;
+}
+{
+  (
+    token=< IDENTIFIER >  node=named( token.image )
+  |
+    op=unop() fnode=factor()
+    {        op.instantiate( fnode );
+        node = op;
+    }
+  |   
+    node=constant()
+  |
+    "(" node=constraint() ")"
+    {        node = new ParenthesesNode( node );
+    }   )
+  {
+      return node;
+  }}
+
+UnaryOperatorNode unop() :
+{
+    UnaryOperatorNode op = null;
+    Token token;
+}
+{
+  (
+    token = "!" { op = new NotNode(); op.operator = token.image; }
+  |
+    token = "-" { op = new NegativeNode(); op.operator = token.image; }
+  |
+    token = "~" { op = new BitwiseNotNode(); op.operator = token.image; }
+  )
+  {
+      return op;
+  }
+}
+
+
+ExpressionNode constant() :
+{
+    Token token;
+    Object value = null;
+    String lit;
+}
+{
+  (    token=< INTEGER_LITERAL >
+    {
+        String actual = token.image.toUpperCase();
+        boolean islong = actual.endsWith( "L" );
+        int radix = 10;
+
+        // See if constant is octal or hex
+        if( actual.startsWith( "0" ) && actual.length()>1 )
+        {            actual = actual.substring( 1 );
+            if( actual.startsWith( "X" ) )
+            {
+                actual = actual.substring( 1 );
+                radix = 16;            }
+            else
+            {
+                radix = 8;
+            } 
+        }
+
+        try
+        {
+            if( islong )
+            {
+                actual = actual.substring( 0, token.image.length()-1 );
+                value = Long.valueOf( actual, radix );
+            }
+            else
+            {
+                value = Integer.valueOf( actual, radix );
+            }
+        }
+        catch( Exception e )
+        {
+            throw new ParseException( getPosition(token) + "Unable to parse " + token.image 
+                + " as " + (islong ? "a Long" : "an Integer") );
+        }
+    }
+  |
+    token=< FLOATING_POINT_LITERAL >
+    {
+        boolean isfloat = token.image.toUpperCase().endsWith( "F" );
+        try
+        {
+            if( isfloat )
+            {
+                value = new Float( token.image );
+            }
+            else
+            {
+                value = new Double( token.image );
+            }
+        }
+        catch( Exception e )
+        {
+            throw new ParseException( getPosition(token) + "Unable to parse " + token.image
+                + " as a " + (isfloat ? "Float" : "Double") );
+        }
+    }
+  |
+    token=< CHARACTER_LITERAL >
+    {
+        lit = token.image;
+        if( lit.startsWith( "'" ) ) lit = lit.substring(1);
+        value = new Integer( (int)(lit.charAt(0)) );
+    }
+  |
+    token=< STRING_LITERAL >
+    {
+        lit = token.image;
+        if( lit.startsWith( "\"" ) ) lit = lit.substring(1);
+        if( lit.endsWith( "\"" ) ) lit = lit.substring( 0, lit.length()-1);
+        value = lit;
+    }
+  )
+  {
+      return new ConstantNode( value );  }
+}
+  
+
+ExpressionNode named( String name ) :
+{    ExpressionNode node = null;
+    ExpressionNode subscript = null;
+    ExpressionNode parm = null;
+    LinkedList<ExpressionNode> parms = new LinkedList<ExpressionNode>();
+    Class<?> type;
+}
+{  (
+     "#"
+     {         type = symbols.lookup( name );
+         if( type==null )
+         {
+             throw new ParseException( getPosition(token) + "Unknown identifier: " + name );
+         }
+         node = new CountNode( name );
+     } 
+  |      "[" subscript=expression() "]"
+     {
+         type = symbols.lookup( name );
+         if( type==null )
+         {
+             throw new ParseException( getPosition(token) + "Unknown identifier: " + name );
+         }
+
+         if( !subscript.getReturnType().equals( Integer.class ) )
+         {             throw new ParseException( getPosition(token) + "Subscript must be Integer, not " + subscript.getReturnType() );
+         }
+         node = new SubscriptNode( name, type, subscript );     }
+  |
+     "(" parm=constraint() {parms.add(parm);} ("," parm=constraint() {parms.add(parm);} )* ")"
+     {         Function function = functions.get( name );
+         if( function==null )
+         {
+             throw new ParseException( getPosition(token) + "Unknown function: " + name );
+         }
+
+         Class<?>[] parmtypes = new Class<?>[ parms.size() ];
+         int i=0;
+         for( ExpressionNode p : parms )
+         {
+             parmtypes[i++] = p.getReturnType();         }
+
+         type = function.getReturnType( parmtypes );
+         if( type==null )
+         {             throw new ParseException( getPosition(token) + "Function usage: " + function.getUsage() );
+         }
+
+         if( function instanceof ScalarFunction )
+         {             node = new ScalarFunctionNode( name, type, (ScalarFunction)function, parms );
+         }
+         else if( function instanceof VectorFunction )
+         {             node = new VectorFunctionNode( name, type, (VectorFunction)function, parms );
+         }
+         else
+         {             throw new ParseException( getPosition(token) + "Function " + function.getName() + " is neither Scalar nor Vector" );
+         }
+     }
+  |
+     "$"
+     {
+         type = symbols.lookup( name );
+         if( type==null )
+         {
+             throw new ParseException( getPosition(token) + "Unknown identifier: " + name );
+         }
+         node = new VariableNode( name, String.class, false );
+     }     
+  |
+     {
+         type = symbols.lookup( name );
+         if( type==null )
+         {
+             throw new ParseException( getPosition(token) + "Unknown identifier: " + name );
+         }
+         node = new VariableNode( name, type, true );
+     }     
+  )
+  {
+      return node;  }
+}

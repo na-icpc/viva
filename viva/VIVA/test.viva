@@ -1,0 +1,5 @@
+# deps=0.15 feps=0.1f #
+{
+    x:double y:double; 
+    [test(x)]
+}

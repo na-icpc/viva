@@ -435,14 +435,10 @@ public class VIVAGUI implements ActionListener
         // One last little bit of business.
         // The only place on the whole application where the user can type text
         // is the Pattern Editor. They can click in other places, but only the
-        // Pattern Editor can take typing. The two text fields (Pattern File and
-        // Input Files)
-        // have cursors for navigation, but you can't type in them. We only want
-        // for
-        // them to have focus when the user explicitly clicks there, because
-        // that
-        // flashing cursor is annoying. So, whenever VIVAGUI becomes active,
-        // we'll
+        // Pattern Editor can take typing. The two text fields (Pattern File and Input Files)
+        // have cursors for navigation, but you can't type in them. We only want for
+        // them to have focus when the user explicitly clicks there, because that
+        // flashing cursor is annoying. So, whenever VIVAGUI becomes active, we'll
         // automatically shift focus to the Pattern Editor.
         frmViva.addWindowFocusListener( new WindowAdapter()
         {

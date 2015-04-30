@@ -4,13 +4,13 @@ public class GreaterThanNode extends BooleanOperatorNode
 {
     public Object evaluate( double l, double r ) throws Exception
     {
-        return new Boolean( l>r-deps );
+        return new Boolean( l>r );
     }
 
     @Override
     public Object evaluate( float l, float r ) throws Exception
     {
-        return new Boolean( l>r-feps);
+        return new Boolean( l>r );
     }
 
     @Override

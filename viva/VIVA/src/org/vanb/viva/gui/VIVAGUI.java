@@ -516,6 +516,7 @@ public class VIVAGUI implements ActionListener
                     FileOutputStream fos = new FileOutputStream( patternFile );
                     fos.write( patternEditor.getText().getBytes() );
                     write( "Successfully saved Pattern file " + patternFile.getAbsolutePath() );
+                    fos.close();
 
                     // Record the filename
                     patternFileField.setText( patternFile.getAbsolutePath() );

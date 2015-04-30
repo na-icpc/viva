@@ -2,14 +2,14 @@ package org.vanb.viva.parameters;
 
 import java.util.Arrays;
 
-public class StringListParameter extends Parameter
+public abstract class StringListParameter extends Parameter
 {
-    String values[];
+    protected String values[];
     
-    public StringListParameter( String vs[], int i )
+    public StringListParameter( String name, String values[], int defaultValueIndex )
     {
-        super( String.class, vs[i] );
-        values = Arrays.copyOf( vs, vs.length );
+        super( name, String.class, values[defaultValueIndex] );
+        this.values = Arrays.copyOf( values, values.length );
     }
     
     public boolean isvalid( Object value )

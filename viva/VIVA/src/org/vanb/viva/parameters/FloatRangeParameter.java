@@ -1,14 +1,14 @@
 package org.vanb.viva.parameters;
 
-public class FloatRangeParameter extends Parameter
+public abstract class FloatRangeParameter extends Parameter
 {
-    float lo, hi;
+    protected float lo, hi;
     
-    public FloatRangeParameter( float low, float high, float dv )
+    public FloatRangeParameter( String name, float lo, float hi, float defaultValue )
     {
-        super( Float.class, dv );
-        lo = low;
-        hi = high;
+        super( name, Float.class, defaultValue );
+        this.lo = lo;
+        this.hi = hi;
     }
     
     @Override

@@ -1,14 +1,14 @@
 package org.vanb.viva.parameters;
 
-public class IntegerRangeParameter extends Parameter
+public abstract class IntegerRangeParameter extends Parameter
 {
-    int lo, hi;
+    protected int lo, hi;
     
-    public IntegerRangeParameter( int low, int high, int dv )
+    public IntegerRangeParameter( String name, int lo, int hi, int defaultValue )
     {
-        super( Integer.class, dv );
-        lo = low;
-        hi = high;
+        super( name, Integer.class, defaultValue );
+        this.lo = lo;
+        this.hi = hi;
     }
     
     @Override

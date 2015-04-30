@@ -1,14 +1,14 @@
 package org.vanb.viva.parameters;
 
-public class DoubleRangeParameter extends Parameter
+public abstract class DoubleRangeParameter extends Parameter
 {
-    double lo, hi;
+    protected double lo, hi;
     
-    public DoubleRangeParameter( double low, double high, double dv )
+    public DoubleRangeParameter( String name, double lo, double hi, double defaultValue )
     {
-        super( Double.class, dv );
-        lo = low;
-        hi = high;
+        super( name, Double.class, defaultValue );
+        this.lo = lo;
+        this.hi = hi;
     }
     
     @Override

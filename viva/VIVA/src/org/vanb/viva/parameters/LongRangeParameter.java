@@ -1,14 +1,14 @@
 package org.vanb.viva.parameters;
 
-public class LongRangeParameter extends Parameter
+public abstract class LongRangeParameter extends Parameter
 {
-    long lo, hi;
+    protected long lo, hi;
     
-    public LongRangeParameter( long low, long high, long dv )
+    public LongRangeParameter( String name, long lo, long hi, long defaultvalue )
     {
-        super( Long.class, dv );
-        lo = low;
-        hi = high;
+        super( name, Long.class, defaultvalue );
+        this.lo = lo;
+        this.hi = hi;
     }
     
     @Override

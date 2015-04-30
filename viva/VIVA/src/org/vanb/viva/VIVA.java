@@ -7,7 +7,6 @@ import org.vanb.viva.utils.*;
 import org.vanb.viva.functions.*;
 
 import java.io.*;
-import java.util.*;
 
 /**
  * VIVA: vanb's Input Verification Assistant
@@ -19,20 +18,6 @@ public class VIVA
     
     private Pattern pattern = null;
     private VIVAContext context = new VIVAContext();
-    public static HashMap<String,Parameter> parameters;
-    
-    /**
-     * Static constructor to build parameters
-     */
-    static
-    {
-        parameters = new HashMap<String,Parameter>();
-        parameters.put( "deps", new DoubleRangeParameter( 0.0, Double.MAX_VALUE, 0.000001 ) );
-        parameters.put( "feps", new FloatRangeParameter( 0.0F, Float.MAX_VALUE, 0.000001F ) );
-        parameters.put( "ignoreeoln", new StringListParameter( Parameter.truefalse, 1 ) );
-        parameters.put( "ignoreblanks", new StringListParameter( Parameter.truefalse, 1 ) );
-        parameters.put( "maxerrs", new IntegerRangeParameter( 0, Integer.MAX_VALUE, 25 ) );
-    }
     
     /**
      * Tell VIVA the pattern to use (and parse it).
@@ -47,6 +32,7 @@ public class VIVA
         {
             PatternParser parser = new PatternParser( stream );
             parser.setFunctions( context.functions );
+            parser.setParameters( context.parameters );
             pattern = parser.start();
             success = true;
         }
@@ -91,6 +77,7 @@ public class VIVA
      */
     public boolean testInputFile( String filename )
     {
+        context.success = true;
         context.err.println( "<<< Testing file: " + filename + " >>>" );
         context.errcount = 0;
         boolean result = true;
@@ -114,6 +101,8 @@ public class VIVA
                 result = false;
             }
         }
+        
+        result &= context.success;
         context.err.println( "<<< DONE Testing file: " + filename + " >>>" );
         
         return result;
@@ -152,10 +141,10 @@ public class VIVA
         addFunction( new ConcatAllFunction() );   
         addFunction( new CosineFunction() );   
         addFunction( new CountFunction() );   
-        addFunction( new DepsFunction() );
+        //addFunction( new DepsFunction() );
         addFunction( new DistanceFunction() );
         addFunction( new EulersNumberToPowerFunction() );
-        addFunction( new FepsFunction() );
+        //addFunction( new FepsFunction() );
         addFunction( new HyperbolicCosineFunction() );   
         addFunction( new HyperbolicSineFunction() );   
         addFunction( new HyperbolicTangentFunction() );   
@@ -181,37 +170,52 @@ public class VIVA
         addFunction( new ToRadiansFunction() );   
         addFunction( new ToStringFunction() );   
         addFunction( new UniqueFunction() );
+        addFunction( new IncreasingFunction() );
+        addFunction( new DecreasingFunction() );
+        addFunction( new NonIncreasingFunction() );
+        addFunction( new NonDecreasingFunction() );
         
-        for( String name : parameters.keySet() )
-        {
-            Parameter parameter = parameters.get( name );
-            context.setParameter( name, parameter.getDefaultValue() );
-        }
+        context.addParameter( new DepsParameter() );
+        context.addParameter( new FepsParameter() );
+        context.addParameter( new MaxErrsParameter() );
+        context.addParameter( new IgnoreBlanksParameter() );
+        context.addParameter( new IgnoreEOLNParameter() );
+        context.addParameter( new EOLNStyleParameter() );
+        context.addParameter( new EOFStyleParameter() );
     }
 
     /**
      * The main() for command-line VIVA.
+     * Return codes:
+     * -2 = Bad usage
+     * -1 = Pattern parsing failure
+     *  0 = All files pass
+     * >0 = Number of failures
      * 
      * @param args Command-line args - the first is a file with the pattern, the rest are input files to test.
      */
     public static void main( String[] args ) throws Exception
     {
+        int retcode  = 0;
         if( args.length==0 )
         {
             System.out.println( "Usage: VIVA <pattern file> (<input file>)*");
+            retcode = -2;
         }
         else
         {
             VIVA viva = new VIVA();                    
-            viva.setPattern( new FileInputStream( args[0] ) );
+            if( !viva.setPattern( new FileInputStream( args[0] ) ) ) retcode = -1;
             
-            if( args.length>1 )
+            if( retcode==0 )
             {
                 for( int i=1; i<args.length; i++ )
                 {
-                    viva.testInputFile( args[i] );
+                    if( !viva.testInputFile( args[i] ) ) ++retcode;
                 }
             }
         }
+        
+        System.exit( retcode );
     }
 }

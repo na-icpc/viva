@@ -12,10 +12,19 @@ import java.util.*;
  */
 public class ValueManager
 {
+    /** List of input values */
     private Vector<Object> values;
+    
+    /** List of input tokens (which got parsed to the values) */
     private Vector<String> tokens;
+    
+    /** The current value */
     private Object currentValue;
+    
+    /** The current token */
     private String currentToken;
+    
+    /** The number of values/tokens */
     private int count;
     
     /**

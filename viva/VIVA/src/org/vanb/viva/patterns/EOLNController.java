@@ -27,10 +27,21 @@ public class EOLNController extends PatternListController
         boolean success = true;
         
         context.values.addLevel();
-        while( !context.input.atEOLN() && !context.input.atEOF() )
+        for(;;)
         {
+            // Check to see if EOLN has been reached
+            context.input.dropAnchor();
+            boolean ateoln = context.input.atEOLN() || context.input.atEOF();
+            context.input.returnToAnchor();
+            context.input.raiseAnchor();
+           
+            if( ateoln ) break; 
+             
+            // If not, reset the line and read it as data
             context.values.incrementLevel();
             success &= patternList.test( context );
+            
+            // If we're in testing mode, break on any failure.
             if( !success && context.testLevel>0 ) break;
         }
         

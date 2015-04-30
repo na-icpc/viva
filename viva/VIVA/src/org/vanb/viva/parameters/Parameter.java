@@ -1,10 +1,13 @@
 package org.vanb.viva.parameters;
 
-public class Parameter
+import org.vanb.viva.utils.VIVAContext;
+
+public abstract class Parameter
 {
     private Class<?> type;
     private Object defaultValue;
-    
+    private Object currentValue;
+    protected String name;
     
     public static final String[] truefalse = { "true", "false", "t", "f", "yes", "no", "y", "n", "0", "1" };
     public static boolean isTrue( Object param )
@@ -22,10 +25,11 @@ public class Parameter
         return result;
     }
     
-    public Parameter( Class<?> t, Object dv )
+    public Parameter( String name, Class<?> type, Object defaultValue )
     {
-        type = t;
-        defaultValue = dv;
+        this.name = name;
+        this.type = type;
+        this.defaultValue = defaultValue;
     }
     
     public Class<?> getType()
@@ -33,18 +37,27 @@ public class Parameter
         return type;
     }
     
-    public boolean isvalid( Object value )
+    public void setCurrentValue( Object value )
     {
-        return true;
+        currentValue = value;   
     }
     
-    public String usage()
+    public Object getCurrentValue()
     {
-        return "This parameter can take any value of any type.";
+        return currentValue;
     }
     
     public Object getDefaultValue()
     {
         return defaultValue;
     }
+    
+    public String getName()
+    {
+        return name;
+    }
+    
+    public abstract boolean isvalid( Object value );    
+    public abstract String usage();    
+    public abstract void action( VIVAContext context, Object value );
 }

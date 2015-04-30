@@ -36,11 +36,10 @@ public class SumFunction implements VectorFunction
         float floatsum = 0F;
         
         Class<?> type = null;
+        if( !parameters.isEmpty() ) type = parameters.get(0).get(0).getClass();
         for( List<Object> row : parameters )
         {
             Number addend = (Number)row.get( 0 );
-            
-            if( type==null ) type = addend.getClass();
             
             if( type==Integer.class ) intsum += addend.intValue(); 
             else if( type==Long.class ) longsum += addend.longValue(); 

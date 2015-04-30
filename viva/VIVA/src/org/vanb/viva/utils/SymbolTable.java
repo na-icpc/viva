@@ -13,7 +13,10 @@ import java.util.*;
  */
 public class SymbolTable<T>
 {
+    /** A stack of symbol tables */
     private LinkedList<HashMap<String,T>> tables;
+    
+    /** A stack of iteration counts */
     private LinkedList<Integer> counts;
     
     /**
@@ -21,9 +24,11 @@ public class SymbolTable<T>
      */
     public SymbolTable()
     {
+        // Create the tables stack and add the top level
         tables = new LinkedList<HashMap<String,T>>();
         tables.add( new HashMap<String,T>() );
         
+        // Ditto with the counts
         counts = new LinkedList<Integer>();
         counts.add( 0 );
     }
@@ -105,7 +110,7 @@ public class SymbolTable<T>
     }
     
     /**
-     * Determine if the names variable is defined at the current (innermost) level
+     * Determine if the named variable is defined at the current (innermost) level
      * 
      * @param name variable name
      * @return true if defined at the current level, otherwise false

@@ -2,7 +2,6 @@ package org.vanb.viva.functions;
 
 import java.util.List;
 
-import org.vanb.viva.ArithmeticFunction;
 import org.vanb.viva.VectorFunction;
 import org.vanb.viva.utils.VIVAContext;
 

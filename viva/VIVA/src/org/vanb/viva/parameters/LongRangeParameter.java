@@ -4,7 +4,7 @@ public abstract class LongRangeParameter extends Parameter
 {
     protected long lo, hi;
     
-    public LongRangeParameter( String name, long lo, long hi, long defaultvalue )
+    protected LongRangeParameter( String name, long lo, long hi, long defaultvalue )
     {
         super( name, Long.class, defaultvalue );
         this.lo = lo;

@@ -15,14 +15,12 @@ public class ParenthesesNode implements ExpressionNode
     @Override
     public Object evaluate( VIVAContext context ) throws VIVAException
     {
-        // TODO Auto-generated method stub
         return exp.evaluate( context );
     }
 
     @Override
     public Class<?> getReturnType()
     {
-        // TODO Auto-generated method stub
         return exp.getReturnType();
     }
     

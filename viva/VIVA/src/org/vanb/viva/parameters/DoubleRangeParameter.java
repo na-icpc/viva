@@ -4,7 +4,7 @@ public abstract class DoubleRangeParameter extends Parameter
 {
     protected double lo, hi;
     
-    public DoubleRangeParameter( String name, double lo, double hi, double defaultValue )
+    protected DoubleRangeParameter( String name, double lo, double hi, double defaultValue )
     {
         super( name, Double.class, defaultValue );
         this.lo = lo;

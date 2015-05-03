@@ -41,10 +41,10 @@ public class VIVAContext
     public HashMap<String,Parameter> parameters = new HashMap<String,Parameter>();
     
     /** Floating point epsilon */
-    public float feps = 0.000001F;
+    public float feps = VIVA.FEPS;
     
     /** Double epsilon */
-    public double deps = 0.000001;
+    public double deps = VIVA.DEPS;
     
     /** Was input file matched without errors? */
     public boolean success;

@@ -11,10 +11,10 @@ public interface Pattern
 {
     /**
      * Test to see if this pattern matches the input file
-     * @param context TODO
+     * @param context The context in which VIVA is operating
      * 
      * @return true if this Pattern matches, otherwise false
-     * @throws VIVAException TODO
+     * @throws VIVAException
      */
     public boolean test( VIVAContext context ) throws VIVAException;
 }

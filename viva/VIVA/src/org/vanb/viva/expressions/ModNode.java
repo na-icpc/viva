@@ -1,11 +1,13 @@
 package org.vanb.viva.expressions;
 
+import org.vanb.viva.VIVA;
+
 public class ModNode extends NumberBinaryOperatorNode
 {
     @Override
     public Object evaluate( double l, double r ) throws Exception
     {
-        if( Math.abs(r)<0.000000000000001 )
+        if( Math.abs(r)<VIVA.DZERO )
         {
             throw new Exception( "Division by zero" );
         }
@@ -15,7 +17,7 @@ public class ModNode extends NumberBinaryOperatorNode
     @Override
     public Object evaluate( float l, float r ) throws Exception
     {
-        if( Math.abs(r)<0.0000000001 )
+        if( Math.abs(r)<VIVA.FZERO )
         {
             throw new Exception( "Division by zero" );
         }

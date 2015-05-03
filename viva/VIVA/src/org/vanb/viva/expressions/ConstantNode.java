@@ -9,6 +9,7 @@ public class ConstantNode implements ExpressionNode
     {
         value = v;
     }
+    
     @Override
     public Object evaluate( VIVAContext context ) throws VIVAException
     {

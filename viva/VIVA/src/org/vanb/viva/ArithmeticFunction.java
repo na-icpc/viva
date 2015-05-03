@@ -78,7 +78,7 @@ public abstract class ArithmeticFunction implements ScalarFunction
     /**
      * Get a String describing this function's usage, which should be the same for all Arithmetic Functions.
      * 
-     * @return A tring describing this function's usage
+     * @return A String describing this function's usage
      */
     public String getUsage()
     {

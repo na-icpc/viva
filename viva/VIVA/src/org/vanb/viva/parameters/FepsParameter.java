@@ -1,12 +1,13 @@
 package org.vanb.viva.parameters;
 
+import org.vanb.viva.VIVA;
 import org.vanb.viva.utils.VIVAContext;
 
 public class FepsParameter extends FloatRangeParameter
 {
     public FepsParameter()
     {
-        super( "feps", 0.0F, Float.MAX_VALUE, 0.000001F );
+        super( "feps", 0.0F, Float.MAX_VALUE, VIVA.FEPS );
     }
 
     @Override

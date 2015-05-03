@@ -15,8 +15,22 @@ import java.io.*;
  */
 public class VIVA
 {    
+    /** default value for double epsilon */
+    public static final double DEPS = 0.000001;
     
+    /** Default value for float epsilon */
+    public static final float FEPS = 0.000001F;
+    
+    /** Any double less than this (in absolute value) is 0. This is different from deps: it is used to prevent division by 0 */
+    public static final double DZERO = 0.000000000000001;
+    
+    /** Any float less than this (in absolute value) is 0. This is different from feps: it is used to prevent division by 0 */
+    public static final float FZERO = 0.0000000001F;
+    
+    /** The parsed pattern used to check input files */
     private Pattern pattern = null;
+    
+    /** VIVA's context */
     private VIVAContext context = new VIVAContext();
     
     /**

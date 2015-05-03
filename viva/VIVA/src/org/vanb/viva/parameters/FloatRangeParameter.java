@@ -4,7 +4,7 @@ public abstract class FloatRangeParameter extends Parameter
 {
     protected float lo, hi;
     
-    public FloatRangeParameter( String name, float lo, float hi, float defaultValue )
+    protected FloatRangeParameter( String name, float lo, float hi, float defaultValue )
     {
         super( name, Float.class, defaultValue );
         this.lo = lo;

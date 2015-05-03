@@ -4,7 +4,7 @@ public abstract class IntegerRangeParameter extends Parameter
 {
     protected int lo, hi;
     
-    public IntegerRangeParameter( String name, int lo, int hi, int defaultValue )
+    protected IntegerRangeParameter( String name, int lo, int hi, int defaultValue )
     {
         super( name, Integer.class, defaultValue );
         this.lo = lo;

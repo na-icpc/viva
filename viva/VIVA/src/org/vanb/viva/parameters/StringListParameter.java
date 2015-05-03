@@ -2,16 +2,34 @@ package org.vanb.viva.parameters;
 
 import java.util.Arrays;
 
+/**
+ * Superclass of all Parameters that have a list of Strings as possible values.
+ * This includes true/false parameters.
+ * 
+ * @author vanb
+ */
 public abstract class StringListParameter extends Parameter
 {
+    /** List of possible values */
     protected String values[];
     
-    public StringListParameter( String name, String values[], int defaultValueIndex )
+    /**
+     * Create a StringListParameter. 
+     * Only subclasses may call this.
+     * 
+     * @param name Name of the Parameter.
+     * @param values List of Values.
+     * @param defaultValueIndex Index in the list of the default value
+     */
+    protected StringListParameter( String name, String values[], int defaultValueIndex )
     {
         super( name, String.class, values[defaultValueIndex] );
         this.values = Arrays.copyOf( values, values.length );
     }
     
+    /**
+     * Determine if a potential value is in the List.
+     */
     public boolean isvalid( Object value )
     {
         boolean ok;
@@ -36,6 +54,9 @@ public abstract class StringListParameter extends Parameter
     }
 
     @Override
+    /**
+     * Describe how to use this Parameter.
+     */
     public String usage()
     {
         boolean first = true;

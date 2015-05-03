@@ -8,8 +8,8 @@ import org.vanb.viva.utils.*;
 public abstract class NumberBinaryOperatorNode extends BinaryOperatorNode
 {
     private Class<?> type;
-    protected double deps = 0.000001;
-    protected float feps = 0.000001F;
+    protected double deps = VIVA.DEPS;
+    protected float feps = VIVA.FEPS;
     
     @Override
     public void instantiate( ExpressionNode lhs, ExpressionNode rhs ) throws ParseException

@@ -2,8 +2,9 @@ package org.vanb.viva.functions;
 
 import java.util.List;
 
-import org.vanb.viva.*;
-import org.vanb.viva.utils.*;
+import org.vanb.viva.ArithmeticFunction;
+import org.vanb.viva.ScalarFunction;
+import org.vanb.viva.utils.VIVAContext;
 
 public class PowerFunction implements ScalarFunction
 {    

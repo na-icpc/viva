@@ -1,12 +1,17 @@
 package org.vanb.viva;
 
-import org.vanb.viva.parser.*;
-import org.vanb.viva.parameters.*;
-import org.vanb.viva.patterns.*;
-import org.vanb.viva.utils.*;
-import org.vanb.viva.functions.*;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.PrintStream;
 
-import java.io.*;
+import org.vanb.viva.parser.ParseException;
+import org.vanb.viva.parser.PatternParser;
+import org.vanb.viva.parser.TokenMgrError;
+import org.vanb.viva.patterns.Pattern;
+import org.vanb.viva.utils.InputManager;
+import org.vanb.viva.utils.VIVAContext;
+import org.vanb.viva.functions.*;
+import org.vanb.viva.parameters.*;
 
 /**
  * VIVA: vanb's Input Verification Assistant

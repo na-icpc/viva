@@ -1,9 +1,9 @@
 package org.vanb.viva.utils;
 
-import java.io.*;
-import java.util.*;
-
-import org.vanb.viva.parameters.Parameter;
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.util.LinkedList;
 
 /**
  * Control the input: get lines, tokenize them, report simple formatting errors.

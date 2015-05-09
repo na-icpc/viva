@@ -1,7 +1,9 @@
 package org.vanb.viva.patterns;
 
-import org.vanb.viva.utils.*;
-import java.util.*;
+import java.util.List;
+
+import org.vanb.viva.utils.VIVAContext;
+import org.vanb.viva.utils.VIVAException;
 
 public class ChoicePattern implements Pattern
 {

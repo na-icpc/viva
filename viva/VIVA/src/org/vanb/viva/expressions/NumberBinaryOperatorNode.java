@@ -1,9 +1,10 @@
 package org.vanb.viva.expressions;
 
+import org.vanb.viva.ArithmeticFunction;
+import org.vanb.viva.VIVA;
 import org.vanb.viva.parser.ParseException;
-
-import org.vanb.viva.*;
-import org.vanb.viva.utils.*;
+import org.vanb.viva.utils.VIVAContext;
+import org.vanb.viva.utils.VIVAException;
 
 public abstract class NumberBinaryOperatorNode extends BinaryOperatorNode
 {

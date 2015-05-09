@@ -1,12 +1,15 @@
 package org.vanb.viva.expressions;
 
-import org.vanb.viva.parser.*;
-import org.vanb.viva.utils.*;
-import java.util.regex.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.vanb.viva.parser.ParseException;
+import org.vanb.viva.utils.VIVAContext;
+import org.vanb.viva.utils.VIVAException;
 
 public class RegExpNode extends BinaryOperatorNode
 {    
-    private java.util.regex.Pattern pattern;
+    private Pattern pattern;
 
     @Override
     public void instantiate( ExpressionNode lhs, ExpressionNode rhs )
@@ -37,7 +40,7 @@ public class RegExpNode extends BinaryOperatorNode
             // Java turns double backslashes into a single backslash. So,
             // we've got to do that, too.
             String token = ((String)rhs.evaluate( null )).replace( "\\\\", "\\" );
-            pattern = java.util.regex.Pattern.compile( token );
+            pattern = Pattern.compile( token );
         }
         catch( Exception e )
         {

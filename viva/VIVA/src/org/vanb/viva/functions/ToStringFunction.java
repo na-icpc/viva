@@ -1,9 +1,9 @@
 package org.vanb.viva.functions;
 
-import java.util.*;
+import java.util.List;
 
-import org.vanb.viva.*;
-import org.vanb.viva.utils.*;
+import org.vanb.viva.ScalarFunction;
+import org.vanb.viva.utils.VIVAContext;
 
 public class ToStringFunction implements ScalarFunction
 {

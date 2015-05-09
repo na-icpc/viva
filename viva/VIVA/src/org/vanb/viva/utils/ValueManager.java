@@ -1,6 +1,6 @@
 package org.vanb.viva.utils;
 
-import java.util.*;
+import java.util.Vector;
 
 /**
  * This class keeps track of the values and tokens for 

@@ -1,7 +1,8 @@
 package org.vanb.viva.expressions;
 
 import org.vanb.viva.parser.ParseException;
-import org.vanb.viva.utils.*;
+import org.vanb.viva.utils.VIVAContext;
+import org.vanb.viva.utils.VIVAException;
 
 public class AndNode extends BinaryOperatorNode
 {

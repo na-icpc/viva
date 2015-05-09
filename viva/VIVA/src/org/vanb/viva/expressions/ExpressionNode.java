@@ -1,6 +1,7 @@
 package org.vanb.viva.expressions;
 
-import org.vanb.viva.utils.*;
+import org.vanb.viva.utils.VIVAContext;
+import org.vanb.viva.utils.VIVAException;
 
 /**
  * Base type of a node of an Expression tree

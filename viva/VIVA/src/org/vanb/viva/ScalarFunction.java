@@ -1,8 +1,8 @@
 package org.vanb.viva;
 
-import java.util.*;
+import java.util.List;
 
-import org.vanb.viva.utils.*;
+import org.vanb.viva.utils.VIVAContext;
 
 /** 
  * Interface for adding Inline Functions

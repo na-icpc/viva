@@ -1,9 +1,10 @@
 package org.vanb.viva.expressions;
 
-import java.util.*;
+import java.util.LinkedList;
 
 import org.vanb.viva.ScalarFunction;
-import org.vanb.viva.utils.*;
+import org.vanb.viva.utils.VIVAContext;
+import org.vanb.viva.utils.VIVAException;
 
 public class ScalarFunctionNode extends FunctionNode
 {

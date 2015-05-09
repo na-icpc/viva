@@ -1,9 +1,10 @@
 package org.vanb.viva.patterns;
 
-import org.vanb.viva.expressions.*;
-import org.vanb.viva.utils.*;
+import java.util.LinkedList;
 
-import java.util.*;
+import org.vanb.viva.expressions.ExpressionNode;
+import org.vanb.viva.utils.VIVAContext;
+import org.vanb.viva.utils.VIVAException;
 
 public class ConstraintList implements Pattern
 {

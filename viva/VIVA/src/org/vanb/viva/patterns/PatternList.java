@@ -1,9 +1,10 @@
 package org.vanb.viva.patterns;
 
-import java.util.*;
+import java.util.LinkedList;
 
-import org.vanb.viva.expressions.*;
-import org.vanb.viva.utils.*;
+import org.vanb.viva.expressions.ExpressionNode;
+import org.vanb.viva.utils.VIVAContext;
+import org.vanb.viva.utils.VIVAException;
 
 /**
  * This class handles repeating patterns, both multiline and within a line.

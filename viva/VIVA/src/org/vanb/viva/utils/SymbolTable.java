@@ -3,7 +3,8 @@
  */
 package org.vanb.viva.utils;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
 
 /**
  * A generic, hierarchical symbol table.

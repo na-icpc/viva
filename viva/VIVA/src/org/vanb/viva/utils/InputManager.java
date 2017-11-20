@@ -3,6 +3,9 @@ package org.vanb.viva.utils;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.BufferUnderflowException;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel.MapMode;
 import java.util.LinkedList;
 
 /**
@@ -22,10 +25,10 @@ public class InputManager
     private class State
     {
         /** Position in the input file */
-        protected long pos = 0L;
+        protected int pos = 0;
         
         /** Position to backsh() to */
-        protected long lastPos;
+        protected int lastPos;
         
         /** State of EOF, EOLN, and whether the last variable was a fixed-sized field. */
         protected boolean eof = false, eoln = false, lastfixed = false;
@@ -71,10 +74,10 @@ public class InputManager
     private VIVAContext context;
     
     /** The current input file being tested */
-    private RandomAccessFile reader;
+    private MappedByteBuffer map;
     
     /** Last position in the file. */
-    private long lastPos;
+    private int lastPos;
    
     /**
      * Create an input controller for the specified file.
@@ -83,7 +86,9 @@ public class InputManager
      */
     public InputManager( String filename, VIVAContext c ) throws Exception
     {
-        reader = new RandomAccessFile( filename, "r" );    
+        RandomAccessFile reader = new RandomAccessFile( filename, "r" ); 
+        map = reader.getChannel().map( MapMode.READ_ONLY, 0L, reader.length() );
+        reader.close();
         context = c;
     }
     
@@ -94,7 +99,7 @@ public class InputManager
      */
     private void backch() throws IOException
     {
-        reader.seek( lastPos );
+        map.position( lastPos );
     }
     
     /**
@@ -109,10 +114,10 @@ public class InputManager
     {
         int c = 0;
         String crlf = "";
-        lastPos = reader.getFilePointer();
+        lastPos = map.position();
         try
         {
-            c = reader.readUnsignedByte();           
+            c = map.get() & 0xff;           
             if( c>127 )
             {
                 context.showError( "Non-ASCII character (" + c + ")" );
@@ -124,7 +129,7 @@ public class InputManager
             {
                 crlf += '\r';
                 state.eoln = true;
-                c = reader.readUnsignedByte();
+                c = map.get() & 0xff;
 
                 if( c=='\n' )
                 {
@@ -135,7 +140,7 @@ public class InputManager
                     // Go back before the \r
                     backch();
                     // re-read the \r
-                    reader.readUnsignedByte();
+                    map.get();
                 }
                 c = -2;
             }
@@ -145,9 +150,8 @@ public class InputManager
                 state.eoln = true;
                 c = -2;   
             }
-            
-        }
-        catch( EOFException eofe )
+        }   
+        catch( BufferUnderflowException bue )
         {
             state.eof = true;
             c = -1;
@@ -164,6 +168,9 @@ public class InputManager
         return c;
     }
         
+    /** We'll build tokens in here */
+    private StringBuilder builder = new StringBuilder();
+    
     /**
      * Get the next token on the current line.
      * 
@@ -173,12 +180,14 @@ public class InputManager
      */
     public String getNextToken() throws Exception
     {
+        builder.setLength( 0 );
+        String token = null;
+        
         int c=0; 
         if( !state.eoln && !state.eof )
         {
             c = nextch();
         }
-        String token = "";
                          
         // The character pointer should be right at the beginning of the token.
         // If we see blanks, then they're extra (bad) blanks.
@@ -232,9 +241,10 @@ public class InputManager
             state.tokenno++;
             while( c!=' ' && !state.eof && !state.eoln )
             {
-                token += (char)c;
+                builder.append( (char)c );
                 c = nextch();
             }
+            token = builder.toString();
         }
            
         state.lastfixed = false;
@@ -302,15 +312,8 @@ public class InputManager
     {
         State anchor = new State();
         anchor.set( state );
-        try
-        {
-            anchor.pos = reader.getFilePointer();
-            anchor.lastPos = lastPos;
-        }
-        catch( IOException ioe )
-        {
-            context.throwException( "Couldn't drop anchor " + anchor + ": " + ioe.getMessage() );
-        }
+        anchor.pos = map.position();
+        anchor.lastPos = lastPos;
         anchors.addFirst( anchor );
     }
     
@@ -321,17 +324,10 @@ public class InputManager
      */
     public void returnToAnchor() throws VIVAException
     {
-        try
-        {
-            State anchor = anchors.getFirst();
-            state.set( anchor );
-            reader.seek( state.pos );
-            lastPos = state.lastPos;
-        }
-        catch( IOException ioe )
-        {
-            context.throwException( "Couldn't return to anchor: " + ioe.getMessage() );            
-        }
+        State anchor = anchors.getFirst();
+        state.set( anchor );
+        map.position( state.pos );
+        lastPos = state.lastPos;
     }
     
     /**

@@ -20,7 +20,7 @@ public class SpacesPattern extends ValuePattern
     }
 
     @Override
-    public Object getValue( String token ) throws Exception
+    public Object getValue( String token, VIVAContext context ) throws Exception
     {
         return null;
     }

@@ -3,6 +3,7 @@
  */
 package org.vanb.viva.patterns;
 
+import org.vanb.viva.utils.VIVAContext;
 
 /**
  * @author David Van Brackle
@@ -15,9 +16,11 @@ public class DoublePattern extends ValuePattern
      * @see org.vanb.viva.patterns.ValuePattern#getValue(java.lang.String)
      */
     @Override
-    public Object getValue( String token ) throws Exception
+    public Object getValue( String token, VIVAContext context ) throws Exception
     {
-        return new Double( token.trim() );
+        token = token.trim();
+        if( !context.javadouble && !ValuePattern.goodDouble.matcher( token ).matches() ) throw new Exception();
+        return new Double( token );
     }
     
     public Class<?> getType()

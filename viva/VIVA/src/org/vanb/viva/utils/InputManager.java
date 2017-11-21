@@ -1,12 +1,11 @@
 package org.vanb.viva.utils;
 
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.BufferUnderflowException;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel.MapMode;
-import java.util.LinkedList;
+import java.util.ArrayDeque;
 
 /**
  * Control the input: get lines, tokenize them, report simple formatting errors.
@@ -68,7 +67,7 @@ public class InputManager
     private State state = new State();
     
     /** A list of 'anchors' - States we can go back to. */
-    private LinkedList<State> anchors = new LinkedList<State>();
+    private ArrayDeque<State> anchors = new ArrayDeque<State>();
     
     /** Context */
     private VIVAContext context;
@@ -180,9 +179,11 @@ public class InputManager
      */
     public String getNextToken() throws Exception
     {
+        // Start afresh
         builder.setLength( 0 );
         String token = null;
         
+        // Move past a single blank
         int c=0; 
         if( !state.eoln && !state.eof )
         {
@@ -259,17 +260,17 @@ public class InputManager
      */
     public String getToEOLN() throws Exception
     {
-        String result = "";
+        builder.setLength( 0 );
         while( !state.eoln && !state.eof )
         {
             int c = nextch();
             if( state.eoln || state.eof ) break;
-            result += (char)c;
+            builder.append( (char)c );
         }
         
         state.tokenno++;
         state.lastfixed = false;
-        return result;
+        return builder.toString();
     }
     
     /**
@@ -281,8 +282,7 @@ public class InputManager
      */
     public String getFixedField( int width ) throws Exception
     {
-        String result = "";
-                
+        builder.setLength( 0 );
         for( int i=0; i<width; i++ )
         {
             int c = nextch();
@@ -294,12 +294,12 @@ public class InputManager
                 break;
             }
             
-            result += (char)c;
+            builder.append( (char)c );
         }
            
         state.tokenno++;
         state.lastfixed = true;
-        return result;
+        return builder.toString();
     }
           
     /**
@@ -314,7 +314,7 @@ public class InputManager
         anchor.set( state );
         anchor.pos = map.position();
         anchor.lastPos = lastPos;
-        anchors.addFirst( anchor );
+        anchors.addLast( anchor );
     }
     
     /**
@@ -324,7 +324,7 @@ public class InputManager
      */
     public void returnToAnchor() throws VIVAException
     {
-        State anchor = anchors.getFirst();
+        State anchor = anchors.getLast();
         state.set( anchor );
         map.position( state.pos );
         lastPos = state.lastPos;
@@ -343,7 +343,7 @@ public class InputManager
         }
         else
         {
-            anchors.removeFirst();
+            anchors.removeLast();
         }
     }
         

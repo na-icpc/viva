@@ -65,6 +65,18 @@ public class VIVAContext
     /** Allow Linux style EOF: A Single EOLN */
     public boolean allowLinuxEOF = true;
     
+    /** Use Java ints (allows leading 0s and +) */
+    public boolean javaint = false;
+    
+    /** Use Java longs (allows leading 0s and +) */
+    public boolean javalong = false;
+    
+    /** Use Java doubles (allows leading 0s, +, and scientific notation */
+    public boolean javadouble = false;
+    
+    /** Use Java floats (allows leading 0s, +, and scientific notation */
+    public boolean javafloat = false;    
+    
     /**
      * Create a Context.
      */

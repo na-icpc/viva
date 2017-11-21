@@ -92,7 +92,7 @@ public abstract class ValuePattern implements Pattern
         { 
             if( token!=null )
             {
-                value = getValue( token );
+                value = getValue( token, context );
             }
             else
             {
@@ -115,7 +115,9 @@ public abstract class ValuePattern implements Pattern
         return success;
     }
     
-    public abstract Object getValue( String token ) throws Exception;
+    public static java.util.regex.Pattern goodDouble = java.util.regex.Pattern.compile( "\\-?(0|[1-9][0-9]*)(\\.[0-9]*)?" );
+    
+    public abstract Object getValue( String token, VIVAContext context ) throws Exception;
     
     public abstract Class<?> getType();
     

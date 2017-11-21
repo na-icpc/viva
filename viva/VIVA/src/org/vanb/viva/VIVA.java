@@ -201,6 +201,10 @@ public class VIVA
         context.addParameter( new IgnoreEOLNParameter() );
         context.addParameter( new EOLNStyleParameter() );
         context.addParameter( new EOFStyleParameter() );
+        context.addParameter( new JavaIntParameter() );
+        context.addParameter( new JavaLongParameter() );
+        context.addParameter( new JavaDoubleParameter() );
+        context.addParameter( new JavaFloatParameter() );
     }
 
     /**

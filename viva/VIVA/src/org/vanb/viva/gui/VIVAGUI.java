@@ -10,7 +10,6 @@ import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -21,6 +20,9 @@ import java.io.InputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.PrintStream;
+import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -29,6 +31,9 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.border.BevelBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -80,12 +85,8 @@ public class VIVAGUI implements ActionListener
      * OutputStream.
      */
     private PrintStream ps;
-
-    /**
-     * This is the thread that will read from the input stream and pass the text
-     * along to the outputs text box.
-     */
-    OutputsWriter writer;
+    
+    private Actions actions = new Actions();
 
     /**
      * Adjust the line numbers on the left side of the Pattern editor.
@@ -204,15 +205,17 @@ public class VIVAGUI implements ActionListener
     }
 
     /**
-     * This thread reads VIVA output from the output stream given to VIVA, and
-     * writes it to the Outputs Text box.
+     * A worker for the Swing thread to update the Outputs text widget.
      * 
      * @author vanb
      */
-    private class OutputsWriter extends Thread
+    private class OutputsWorker extends SwingWorker<String,String>
     {
         /** The input stream */
         private InputStream in;
+        
+        /** Build a line of input */
+        private StringBuilder builder = new StringBuilder();
 
         /**
          * Create one of these, remember the input stream.
@@ -220,30 +223,48 @@ public class VIVAGUI implements ActionListener
          * @param stream
          *            The input stream to read
          */
-        public OutputsWriter( InputStream stream )
+        public OutputsWorker( InputStream stream )
         {
             in = stream;
         }
 
+        @Override
         /**
-         * Go!
+         * In background, collect characters into lines and send them to Swing to be processed. 
          */
-        public void run()
+        protected String doInBackground() throws Exception
         {
-            for( ;; )
+            while( !isCancelled() )
             {
                 try
                 {
                     char ch = (char) in.read();
-                    outputsText.append( "" + ch );
+                    builder.append( ch );
+                    if( ch=='\n' )
+                    {
+                        publish( builder.toString() );
+                        builder.setLength( 0 );
+                    }
                 }
                 catch( IOException ioe )
                 {
-                    System.err.println( "IO Exception in OutputsWriter. " + ioe.getMessage() );
+                    System.err.println( "IO Exception in OutputsWorker. " + ioe.getMessage() );
                     break;
                 }
             }
+            return null;
         }
+        
+        /**
+         * Publish a list of lines to the Outputs text area.
+         * 
+         * @param lines A list of lines
+         */
+        protected void process( List<String> lines )
+        {
+            for( String line : lines ) outputsText.append( line );
+        }
+        
     }
 
     /**
@@ -323,8 +344,9 @@ public class VIVAGUI implements ActionListener
         }
 
         // Start the writer thread
-        writer = new OutputsWriter( is );
-        writer.start();
+//        writer = new OutputsWriter( is );
+//        writer.start();
+        (new OutputsWorker( is )).execute();
 
         // Wrap the OutputStream in a PrintStream
         ps = new PrintStream( os );
@@ -339,6 +361,7 @@ public class VIVAGUI implements ActionListener
         // This is the dialog for choosing input files to test.
         inputFileChooser = new JFileChooser();
         inputFileChooser.setMultiSelectionEnabled( true );
+        inputFileChooser.setFileFilter( new FileNameExtensionFilter( "Input files", "in" ) );
         inputFileChooser.setDialogTitle( "Judge Input File(s)" );
 
         // The overall frame
@@ -407,7 +430,7 @@ public class VIVAGUI implements ActionListener
         frmViva.getContentPane().add( btnLoadInput, "flowx,cell 2 4" );
 
         // VIVA!
-        lblViva = new JLabel( "VIVA" );
+        lblViva = new JLabel( "VIVA!" );
         lblViva.setFont( new Font( "Arial", Font.PLAIN, 99 ) );
         frmViva.getContentPane().add( lblViva, "cell 2 6,alignx center,aligny center" );
 
@@ -422,11 +445,12 @@ public class VIVAGUI implements ActionListener
         outputsText.setFont( new Font( "Tahoma", Font.PLAIN, 14 ) );
         outputsText.setBackground( Color.WHITE );
         outputsText.setEditable( false );
-        ((DefaultCaret) outputsText.getCaret()).setUpdatePolicy( DefaultCaret.ALWAYS_UPDATE );
+        ((DefaultCaret) outputsText.getCaret()).setUpdatePolicy( DefaultCaret.UPDATE_WHEN_ON_EDT );
 
         // The scroll bars around the outputs text
         outputsPane = new JScrollPane();
         outputsPane.setViewportView( outputsText );
+        outputsPane.setVerticalScrollBarPolicy( ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS );
         frmViva.getContentPane().add( outputsPane, "cell 0 8 4 1,grow" );
 
         // The button to test the identified input files
@@ -457,6 +481,8 @@ public class VIVAGUI implements ActionListener
         btnParsePattern.addActionListener( this );
         btnParsePattern.setMnemonic( KeyEvent.VK_P );
         frmViva.getContentPane().add( btnParsePattern, "cell 2 1,alignx center,aligny center" );
+        
+        new Thread( actions ).start();
 
         // One last little bit of business.
         // The only place on the whole application where the user can type text
@@ -474,6 +500,191 @@ public class VIVAGUI implements ActionListener
             }
         } );
     }
+    /**
+     * A thread to perform the actions of the VIVAGUI outside of the Swing thread(s).
+     * 
+     * @author vanb
+     */
+    public class Actions implements Runnable
+    {
+        /** A queue of actions to perform. */
+        public BlockingQueue<Action> todo = new ArrayBlockingQueue<Action>(10);
+        
+        @Override
+        /**
+         * Perform actions!
+         */
+        public void run()
+        {            
+            try
+            {
+                for(;;) todo.take().run();
+            }
+            catch( InterruptedException e )
+            {
+            }           
+        }
+    }
+    
+    /**
+     * One action.
+     * 
+     * @author vanb
+     */
+    public class Action implements Runnable
+    {
+        /** Which button was pressed? */
+        private JButton source;
+        
+        /**
+         * Create an Action.
+         * 
+         * @param source Which button was pressed?
+         */
+        public Action( JButton source )
+        {
+            this.source = source;
+        }
+        
+        @Override
+        /** 
+         * Perform the action!
+         */
+        public void run()
+        {
+            if( source == btnLoadPattern )
+            {
+                // Load a Pattern.
+
+                // Invoke the Chooser
+                patternFileChooser.setApproveButtonText( "Load" );
+                patternFileChooser.showOpenDialog( frmViva );
+                File patternFile = null;
+                try
+                {
+                    // Get the chosen file (if there was one)
+                    patternFile = patternFileChooser.getSelectedFile();
+                    if( patternFile != null )
+                    {
+                        // Read it into the Pattern editor
+                        FileReader fr = new FileReader( patternFile );
+                        patternEditor.read( fr, "VIVA Pattern" );
+                        patternEditor.getDocument().addDocumentListener( listener );
+                        patternFileField.setText( patternFile.getAbsolutePath() );
+                        setLineNumbers();
+                        write( "Successfully loaded Pattern file " + patternFile.getAbsolutePath() );
+
+                        // Parse it
+                        parse();
+                    }
+                }
+                catch( FileNotFoundException fnfe )
+                {
+                    write( "Unable to find Pattern file: " + patternFile.getAbsolutePath() );
+                }
+                catch( IOException ioe )
+                {
+                    write( "Unable to read Pattern file: " + patternFile.getAbsolutePath() );
+                }
+            }
+            else if( source == btnSavePattern || source == btnSaveAsPattern )
+            {
+                // Save a pattern, or SaveAs a Pattern.
+
+                // The only real difference is that SaveAs invokes the Chooser
+                if( source == btnSaveAsPattern )
+                {
+                    patternFileChooser.setApproveButtonText( "Save" );
+                    patternFileChooser.showSaveDialog( frmViva );
+                }
+
+                // Get the file (if any). If Save (instead of SaveAs),
+                // just use whatever file is still in the Chooser.
+                File patternFile = patternFileChooser.getSelectedFile();
+                try
+                {
+                    if( patternFile != null )
+                    {
+                        FileOutputStream fos = new FileOutputStream( patternFile );
+                        fos.write( patternEditor.getText().getBytes() );
+                        write( "Successfully saved Pattern file " + patternFile.getAbsolutePath() );
+                        fos.close();
+
+                        // Record the filename
+                        patternFileField.setText( patternFile.getAbsolutePath() );
+
+                        // Disable Save and SaveAs until the user makes more changes
+                        btnSavePattern.setEnabled( false );
+                        btnSaveAsPattern.setEnabled( false );
+                    }
+                }
+                catch( IOException ioe )
+                {
+                    write( "Unable to write Pattern file: " + patternFile.getAbsolutePath() );
+                }
+
+            }
+            else if( source == btnParsePattern )
+            {
+                // Parse a Pattern
+
+                parse();
+            }
+            else if( source == btnLoadInput )
+            {
+                // Identify Input files for testing
+
+                // Invoke the Chooser
+                inputFileChooser.setApproveButtonText( "Identify" );
+                inputFileChooser.showOpenDialog( frmViva );
+
+                // Get the selected file(s) (if any)
+                File inputFiles[] = inputFileChooser.getSelectedFiles();
+                if( inputFiles != null && inputFiles.length > 0 )
+                {
+                    // We don't do anything with them here.
+                    // We don't "read them in" or anything like that.
+                    // We'll test them as they are, on disk.
+                    // All we do is build a String with all of their names,
+                    // and display it in the Input Files text field.
+                    String fileNames = "";
+                    boolean first = true;
+                    for( File file : inputFiles )
+                    {
+                        if( first ) first = false;
+                        else fileNames += ";";
+                        fileNames += file.getAbsolutePath();
+                    }
+                    inputFilesField.setText( fileNames );
+                    write( "Successfully identified Input file(s) " + fileNames );
+                }
+            }
+            else if( source == btnTestInput )
+            {
+                // Test Input files
+
+                // Get the files (if any) directly from the Chooser.
+                File inputFiles[] = inputFileChooser.getSelectedFiles();
+                if( inputFiles != null && inputFiles.length > 0 )
+                {
+                    for( File file : inputFiles )
+                    {
+                        // VIVA!
+                        viva.testInputFile( file.getAbsolutePath() );
+
+                        // Some nice spacing
+                        ps.println();
+                    }
+                }
+            }
+            else if( source == btnClearOutput )
+            {
+                // Clear the Outputs window
+
+                outputsText.setText( "" );
+            }
+        }
+    }
 
     /**
      * Performs all of the actions for all of the buttons.
@@ -485,137 +696,14 @@ public class VIVAGUI implements ActionListener
     {
         // Figure out which button was pressed
         JButton source = (JButton) ae.getSource();
-
-        if( source == btnLoadPattern )
+        
+        try
         {
-            // Load a Pattern.
-
-            // Invoke the Chooser
-            patternFileChooser.setApproveButtonText( "Load" );
-            patternFileChooser.showOpenDialog( frmViva );
-            File patternFile = null;
-            try
-            {
-                // Get the chosen file (if there was one)
-                patternFile = patternFileChooser.getSelectedFile();
-                if( patternFile != null )
-                {
-                    // Read it into the Pattern editor
-                    FileReader fr = new FileReader( patternFile );
-                    patternEditor.read( fr, "VIVA Pattern" );
-                    patternEditor.getDocument().addDocumentListener( listener );
-                    patternFileField.setText( patternFile.getAbsolutePath() );
-                    setLineNumbers();
-                    write( "Successfully loaded Pattern file " + patternFile.getAbsolutePath() );
-
-                    // Parse it
-                    parse();
-                }
-            }
-            catch( FileNotFoundException fnfe )
-            {
-                write( "Unable to find Pattern file: " + patternFile.getAbsolutePath() );
-            }
-            catch( IOException ioe )
-            {
-                write( "Unable to read Pattern file: " + patternFile.getAbsolutePath() );
-            }
+            // Put this Action on the To Do list.
+            actions.todo.put( new Action( source ) );
         }
-        else if( source == btnSavePattern || source == btnSaveAsPattern )
+        catch( InterruptedException e )
         {
-            // Save a pattern, or SaveAs a Pattern.
-
-            // The only real difference is that SaveAs invokes the Chooser
-            if( source == btnSaveAsPattern )
-            {
-                patternFileChooser.setApproveButtonText( "Save" );
-                patternFileChooser.showSaveDialog( frmViva );
-            }
-
-            // Get the file (if any). If Save (instead of SaveAs),
-            // just use whatever file is still in the Chooser.
-            File patternFile = patternFileChooser.getSelectedFile();
-            try
-            {
-                if( patternFile != null )
-                {
-                    FileOutputStream fos = new FileOutputStream( patternFile );
-                    fos.write( patternEditor.getText().getBytes() );
-                    write( "Successfully saved Pattern file " + patternFile.getAbsolutePath() );
-                    fos.close();
-
-                    // Record the filename
-                    patternFileField.setText( patternFile.getAbsolutePath() );
-
-                    // Disable Save and SaveAs until the user makes more changes
-                    btnSavePattern.setEnabled( false );
-                    btnSaveAsPattern.setEnabled( false );
-                }
-            }
-            catch( IOException ioe )
-            {
-                write( "Unable to write Pattern file: " + patternFile.getAbsolutePath() );
-            }
-
-        }
-        else if( source == btnParsePattern )
-        {
-            // Parse a Pattern
-
-            parse();
-        }
-        else if( source == btnLoadInput )
-        {
-            // Identify Input files for testing
-
-            // Invoke the Chooser
-            inputFileChooser.setApproveButtonText( "Identify" );
-            inputFileChooser.showOpenDialog( frmViva );
-
-            // Get the selected file(s) (if any)
-            File inputFiles[] = inputFileChooser.getSelectedFiles();
-            if( inputFiles != null && inputFiles.length > 0 )
-            {
-                // We don't do anything with them here.
-                // We don't "read them in" or anything like that.
-                // We'll test them as they are, on disk.
-                // All we do is build a String with all of their names,
-                // and display it in the Input Files text field.
-                String fileNames = "";
-                boolean first = true;
-                for( File file : inputFiles )
-                {
-                    if( first ) first = false;
-                    else fileNames += ";";
-                    fileNames += file.getAbsolutePath();
-                }
-                inputFilesField.setText( fileNames );
-                write( "Successfully identified Input file(s) " + fileNames );
-            }
-        }
-        else if( source == btnTestInput )
-        {
-            // Test Input files
-
-            // Get the files (if any) directly from the Chooser.
-            File inputFiles[] = inputFileChooser.getSelectedFiles();
-            if( inputFiles != null && inputFiles.length > 0 )
-            {
-                for( File file : inputFiles )
-                {
-                    // VIVA!
-                    viva.testInputFile( file.getAbsolutePath() );
-
-                    // Some nice spacing
-                    ps.println();
-                }
-            }
-        }
-        else if( source == btnClearOutput )
-        {
-            // Clear the Outputs window
-
-            outputsText.setText( "" );
         }
     }
 }

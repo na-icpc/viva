@@ -552,6 +552,8 @@ public class VIVAGUI implements ActionListener
          */
         public void run()
         {
+            frmViva.setEnabled( false );
+            
             if( source == btnLoadPattern )
             {
                 // Load a Pattern.
@@ -683,6 +685,8 @@ public class VIVAGUI implements ActionListener
 
                 outputsText.setText( "" );
             }
+            
+            frmViva.setEnabled( true );
         }
     }
 

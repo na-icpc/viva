@@ -1,5 +1,6 @@
 package org.vanb.viva;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -148,6 +149,16 @@ public class VIVA
     }
     
     /**
+     * Get the Context.
+     * 
+     * @return Context
+     */
+    protected VIVAContext getContext()
+    {
+        return context;
+    }
+    
+    /**
      * VIVA constructor adds all of the standard VIVA Functions.
      */
     public VIVA()
@@ -215,25 +226,180 @@ public class VIVA
      *  0 = All files pass
      * >0 = Number of failures
      * 
-     * @param args Command-line args - the first is a file with the pattern, the rest are input files to test.
+     * @param args Command-line args 
      */
     public static void main( String[] args ) throws Exception
     {
         int retcode  = 0;
         if( args.length==0 )
         {
-            System.out.println( "Usage: VIVA <pattern file> (<input file>)*");
+            System.out.println( "Usage: VIVA [parameters] <pattern file> (<input file>)*");
+            System.out.println( "Parameters:" );
+            System.out.println( "-deps=<double>" );
+            System.out.println( "\tSet Double Precision Epsilon" );
+            System.out.println( "\tDefault is 0.000001, must be >=0.0" );
+            System.out.println( "-feps=<float>" );
+            System.out.println( "\tSet Floating Point Epsilon" );
+            System.out.println( "\tDefault is 0.000001, must be >=0.0" );
+            System.out.println( "-maxerrs=<integer>" );
+            System.out.println( "\tSet maximum number of errors before quitting on an input file" );
+            System.out.println( "\tDefault is 25, must be >=0" );
+            System.out.println( "-eofstyle=windows|linux|both|system" );
+            System.out.println( "\tSet the EOF style to accept (File ends with EOLN?)" );
+            System.out.println( "\tDefault is 'system'" );
+            System.out.println( "-eolnstyle=windows|linux|mac|system" );
+            System.out.println( "\tSet the EOLN character(s) to accept (linux=\\n, mac=\\r, windows=\\r\\n)" );
+            System.out.println( "\tDefault is 'system'" );
+            System.out.println( "-ignoreblanks=true|t|yes|y|1|false|f|no|n|0 (lower or upper case)" );
+            System.out.println( "\tShould VIVA ignore extra blanks?" );
+            System.out.println( "\tDefault is 'false'" );
+            System.out.println( "-ignoreeoln=true|t|yes|y|1|false|f|no|n|0 (lower or upper case)" );
+            System.out.println( "\tShould VIVA ignore newlines and allow patterns to extend across multiple lines?" );
+            System.out.println( "\tDefault is 'false'" );
+            System.out.println( "-javaint=true|t|yes|y|1|false|f|no|n|0 (lower or upper case)" );
+            System.out.println( "\tShould VIVA use Java's more liberal integer parsing? (Allows leading '+' and 0s)" );
+            System.out.println( "\tDefault is 'false'" );
+            System.out.println( "-javalong=true|t|yes|y|1|false|f|no|n|0 (lower or upper case)" );
+            System.out.println( "\tShould VIVA use Java's more liberal long parsing? (Allows leading '+' and 0s)" );
+            System.out.println( "\tDefault is 'false'" );
+            System.out.println( "-javafloat=true|t|yes|y|1|false|f|no|n|0 (lower or upper case)" );
+            System.out.println( "\tShould VIVA use Java's more liberal floating point parsing? (Allows leading '+' and 0s, and scientific notation)" );
+            System.out.println( "\tDefault is 'false'" );
+            System.out.println( "-javadouble=true|t|yes|y|1|false|f|no|n|0 (lower or upper case)" );
+            System.out.println( "\tShould VIVA use Java's more liberal double precision parsing? (Allows leading '+' and 0s, and scientific notation)" );
+            System.out.println( "\tDefault is 'false'" );
             retcode = -2;
         }
         else
         {
-            VIVA viva = new VIVA();                    
-            if( !viva.setPattern( new FileInputStream( args[0] ) ) ) retcode = -1;
+            VIVA viva = new VIVA();      
+            
+            int arg = 0;
+            VIVAContext context = viva.getContext();
+            
+            // Check for parameters. They look like this: -parameter=value
+            for( arg=0; arg<args.length && args[arg].startsWith( "-" ) && retcode==0; ++arg )
+            {
+                // Look for the split between parameter name & value
+                int p = args[arg].indexOf( '=' );
+                if( p<0 )
+                {
+                    System.out.println( "No value specified for parameter " + args[arg] );
+                    retcode = -2;
+                }
+                
+                String parm=null;
+                Object value=null;
+                Parameter parameter=null;
+                
+                if( retcode==0 )
+                {
+                    // Look for this particular parameter
+                    parm = args[arg].substring( 1, p );
+                    parameter = context.parameters.get( parm );
+                    if( parameter==null ) 
+                    {
+                        System.out.println( "No parameter named " + parm );
+                        retcode = -2;
+                    }
+                }
+                
+                if( retcode==0 )
+                {
+                    //Parse the value
+                    String valstr = args[arg].substring( p+1 );
+                    Class<?> type = parameter.getType();   
+                    if( type==Double.class )
+                    {
+                        try
+                        {
+                            value = Double.parseDouble( valstr );
+                        }
+                        catch( NumberFormatException nfe )
+                        {
+                            System.out.println( "Cannot parse " + valstr + " as a Double." );
+                            retcode = -2;
+                        }
+                    }
+                    else if( type==Float.class )
+                    {
+                        try
+                        {
+                            value = Float.parseFloat( valstr );
+                        }
+                        catch( NumberFormatException nfe )
+                        {
+                            System.out.println( "Cannot parse " + valstr + " as a Float." );
+                            retcode = -2;
+                        }
+                    }
+                    else if( type==Integer.class )
+                    {
+                        try
+                        {
+                            value = Integer.parseInt( valstr );
+                        }
+                        catch( NumberFormatException nfe )
+                        {
+                            System.out.println( "Cannot parse " + valstr + " as an Integer." );
+                            retcode = -2;
+                        }
+                    }
+                    else value = valstr.toLowerCase();
+                    
+                    if( retcode==0 )
+                    {
+                        // Check to see if the value is valid
+                        if( !parameter.isvalid( value ) )
+                        {
+                            System.out.println( valstr + " is not a valid value for parameter " + parm );
+                            retcode = -2;
+                        }
+                    }
+                    
+                    if( retcode==0 )
+                    {
+                        // Success? Set the parameter
+                        context.setParameter( parm, value );
+                    }
+                    else
+                    {
+                        // Failure? Give the user a little more info.
+                        System.out.println( parameter.usage() );
+                    }
+                }
+            }
             
             if( retcode==0 )
             {
-                for( int i=1; i<args.length; i++ )
+                // Look for pattern file
+                if( arg>=args.length )
                 {
+                    System.out.println( "No pattern specified." );
+                    retcode = -2;
+                }
+                else 
+                {
+                    if( !new File(args[arg]).exists() )
+                    {
+                        System.out.println( "Pattern file " + args[arg] + " doesn't exist!" );
+                        retcode = -1;
+                    }
+                    else if( !viva.setPattern( new FileInputStream( args[arg] ) ) ) retcode = -1;
+                    else ++arg;
+                }
+            }
+            
+            if( retcode==0 )
+            {
+                // Process input files
+                for( int i=arg; i<args.length; i++ )
+                {
+                    if( !new File(args[i]).exists() )
+                    {
+                        System.out.println( "File " +args[i] + " doesn't exist!" );
+                        ++retcode;
+                    }
                     if( !viva.testInputFile( args[i] ) ) ++retcode;
                 }
             }

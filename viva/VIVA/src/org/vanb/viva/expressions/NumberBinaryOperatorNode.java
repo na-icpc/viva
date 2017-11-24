@@ -1,7 +1,6 @@
 package org.vanb.viva.expressions;
 
 import org.vanb.viva.ArithmeticFunction;
-import org.vanb.viva.VIVA;
 import org.vanb.viva.parser.ParseException;
 import org.vanb.viva.utils.VIVAContext;
 import org.vanb.viva.utils.VIVAException;
@@ -9,8 +8,8 @@ import org.vanb.viva.utils.VIVAException;
 public abstract class NumberBinaryOperatorNode extends BinaryOperatorNode
 {
     private Class<?> type;
-    protected double deps = VIVA.DEPS;
-    protected float feps = VIVA.FEPS;
+    protected double deps;
+    protected float feps;
     
     @Override
     public void instantiate( ExpressionNode lhs, ExpressionNode rhs ) throws ParseException

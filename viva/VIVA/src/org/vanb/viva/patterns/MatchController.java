@@ -53,7 +53,6 @@ public class MatchController extends PatternListController
             if( terminate ) 
             {
                 context.input.raiseAnchor();
-                try { context.input.getNextLine(); } catch( Exception e ) {} 
                 break;
             }
             else

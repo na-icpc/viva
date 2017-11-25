@@ -7,7 +7,7 @@ public class FloatPattern extends ValuePattern
     @Override
     public Object getValue( String token, VIVAContext context ) throws Exception
     {
-        if( !context.javadouble && !ValuePattern.goodDouble.matcher( token ).matches() ) throw new Exception();
+        if( !context.javafloat && !ValuePattern.goodDouble.matcher( token ).matches() ) throw new Exception();
         return new Float( token.trim() );
     }
     

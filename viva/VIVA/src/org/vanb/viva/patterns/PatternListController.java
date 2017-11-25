@@ -11,8 +11,9 @@ import org.vanb.viva.utils.VIVAException;
  */
 public class PatternListController implements Pattern
 {
-    PatternList patternList;
-    ConstraintList constraints;
+    protected PatternList patternList;
+    protected ConstraintList constraints;
+    protected boolean multiline = false;
     
     /**
      * Create a Pattern to control a pattern list by looking for a sentinel pattern.
@@ -57,4 +58,11 @@ public class PatternListController implements Pattern
         return success;
     }
 
+    /**
+     * Tell this MatchController that it's controlling a MultiLine sequence.
+     */
+    public void setMultiLine()
+    {
+        multiline = true;
+    }
 }

@@ -10,8 +10,8 @@ import org.vanb.viva.utils.VIVAException;
  */
 public class MatchController extends PatternListController
 {
-    Pattern terminatingPattern;
-    
+    private Pattern terminatingPattern;
+
     /**
      * Create a Pattern to control a pattern list by looking for a sentinel pattern.
      */
@@ -53,6 +53,10 @@ public class MatchController extends PatternListController
             if( terminate ) 
             {
                 context.input.raiseAnchor();
+                if( multiline )
+                {
+                    try { context.input.getNextLine(); } catch( Exception e ) {};
+                }
                 break;
             }
             else
@@ -74,5 +78,4 @@ public class MatchController extends PatternListController
         
         return success;
     }
-
 }

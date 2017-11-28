@@ -87,6 +87,7 @@ public class InputManager
     {
         RandomAccessFile reader = new RandomAccessFile( filename, "r" ); 
         map = reader.getChannel().map( MapMode.READ_ONLY, 0L, reader.length() );
+        map.load();
         reader.close();
         context = c;
     }
@@ -509,5 +510,14 @@ public class InputManager
     public int getToken()
     {
         return state.tokenno;
+    }
+    
+    /**
+     * Close
+     */
+    public void close()
+    {
+        map = null;
+        System.gc();
     }
 }

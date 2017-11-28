@@ -113,6 +113,7 @@ public class VIVA
                 context.input = new InputManager( filename, context );
                 result = pattern.test( context );
                 context.input.eofChecks();
+                context.input.close();
             }
             catch( Exception e )
             {

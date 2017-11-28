@@ -133,4 +133,12 @@ public abstract class Parameter
      * @param value New value for this Parameter.
      */
     public abstract void action( VIVAContext context, Object value );
+    
+    /**
+     * Convert a String to the type required, or null if it can't be parsed.
+     * 
+     * @param token A String
+     * @return The Object or null
+     */
+    public abstract Object convert( String token );
 }

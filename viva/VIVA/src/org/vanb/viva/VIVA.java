@@ -153,7 +153,7 @@ public class VIVA
      * 
      * @return Context
      */
-    protected VIVAContext getContext()
+    public VIVAContext getContext()
     {
         return context;
     }

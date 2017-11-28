@@ -22,4 +22,19 @@ public abstract class FloatRangeParameter extends Parameter
         return "Must be a float between " + lo + " and " + hi;
     }
 
+    public Object convert( String token )
+    {
+        Float value;
+        
+        try
+        {
+            value = Float.parseFloat( token );
+        }
+        catch( NumberFormatException nfe )
+        {
+            value = null;
+        }
+        
+        return value;
+    }
 }

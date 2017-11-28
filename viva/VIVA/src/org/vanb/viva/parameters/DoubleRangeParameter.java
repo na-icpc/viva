@@ -22,4 +22,19 @@ public abstract class DoubleRangeParameter extends Parameter
         return "Must be a double between " + lo + " and " + hi;
     }
 
+    public Object convert( String token )
+    {
+        Double value;
+        
+        try
+        {
+            value = Double.parseDouble( token );
+        }
+        catch( NumberFormatException nfe )
+        {
+            value = null;
+        }
+        
+        return value;
+    }
 }

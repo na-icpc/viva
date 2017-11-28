@@ -11,7 +11,7 @@ import java.util.Arrays;
 public abstract class StringListParameter extends Parameter
 {
     /** List of possible values */
-    protected String values[];
+    public String values[];
     
     /**
      * Create a StringListParameter. 
@@ -69,5 +69,11 @@ public abstract class StringListParameter extends Parameter
             
         return message;
     }
-
+    
+    public Object convert( String token )
+    {
+        String result = null;
+        for( String value : values ) if( value.equals( token ) ) result = token;;
+        return result;
+    }
 }

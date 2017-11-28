@@ -3,10 +3,14 @@ package org.vanb.viva.gui;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -20,28 +24,49 @@ import java.io.InputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.PrintStream;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
+import javax.swing.DefaultCellEditor;
+import javax.swing.InputVerifier;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingWorker;
 import javax.swing.border.BevelBorder;
+import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableModel;
 import javax.swing.text.DefaultCaret;
 
 import net.miginfocom.swing.MigLayout;
 
 import org.vanb.viva.VIVA;
+import org.vanb.viva.parameters.Parameter;
+import org.vanb.viva.parameters.StringListParameter;
+import org.vanb.viva.utils.VIVAContext;
 
 public class VIVAGUI implements ActionListener
 {
@@ -66,9 +91,17 @@ public class VIVAGUI implements ActionListener
 
     private JFileChooser patternFileChooser;
     private JFileChooser inputFileChooser;
+    
+    private JTable parametersTable;
+    private JDialog parametersDialog;
+    
+    private JTextField parametersError;
+    
+    private TableCellEditor editors[];
 
     /** VIVA! */
     private VIVA viva;
+    private VIVAContext context;
 
     /**
      * IO stuff. We'll create a connected input & output streams. We'll pass the
@@ -265,6 +298,51 @@ public class VIVAGUI implements ActionListener
         }
         
     }
+    
+    private class ParameterInputVerifier extends InputVerifier
+    {
+        private Parameter parameter;
+        private String lastGood;
+        private int row;
+        
+        public ParameterInputVerifier( Parameter parameter, String lastGood, int row )
+        {
+            this.parameter = parameter;    
+            this.lastGood = lastGood;
+            this.row = row;
+        }
+        
+        public boolean verify( JComponent field )
+        {
+            boolean ok = true;
+            JTextField textField = (JTextField)field;
+            String text = textField.getText();
+
+            Object value = parameter.convert( text );
+            ok = value!=null;
+
+            if( ok ) ok = parameter.isvalid( value );
+            
+            if( ok ) 
+            {
+                if( !text.equals( lastGood ) )
+                {
+                    parametersError.setText( "Warning: Changes will not take effect until Pattern is Parsed." );
+                    btnParsePattern.setEnabled( true );
+                }
+                lastGood = text;
+            }
+            else
+            {
+                textField.setText( lastGood );
+                parametersTable.getModel().setValueAt( lastGood, row, 1 );
+                parametersError.setText( parameter.getName() + " " + parameter.usage() );
+            }
+            
+            return ok;
+        }
+        
+    }
 
     /**
      * Launch the application.
@@ -301,6 +379,18 @@ public class VIVAGUI implements ActionListener
      */
     private void parse()
     {
+        // First, reset parameters        
+        TableModel model = parametersTable.getModel();
+        System.err.println( model.getRowCount() );
+        for( int i=0; i<model.getRowCount(); i++ )
+        {
+            String parm = model.getValueAt( i, 0 ).toString();
+            Parameter parameter = context.parameters.get( parm );
+            Object value = parameter.convert( model.getValueAt( i, 1 ).toString() );
+            parameter.setCurrentValue( value );
+            parameter.action( context, value );
+        }
+
         ps.println( "<<< Parsing Pattern >>>" );
         boolean success = viva.setPattern( 
             new ByteArrayInputStream( patternEditor.getText().getBytes() ) );
@@ -330,6 +420,7 @@ public class VIVAGUI implements ActionListener
     {
         // VIVA!
         viva = new VIVA();
+        context = viva.getContext();
 
         // Create the connected io streams
         try
@@ -365,7 +456,7 @@ public class VIVAGUI implements ActionListener
 
         // The overall frame
         frmViva = new JFrame();
-        frmViva.setTitle( "VIVA" );
+        frmViva.setTitle( "VIVA!" );
         frmViva.setBounds( 100, 100, 1442, 682 );
         frmViva.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
         frmViva.getContentPane().setLayout( new MigLayout( "",
@@ -481,6 +572,164 @@ public class VIVAGUI implements ActionListener
         btnParsePattern.setMnemonic( KeyEvent.VK_P );
         frmViva.getContentPane().add( btnParsePattern, "cell 2 1,alignx center,aligny center" );
         
+
+        // Start to work with VIVA's parameters. First, gather their names.
+        String parms[] = (String[])context.parameters.keySet().toArray(new String[context.parameters.size()]);
+        Arrays.sort( parms );
+        
+        // Build a table of Parameters
+        String columns[] = { "Parameter", "Value" };   
+        Object table[][] = new Object[parms.length][2];
+        editors = new TableCellEditor[parms.length];
+        for( int i=0; i<parms.length; i++ )
+        {
+            Parameter parameter = context.parameters.get( parms[i] );
+            table[i][0] = parms[i];
+            if( parameter instanceof StringListParameter ) 
+            {
+                // If it's a StringListParameter, we'll set up a ComboBox for it.
+                String values[] = ((StringListParameter) parameter).values;
+                List<String> v = Arrays.asList( values );
+                
+                // If it's a True/False parameter, then we'll only offer true and false,
+                // not all the others (like t, f, yes, no, y, n, 0, 1)
+                if( v.contains( "true" ) && v.contains( "false" ) ) values = new String[] { "true", "false" };
+                
+                // Create the pulldown menu (aka JComboBox) and make it the default editor for this cell
+                JComboBox<String> pulldown = new JComboBox<String>( values ); 
+                pulldown.setSelectedItem( parameter.getCurrentValue() );
+                editors[i] = new DefaultCellEditor( pulldown );
+                
+                // If the item changes, we'll want to display a message and enable the Parse button.
+                pulldown.addItemListener( new ItemListener()
+                {
+                    @Override
+                    public void itemStateChanged( ItemEvent ie )
+                    {
+                        if( ie.getStateChange()==ItemEvent.SELECTED )
+                        {
+                            JComboBox<String> pulldown = (JComboBox<String>)ie.getSource();
+                            parametersError.setText( "Warning: Changes will not take effect until Pattern is Parsed." );
+                            btnParsePattern.setEnabled( true );
+                        }
+                    }   
+                });
+            }
+            else 
+            {
+                // If it's not a StringListParameter, then it's a Double, Float, Integer or Long.
+                // We'll use a JTextField for them.
+                JTextField textField = new JTextField( parameter.getCurrentValue().toString() );
+                textField.setInputVerifier( new ParameterInputVerifier( parameter, textField.getText(), i ) );
+                editors[i] = new DefaultCellEditor( textField );
+                editors[i].addCellEditorListener( new CellEditorListener()
+                {
+                    @Override
+                    public void editingCanceled( ChangeEvent ce )
+                    {
+                    }
+
+                    @Override
+                    public void editingStopped( ChangeEvent ce )
+                    {
+                        DefaultCellEditor editor = (DefaultCellEditor)ce.getSource();
+                        JTextField textField = (JTextField)editor.getComponent();
+                        textField.getInputVerifier().verify( textField );
+                    }
+                });
+
+            }
+            table[i][1] = parameter.getCurrentValue();
+        }
+        
+        // Create a graphical version of that table
+        parametersTable = new JTable( table, columns )
+        {
+            public TableCellEditor getCellEditor( int row, int col )
+            {
+                return col==1 && editors[row]!=null ? editors[row] : super.getCellEditor( row, col );
+            }
+            
+            public boolean isCellEditable( int row, int col )
+            {
+                return col==1;
+            }
+        };
+        
+        parametersTable.putClientProperty( "terminateEditOnFocusLost", Boolean.TRUE );
+                   
+        // A field for error messages when changing parameter values
+        parametersError = new JTextField( "\t\t\t\t\t" );
+        parametersError.setEnabled( true );
+        parametersError.setEditable( false );
+        
+        // Put'em all together on a Panel
+        JPanel parametersPanel = new JPanel();
+        parametersPanel.setLayout( new GridBagLayout() );
+        
+        // The table
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.fill = GridBagConstraints.BOTH;   
+        constraints.gridx = 0;        
+        constraints.gridy = 0;
+        parametersPanel.add( parametersTable, constraints );
+        
+        // A place for error messages
+        constraints = new GridBagConstraints();
+        constraints.fill = GridBagConstraints.HORIZONTAL;    
+        constraints.gridx = 0;        
+        constraints.gridy = 1;
+        parametersPanel.add( parametersError, constraints );
+               
+        // Put the JPanel on a JDialog
+        parametersDialog = new JDialog( frmViva, "Parameters", true ); 
+        parametersDialog.add( parametersPanel );
+        parametersDialog.setResizable( false );
+        
+        // File menu has 2 options: Parameters, and Quit
+        JMenu fileMenu = new JMenu( "File" );
+        
+        // Option to edit Parameters
+        JMenuItem parametersMenuItem = new JMenuItem( "Parameters" );
+        parametersMenuItem.addActionListener( new ActionListener() 
+        {
+            @Override
+            public void actionPerformed( ActionEvent e )
+            {
+                parametersError.setText( "\t\t\t\t\t" );
+                parametersDialog.pack();
+                parametersDialog.setVisible( true );
+            }
+        });
+        fileMenu.add( parametersMenuItem );
+        
+        // Just to make it harder for the user to choose Quit by mistake - add some distance.
+        fileMenu.addSeparator();
+        
+        // Exit VIVA
+        JMenuItem quitMenuItem = new JMenuItem( "Quit" );
+        quitMenuItem.addActionListener( new ActionListener() 
+        {
+            @Override
+            public void actionPerformed( ActionEvent arg0 )
+            {
+                int response = JOptionPane.showConfirmDialog( 
+                        frmViva,
+                        "Really Quit VIVA?", 
+                        "Quit VIVA?", 
+                        JOptionPane.OK_CANCEL_OPTION );
+                if( response==JOptionPane.OK_OPTION ) System.exit(0);
+            }
+        });
+        fileMenu.add( quitMenuItem );
+        
+        // Put the File menu on the top menu bar
+        JMenuBar menuBar = new JMenuBar();
+        menuBar.add( fileMenu );
+        frmViva.setJMenuBar( menuBar );
+        
+        // This is a thread that performs actions when the user presses a button.
+        // It has to be separate from the Swing thread.
         new Thread( actions ).start();
 
         // One last little bit of business.
@@ -627,8 +876,7 @@ public class VIVAGUI implements ActionListener
             }
             else if( source == btnParsePattern )
             {
-                // Parse a Pattern
-
+                // Parse a Pattern. First, reset parameters.
                 parse();
             }
             else if( source == btnLoadInput )
@@ -663,7 +911,7 @@ public class VIVAGUI implements ActionListener
             else if( source == btnTestInput )
             {
                 // Test Input files
-
+                
                 // Get the files (if any) directly from the Chooser.
                 File inputFiles[] = inputFileChooser.getSelectedFiles();
                 if( inputFiles != null && inputFiles.length > 0 )

@@ -21,5 +21,21 @@ public abstract class LongRangeParameter extends Parameter
     {
         return "Must be a long between " + lo + " and " + hi;
     }
+    
+    public Object convert( String token )
+    {
+        Long value;
+        
+        try
+        {
+            value = Long.parseLong( token );
+        }
+        catch( NumberFormatException nfe )
+        {
+            value = null;
+        }
+        
+        return value;
+    }
 
 }

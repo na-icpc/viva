@@ -21,5 +21,21 @@ public abstract class IntegerRangeParameter extends Parameter
     {
         return "Must be an integer between " + lo + " and " + hi;
     }
+   
+    public Object convert( String token )
+    {
+        Integer value;
+        
+        try
+        {
+            value = Integer.parseInt( token );
+        }
+        catch( NumberFormatException nfe )
+        {
+            value = null;
+        }
+        
+        return value;
+    }
 
 }

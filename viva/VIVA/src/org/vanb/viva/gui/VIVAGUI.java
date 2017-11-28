@@ -381,7 +381,6 @@ public class VIVAGUI implements ActionListener
     {
         // First, reset parameters        
         TableModel model = parametersTable.getModel();
-        System.err.println( model.getRowCount() );
         for( int i=0; i<model.getRowCount(); i++ )
         {
             String parm = model.getValueAt( i, 0 ).toString();

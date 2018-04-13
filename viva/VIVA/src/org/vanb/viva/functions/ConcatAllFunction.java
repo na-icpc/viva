@@ -7,21 +7,22 @@ import org.vanb.viva.utils.VIVAContext;
 
 public class ConcatAllFunction implements VectorFunction
 {
-
+    private StringBuilder builder = new StringBuilder();
+    
     @Override
     public Object run( VIVAContext context, List<List<Object>> parameters )
             throws Exception
     {
-        StringBuilder sb = new StringBuilder();
+
         for( List<Object> row : parameters )
         {
             for( Object p : row )
             {
-                sb.append( p.toString() );
+                builder.append( p.toString() );
             }
         }
         
-        return sb.toString();
+        return builder.toString();
     }
 
     @Override

@@ -25,17 +25,19 @@ public class ConcatenateFunction implements ScalarFunction
     {
         return "concat(args1,arg2,...)";
     }
+    
+    private StringBuilder builder = new StringBuilder();
 
     @Override
     public Object run( VIVAContext context, List<Object> parameters )
             throws Exception
     {
-        String result = "";
+        builder.setLength( 0 );
         for( Object parameter : parameters )
         {
-            result += parameter.toString();
+            builder.append( parameter.toString() );
         }
-        return result;
+        return builder.toString();
     }
 
 }

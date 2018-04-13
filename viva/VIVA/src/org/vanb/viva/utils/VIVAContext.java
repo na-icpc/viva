@@ -77,6 +77,9 @@ public class VIVAContext
     /** Use Java floats (allows leading 0s, +, and scientific notation */
     public boolean javafloat = false;    
     
+    /** Place for global stuff, if a function needs it. */
+    public HashMap<String,Object> globals = new HashMap<String,Object>();
+    
     /**
      * Create a Context.
      */

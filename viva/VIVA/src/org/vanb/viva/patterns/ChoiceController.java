@@ -5,11 +5,11 @@ import java.util.List;
 import org.vanb.viva.utils.VIVAContext;
 import org.vanb.viva.utils.VIVAException;
 
-public class ChoicePattern implements Pattern
+public class ChoiceController implements Pattern
 {
     private List<Pattern> choices;
     
-    public ChoicePattern( List<Pattern> c )
+    public ChoiceController( List<Pattern> c )
     {
         choices = c;   
     }

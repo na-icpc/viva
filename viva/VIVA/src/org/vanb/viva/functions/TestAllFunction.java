@@ -22,7 +22,7 @@ public class TestAllFunction implements VectorFunction
         }
         context.err.println( "---------------" );
         
-        return new Boolean(true);
+        return Boolean.TRUE;
     }
 
     @Override

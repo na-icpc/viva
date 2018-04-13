@@ -110,6 +110,7 @@ public class VIVA
         {
             try
             {
+                context.globals.clear();
                 context.input = new InputManager( filename, context );
                 result = pattern.test( context );
                 context.input.eofChecks();
@@ -164,6 +165,7 @@ public class VIVA
      */
     public VIVA()
     {
+        addFunction( new AddToSetFunction() );   
         addFunction( new ArcCosineFunction() );   
         addFunction( new ArcSineFunction() );   
         addFunction( new ArcTangent2Function() );   
@@ -173,6 +175,7 @@ public class VIVA
         addFunction( new CosineFunction() );   
         addFunction( new CountFunction() );   
         //addFunction( new DepsFunction() );
+        addFunction( new DecreasingFunction() );
         addFunction( new DistanceFunction() );
         addFunction( new EulersNumberToPowerFunction() );
         //addFunction( new FepsFunction() );
@@ -180,11 +183,15 @@ public class VIVA
         addFunction( new HyperbolicSineFunction() );   
         addFunction( new HyperbolicTangentFunction() );   
         addFunction( new IfFunction() );   
+        addFunction( new IncreasingFunction() );   
+        addFunction( new InSetFunction() );   
         addFunction( new LeftJustificationFunction() );
         addFunction( new LengthFunction() );
         addFunction( new Log10Function() );   
         addFunction( new Log2Function() );   
         addFunction( new NaturalLogFunction() );   
+        addFunction( new NonDecreasingFunction() );   
+        addFunction( new NonIncreasingFunction() );   
         addFunction( new PowerFunction() );   
         addFunction( new RightJustificationFunction() );   
         addFunction( new SineFunction() );   
@@ -201,10 +208,6 @@ public class VIVA
         addFunction( new ToRadiansFunction() );   
         addFunction( new ToStringFunction() );   
         addFunction( new UniqueFunction() );
-        addFunction( new IncreasingFunction() );
-        addFunction( new DecreasingFunction() );
-        addFunction( new NonIncreasingFunction() );
-        addFunction( new NonDecreasingFunction() );
         
         context.addParameter( new DepsParameter() );
         context.addParameter( new FepsParameter() );

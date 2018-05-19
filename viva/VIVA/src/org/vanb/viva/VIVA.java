@@ -165,6 +165,7 @@ public class VIVA
      */
     public VIVA()
     {
+        addFunction( new AbsoluteValueFunction() );   
         addFunction( new AddToSetFunction() );   
         addFunction( new ArcCosineFunction() );   
         addFunction( new ArcSineFunction() );   
@@ -185,10 +186,15 @@ public class VIVA
         addFunction( new IfFunction() );   
         addFunction( new IncreasingFunction() );   
         addFunction( new InSetFunction() );   
+        addFunction( new IsPrimeFunction() );   
         addFunction( new LeftJustificationFunction() );
         addFunction( new LengthFunction() );
         addFunction( new Log10Function() );   
         addFunction( new Log2Function() );   
+        addFunction( new MaxFunction() );   
+        addFunction( new MaxAllFunction() );           
+        addFunction( new MinFunction() );   
+        addFunction( new MinAllFunction() );   
         addFunction( new NaturalLogFunction() );   
         addFunction( new NonDecreasingFunction() );   
         addFunction( new NonIncreasingFunction() );   

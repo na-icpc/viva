@@ -25,4 +25,10 @@ public class EqualToNode extends BooleanOperatorNode
     {
         return new Boolean( l==r );
     }
+
+    @Override
+    public Object evaluate( String l, String r ) throws Exception
+    {
+        return new Boolean( l.equals( r ) );
+    }
 }

@@ -3,7 +3,6 @@ package org.vanb.viva.functions;
 import java.util.Comparator;
 import java.util.List;
 
-import org.vanb.viva.ScalarFunction;
 import org.vanb.viva.VectorFunction;
 import org.vanb.viva.utils.VIVAContext;
 

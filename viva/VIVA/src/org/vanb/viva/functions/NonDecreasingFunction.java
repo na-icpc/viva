@@ -17,7 +17,7 @@ public class NonDecreasingFunction implements VectorFunction
     @Override
     public Class<?> getReturnType( Class<?>[] params )
     {
-        return params.length==1 && Number.class.isAssignableFrom( params[0] ) ? Boolean.class : null;
+        return params.length==1 ? Boolean.class : null;
     }
 
     @Override
@@ -32,19 +32,20 @@ public class NonDecreasingFunction implements VectorFunction
         double deps = context.deps;
         float feps = context.feps;
 
-        Number last = null;
+        Object last = null;
         boolean success = true;
         Class<?> type = null;
         if( !parameters.isEmpty() ) type = parameters.get(0).get(0).getClass();
         for( List<Object> row : parameters )
         {
-            Number next = (Number)row.get( 0 );
+            Object next = row.get( 0 );
             if( last!=null )
             {
-                if( type==Integer.class ) success = last.intValue() <= next.intValue(); 
-                else if( type==Long.class ) success = last.longValue() <= next.longValue(); 
-                else if( type==Double.class ) success = last.doubleValue() <= next.doubleValue() + deps; 
-                else if( type==Float.class ) success = last.floatValue() <= next.floatValue() + feps;     
+                if( type==Integer.class ) success = ((Number)last).intValue() <= ((Number)next).intValue(); 
+                else if( type==Long.class ) success = ((Number)last).longValue() <= ((Number)next).longValue(); 
+                else if( type==Double.class ) success = ((Number)last).doubleValue() <= ((Number)next).doubleValue() + deps; 
+                else if( type==Float.class ) success = ((Number)last).floatValue() <= ((Number)next).floatValue() + feps;  
+                else if( type==String.class ) success = last.toString().compareTo( next.toString() ) <= 0;
                 if( !success ) break;
             }
             

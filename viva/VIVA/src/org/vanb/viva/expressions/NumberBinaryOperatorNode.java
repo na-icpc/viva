@@ -1,7 +1,7 @@
 package org.vanb.viva.expressions;
 
-import org.vanb.viva.ArithmeticFunction;
 import org.vanb.viva.parser.ParseException;
+import org.vanb.viva.utils.Utilities;
 import org.vanb.viva.utils.VIVAContext;
 import org.vanb.viva.utils.VIVAException;
 
@@ -20,7 +20,7 @@ public abstract class NumberBinaryOperatorNode extends BinaryOperatorNode
     /** The epsilon for floats. */
     protected float feps;
     
-    /** (non-Javadoc)
+    /** 
      * @see org.vanb.viva.expressions.BinaryOperatorNode#instantiate(org.vanb.viva.expressions.ExpressionNode, org.vanb.viva.expressions.ExpressionNode)
      */
     @Override
@@ -66,7 +66,7 @@ public abstract class NumberBinaryOperatorNode extends BinaryOperatorNode
         }
     }
 
-    /** (non-Javadoc)
+    /** 
      * @see org.vanb.viva.expressions.ExpressionNode#evaluate(org.vanb.viva.utils.VIVAContext)
      */
     @Override
@@ -100,11 +100,11 @@ public abstract class NumberBinaryOperatorNode extends BinaryOperatorNode
             
             if( result instanceof Double )
             {
-                ArithmeticFunction.nanCheck( ((Double)result).doubleValue(), toString() + " (" + left + " " + operator + " " + right + ")" );                
+                Utilities.nanCheck( ((Double)result).doubleValue(), toString() + " (" + left + " " + operator + " " + right + ")" );                
             }
             else if( result instanceof Float )
             {
-                ArithmeticFunction.nanCheck( ((Float)result).floatValue(), toString() + " (" + left + " " + operator + " " + right + ")" );
+                Utilities.nanCheck( ((Float)result).floatValue(), toString() + " (" + left + " " + operator + " " + right + ")" );
             }
         }
         catch( Exception e )
@@ -156,7 +156,7 @@ public abstract class NumberBinaryOperatorNode extends BinaryOperatorNode
      */
     public abstract Object evaluate( int l, int r ) throws Exception;
 
-    /** (non-Javadoc)
+    /** 
      * @see org.vanb.viva.expressions.ExpressionNode#getReturnType()
      */
     @Override

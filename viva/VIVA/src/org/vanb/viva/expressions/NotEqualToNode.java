@@ -6,7 +6,7 @@ package org.vanb.viva.expressions;
 public class NotEqualToNode extends BooleanOperatorNode
 {
     
-    /** (non-Javadoc)
+    /** 
      * @see org.vanb.viva.expressions.NumberBinaryOperatorNode#evaluate(double, double)
      */
     @Override
@@ -15,7 +15,7 @@ public class NotEqualToNode extends BooleanOperatorNode
         return new Boolean( Math.abs( l-r ) >= deps );
     }
 
-    /** (non-Javadoc)
+    /** 
      * @see org.vanb.viva.expressions.NumberBinaryOperatorNode#evaluate(float, float)
      */
     @Override
@@ -24,7 +24,7 @@ public class NotEqualToNode extends BooleanOperatorNode
         return new Boolean( Math.abs( l-r ) >= feps );
     }
 
-    /** (non-Javadoc)
+    /** 
      * @see org.vanb.viva.expressions.NumberBinaryOperatorNode#evaluate(long, long)
      */
     @Override
@@ -33,7 +33,7 @@ public class NotEqualToNode extends BooleanOperatorNode
         return new Boolean( l!=r );
     }
 
-    /** (non-Javadoc)
+    /** 
      * @see org.vanb.viva.expressions.NumberBinaryOperatorNode#evaluate(int, int)
      */
     @Override
@@ -42,7 +42,7 @@ public class NotEqualToNode extends BooleanOperatorNode
         return new Boolean( l!=r );
     }
 
-    /** (non-Javadoc)
+    /** 
      * @see org.vanb.viva.expressions.BooleanOperatorNode#evaluate(java.lang.String, java.lang.String)
      */
     @Override

@@ -2,8 +2,8 @@ package org.vanb.viva.functions;
 
 import java.util.List;
 
-import org.vanb.viva.ArithmeticFunction;
 import org.vanb.viva.ScalarFunction;
+import org.vanb.viva.utils.Utilities;
 import org.vanb.viva.utils.VIVAContext;
 
 public class PowerFunction implements ScalarFunction
@@ -37,7 +37,7 @@ public class PowerFunction implements ScalarFunction
         double exponent = ((Number)parameters.get(1)).doubleValue();
         
         double result = Math.pow( argument, exponent );
-        ArithmeticFunction.nanCheck( result, "pow(" + argument + "," + exponent + ")" );
+        Utilities.nanCheck( result, "pow(" + argument + "," + exponent + ")" );
         
         return result;
     }

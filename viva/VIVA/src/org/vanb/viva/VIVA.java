@@ -166,7 +166,9 @@ public class VIVA
     public VIVA()
     {
         addFunction( new AbsoluteValueFunction() );   
-        addFunction( new AddToSetFunction() );   
+        addFunction( new AddNodeFunction() );   
+        addFunction( new AddNodesFunction() );   
+        addFunction( new AddToListFunction() );   
         addFunction( new ArcCosineFunction() );   
         addFunction( new ArcSineFunction() );   
         addFunction( new ArcTangent2Function() );   
@@ -180,13 +182,25 @@ public class VIVA
         addFunction( new DistanceFunction() );
         addFunction( new EulersNumberToPowerFunction() );
         //addFunction( new FepsFunction() );
+        addFunction( new GetIntFunction() );   
+        addFunction( new GetLongFunction() );   
+        addFunction( new GetFloatFunction() );   
+        addFunction( new GetDoubleFunction() );   
+        addFunction( new GetStringFunction() ); 
+        addFunction( new GraphFunction() ); 
         addFunction( new HyperbolicCosineFunction() );   
         addFunction( new HyperbolicSineFunction() );   
         addFunction( new HyperbolicTangentFunction() );   
         addFunction( new IfFunction() );   
         addFunction( new IncreasingFunction() );   
-        addFunction( new InSetFunction() );   
+        addFunction( new InListFunction() );   
+        addFunction( new IsCactusFunction() );   
+        addFunction( new IsConnectedFunction() );   
+        addFunction( new IsDAGFunction() );   
+        addFunction( new IsDesertFunction() );   
+        addFunction( new IsForestFunction() );   
         addFunction( new IsPrimeFunction() );   
+        addFunction( new IsTreeFunction() );   
         addFunction( new LeftJustificationFunction() );
         addFunction( new LengthFunction() );
         addFunction( new Log10Function() );   
@@ -200,6 +214,11 @@ public class VIVA
         addFunction( new NonIncreasingFunction() );   
         addFunction( new PowerFunction() );   
         addFunction( new RightJustificationFunction() );   
+        addFunction( new SetIntFunction() );   
+        addFunction( new SetLongFunction() );   
+        addFunction( new SetFloatFunction() );   
+        addFunction( new SetDoubleFunction() );   
+        addFunction( new SetStringFunction() );   
         addFunction( new SineFunction() );   
         addFunction( new SquareRootFunction() );   
         addFunction( new SumFunction() );
@@ -235,8 +254,9 @@ public class VIVA
      * -1 = Pattern parsing failure
      *  0 = All files pass
      * >0 = Number of failures
-     * 
-     * @param args Command-line args 
+     *
+     * @param args Command-line args
+     * @throws Exception the exception
      */
     public static void main( String[] args ) throws Exception
     {

@@ -6,10 +6,21 @@ import java.util.List;
 import org.vanb.viva.ScalarFunction;
 import org.vanb.viva.utils.VIVAContext;
 
+/**
+ * A superclass to handle in & max functions.
+ */
 public abstract class MinMaxFunction implements ScalarFunction
 {
+    
+    /** The comparator. */
     protected Comparator<Object> comparator;
     
+    /**
+     * Gets the return type.
+     *
+     * @param params the params
+     * @return the return type
+     */
     @Override
     public Class<?> getReturnType( Class<?>[] params )
     {
@@ -32,12 +43,25 @@ public abstract class MinMaxFunction implements ScalarFunction
     }
      
 
+    /**
+     * Gets the usage.
+     *
+     * @return the usage
+     */
     @Override
     public String getUsage()
     {
         return getName() + "(args) Must be at least one argument. Arguments can be of any type except boolean, but they must all be of the same type.";
     }
 
+    /**
+     * Run.
+     *
+     * @param context the context
+     * @param parameters the parameters
+     * @return the object
+     * @throws Exception the exception
+     */
     @Override
     public Object run( VIVAContext context, List<Object> parameters )
             throws Exception

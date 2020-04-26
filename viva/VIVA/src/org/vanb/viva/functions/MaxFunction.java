@@ -2,11 +2,25 @@ package org.vanb.viva.functions;
 
 import java.util.Comparator;
 
+/**
+ * The Class MaxFunction.
+ */
 public class MaxFunction extends MinMaxFunction
 {
+    
+    /**
+     * The Class MaxComparator.
+     */
     public static class MaxComparator implements Comparator<Object>
     {
 
+        /**
+         * Compare.
+         *
+         * @param a a value
+         * @param b another value
+         * @return standard for compare
+         */
         @Override
         public int compare( Object a, Object b )
         {
@@ -23,15 +37,23 @@ public class MaxFunction extends MinMaxFunction
         
     }
     
+    /**
+     * Instantiates a new max function.
+     */
     public MaxFunction()
     {
         comparator = new MaxComparator();
     }
     
+    /**
+     * Gets the name.
+     *
+     * @return the name
+     */
     @Override
     public String getName()
     {
-        return "min";
+        return "max";
     }
 
 }

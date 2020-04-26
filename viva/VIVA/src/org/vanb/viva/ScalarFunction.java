@@ -11,11 +11,14 @@ import org.vanb.viva.utils.VIVAContext;
  */
 public interface ScalarFunction extends Function
 {
+    
     /**
      * Run this Function.
-     * 
-     * @param parameters
+     *
+     * @param context the context
+     * @param parameters the parameters
      * @return The result of running the Function.
+     * @throws Exception the exception
      */
     public Object run( VIVAContext context, List<Object> parameters ) throws Exception;
 }

@@ -110,7 +110,7 @@ public class VIVA
         {
             try
             {
-                context.globals.clear();
+                context.clearContext();
                 context.input = new InputManager( filename, context );
                 result = pattern.test( context );
                 context.input.eofChecks();
@@ -166,6 +166,7 @@ public class VIVA
     public VIVA()
     {
         addFunction( new AbsoluteValueFunction() );   
+        addFunction( new AddEdgeFunction() );   
         addFunction( new AddNodeFunction() );   
         addFunction( new AddNodesFunction() );   
         addFunction( new AddToListFunction() );   

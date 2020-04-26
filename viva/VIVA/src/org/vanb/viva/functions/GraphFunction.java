@@ -72,7 +72,7 @@ public class GraphFunction implements ScalarFunction
         boolean multi = false;
         boolean self = false;
         boolean auto = false;
-        
+                
         HashSet<String> properties = new HashSet<String>();
         
         for( int i=1; i<parameters.size(); i++ )

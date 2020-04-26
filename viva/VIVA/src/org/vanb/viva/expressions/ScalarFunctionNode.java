@@ -6,17 +6,36 @@ import org.vanb.viva.ScalarFunction;
 import org.vanb.viva.utils.VIVAContext;
 import org.vanb.viva.utils.VIVAException;
 
+/**
+ * The Class ScalarFunctionNode.
+ */
 public class ScalarFunctionNode extends FunctionNode
 {
+    
+    /** The function. */
     private ScalarFunction function;
     
+    /**
+     * Instantiates a new scalar function node.
+     *
+     * @param name the name
+     * @param type the type
+     * @param f the f
+     * @param parms the parms
+     */
     public ScalarFunctionNode( String name, Class<?> type, ScalarFunction f, LinkedList<ExpressionNode> parms )
     {
         super( name, type, parms );
         function = f;
     }
-    
-
+   
+    /**
+     * Gets the value.
+     *
+     * @param context the context
+     * @return the value
+     * @throws VIVAException the VIVA exception
+     */
     public Object getValue( VIVAContext context ) throws VIVAException
     {
         LinkedList<Object> parmvalues = new LinkedList<Object>();
@@ -24,7 +43,7 @@ public class ScalarFunctionNode extends FunctionNode
         {
             parmvalues.add( parm.evaluate( context ) );
         }
-        
+              
         Object result = null;
         try
         {
@@ -32,6 +51,7 @@ public class ScalarFunctionNode extends FunctionNode
         }
         catch( Exception e )
         {
+            e.printStackTrace();
             context.throwException( e.getMessage() );   
         }
         

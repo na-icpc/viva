@@ -49,6 +49,7 @@ public class Graph extends Base
     public Graph( String id, boolean directed, boolean weighted, boolean allowMulti, boolean allowSelf, boolean autoAdd )
     {
         super( id );
+        //System.err.println( "Creating graph " + id );
         this.directed = directed;
         this.weighted = weighted;
         this.allowMulti = allowMulti;
@@ -64,6 +65,8 @@ public class Graph extends Base
      */
     public Node addNode( Object id )
     {
+        //System.err.println( "addnode: " + id );
+
         String key = id.toString();
         Node node = nodes.get( key );
         if( node==null )
@@ -73,6 +76,7 @@ public class Graph extends Base
             zeroins.add( node );
             ++nComponents;
         }
+        //System.err.println( "Components is now " + nComponents );
         
         return node;
     }
@@ -88,6 +92,7 @@ public class Graph extends Base
         Node root = node;
         for( ; !root.getExtras(root).equals(root); root = (Node)root.getExtras() );
         for( ; !node.getExtras().equals(node); node=(Node)node.getExtras() ) node.setExtras(root);
+        //System.err.println( "node is " + node.getID() + ", root is " + root.getID() );
         return root;
     }
     
@@ -101,6 +106,7 @@ public class Graph extends Base
      */
     public void addEdge( Object from, Object to, Number weight ) throws Exception
     {
+        //System.err.println( "addedge: " + from + " " + to + " " + weight );
         // Do a bunch of error checking, which should be pretty obvious.
         
         // Do we want weighted edges?
@@ -144,7 +150,7 @@ public class Graph extends Base
         }
         
         // Does the to-node exist?
-        Node tonode = nodes.get( fromstr );
+        Node tonode = nodes.get( tostr );
         if( tonode==null )
         {
             if( autoAdd ) tonode = this.addNode( to );
@@ -170,6 +176,9 @@ public class Graph extends Base
         // The to-node now has an in-edge. So does the from-node in an undirected graph.
         zeroins.remove( tonode );
         if( !directed ) zeroins.remove( fromnode );
+        
+        //System.err.println( "Components is now " + nComponents );
+
     }
 
     

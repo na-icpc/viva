@@ -120,4 +120,18 @@ public class SymbolTable<T>
     {
         return tables.peekFirst().get( name ) != null;
     }
+    
+    /**
+     * Clear the symbol table(s).
+     */
+    public void clear()
+    {
+        // Create the tables stack and add the top level
+        tables.clear();
+        tables.add( new HashMap<String,T>() );
+        
+        // Ditto with the counts
+        counts.clear();
+        counts.add( 0 );        
+    }
 }

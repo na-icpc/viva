@@ -54,10 +54,7 @@ public class PatternList implements Pattern
     {
         boolean success = true;
         
-        for( Pattern pattern : patterns )
-        {
-            success &= pattern.test( context );
-        }
+        for( Pattern pattern : patterns ) success &= pattern.test( context );
         
         success &= constraints.test( context );
         

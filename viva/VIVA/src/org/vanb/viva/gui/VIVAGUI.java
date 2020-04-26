@@ -68,39 +68,81 @@ import org.vanb.viva.parameters.Parameter;
 import org.vanb.viva.parameters.StringListParameter;
 import org.vanb.viva.utils.VIVAContext;
 
+/**
+ * The Class VIVAGUI.
+ */
 public class VIVAGUI implements ActionListener
 {
     /** Here are all of the widgets that make up the GUI. */
     private JFrame frmViva;
+    
+    /** The pattern file field. */
     private JTextField patternFileField;
+    
+    /** The input files field. */
     private JTextField inputFilesField;
+    
+    /** The button: load pattern. */
     private JButton btnLoadPattern;
+    
+    /** The button: save pattern. */
     private JButton btnSavePattern;
+    
+    /** The button: parse pattern. */
     private JButton btnParsePattern;
+    
+    /** The button: test input. */
     private JButton btnTestInput;
+    
+    /** The button: save as pattern. */
     private JButton btnSaveAsPattern;
+    
+    /** The button: load input. */
     private JButton btnLoadInput;
+    
+    /** The button: clear output. */
     private JButton btnClearOutput;
 
+    /** The pattern editor. */
     private JTextArea patternEditor;
+    
+    /** The line numbers. */
     private JTextArea lineNumbers;
+    
+    /** The pattern pane. */
     private JScrollPane patternPane;
+    
+    /** The outputs text. */
     private JTextArea outputsText;
+    
+    /** The outputs pane. */
     private JScrollPane outputsPane;
+    
+    /** The label: VIVA. */
     private JLabel lblViva;
 
+    /** The pattern file chooser. */
     private JFileChooser patternFileChooser;
+    
+    /** The input file chooser. */
     private JFileChooser inputFileChooser;
     
+    /** The parameters table. */
     private JTable parametersTable;
+    
+    /** The parameters dialog. */
     private JDialog parametersDialog;
     
+    /** The parameters error. */
     private JTextField parametersError;
     
+    /** The editors. */
     private TableCellEditor editors[];
 
-    /** VIVA! */
+    /**  VIVA!. */
     private VIVA viva;
+    
+    /** The context. */
     private VIVAContext context;
 
     /**
@@ -110,6 +152,8 @@ public class VIVAGUI implements ActionListener
      * write it to the outputs text box.
      */
     private PipedInputStream is;
+    
+    /** The output stream. */
     private PipedOutputStream os;
 
     /**
@@ -118,6 +162,7 @@ public class VIVAGUI implements ActionListener
      */
     private PrintStream ps;
     
+    /** The actions. */
     private Actions actions = new Actions();
 
     /**
@@ -159,8 +204,11 @@ public class VIVAGUI implements ActionListener
      */
     private class PatternTextDocumentListener implements DocumentListener
     {
+        
         /**
          * If the pattern has changed, set the buttons.
+         *
+         * @param de the Event
          */
         public void changedUpdate( DocumentEvent de )
         {
@@ -170,6 +218,8 @@ public class VIVAGUI implements ActionListener
 
         /**
          * If something's been inserted, set the buttons.
+         *
+         * @param de the Event
          */
         public void insertUpdate( DocumentEvent de )
         {
@@ -179,6 +229,8 @@ public class VIVAGUI implements ActionListener
 
         /**
          * If something's been removed, set the buttons.
+         *
+         * @param de the Event
          */
         public void removeUpdate( DocumentEvent de )
         {
@@ -202,34 +254,39 @@ public class VIVAGUI implements ActionListener
      */
     private class VIVAFocusAdapter extends FocusAdapter
     {
+        
+        /** The text field. */
         private JTextField text;
 
         /**
-         * Create a FocusAdapter for a JTextField
-         * 
-         * @param t
-         *            The JTextField
+         * Create a FocusAdapter for a JTextField.
+         *
+         * @param t            The JTextField
          */
         public VIVAFocusAdapter( JTextField t )
         {
             text = t;
         }
 
-        @Override
         /**
+         * Focus gained.
+         * 
          * Turn on the cursor of the field gets focus
          * @param fe A FocusEvent
          */
+        @Override
         public void focusGained( FocusEvent fe )
         {
             text.getCaret().setVisible( true );
         }
 
-        @Override
         /**
+         * Focus lost.
+         *
          * Turn off the cursor of the field loses focus
          * @param fe A FocusEvent
          */
+        @Override
         public void focusLost( FocusEvent fe )
         {
             text.getCaret().setVisible( false );
@@ -243,10 +300,11 @@ public class VIVAGUI implements ActionListener
      */
     private class OutputsWorker extends SwingWorker<String,String>
     {
-        /** The input stream */
+        
+        /**  The input stream. */
         private InputStream in;
         
-        /** Build a line of input */
+        /**  Build a line of input. */
         private StringBuilder builder = new StringBuilder();
 
         /**
@@ -260,10 +318,14 @@ public class VIVAGUI implements ActionListener
             in = stream;
         }
 
-        @Override
         /**
+         * Do in background.
          * In background, collect characters into lines and send them to Swing to be processed. 
+         *
+         * @return the string
+         * @throws Exception the exception
          */
+        @Override
         protected String doInBackground() throws Exception
         {
             while( !isCancelled() )
@@ -299,12 +361,28 @@ public class VIVAGUI implements ActionListener
         
     }
     
+    /**
+     * The Class ParameterInputVerifier.
+     */
     private class ParameterInputVerifier extends InputVerifier
     {
+        
+        /** The parameter. */
         private Parameter parameter;
+        
+        /** The last good value. */
         private String lastGood;
+        
+        /** The row of the parameters table. */
         private int row;
         
+        /**
+         * Instantiates a new parameter input verifier.
+         *
+         * @param parameter the parameter
+         * @param lastGood the last good
+         * @param row the row
+         */
         public ParameterInputVerifier( Parameter parameter, String lastGood, int row )
         {
             this.parameter = parameter;    
@@ -312,6 +390,12 @@ public class VIVAGUI implements ActionListener
             this.row = row;
         }
         
+        /**
+         * Verify.
+         *
+         * @param field the field
+         * @return true, if successful
+         */
         public boolean verify( JComponent field )
         {
             boolean ok = true;
@@ -346,6 +430,8 @@ public class VIVAGUI implements ActionListener
 
     /**
      * Launch the application.
+     *
+     * @param args the arguments
      */
     public static void main( String[] args )
     {
@@ -758,6 +844,9 @@ public class VIVAGUI implements ActionListener
         /** A queue of actions to perform. */
         public BlockingQueue<Action> todo = new ArrayBlockingQueue<Action>(10);
         
+        /**
+         * Run.
+         */
         @Override
         /**
          * Perform actions!
@@ -766,7 +855,7 @@ public class VIVAGUI implements ActionListener
         {            
             try
             {
-                for(;;) todo.take().run();
+                for(;;)todo.take().run();
             }
             catch( InterruptedException e )
             {
@@ -781,7 +870,8 @@ public class VIVAGUI implements ActionListener
      */
     public class Action implements Runnable
     {
-        /** Which button was pressed? */
+        
+        /**  Which button was pressed?. */
         private JButton source;
         
         /**
@@ -794,10 +884,10 @@ public class VIVAGUI implements ActionListener
             this.source = source;
         }
         
-        @Override
         /** 
          * Perform the action!
          */
+        @Override
         public void run()
         {
             frmViva.setEnabled( false );
@@ -918,7 +1008,6 @@ public class VIVAGUI implements ActionListener
                 {
                     for( File file : inputFiles )
                     {
-                        // VIVA!
                         viva.testInputFile( file.getAbsolutePath() );
 
                         // Some nice spacing

@@ -90,6 +90,7 @@ public class InputManager
         map.load();
         reader.close();
         context = c;
+        lastPos = 0;
     }
     
     /**

@@ -80,7 +80,7 @@ public class VIVAContext
     public boolean javafloat = false;    
     
     /** Place for global stuff, if a function needs it. */
-    public HashMap<String,Object> globals = new HashMap<String,Object>();
+    private HashMap<String,Object> globals = new HashMap<String,Object>();
     
     /**
      * Create a Context.
@@ -90,6 +90,15 @@ public class VIVAContext
         values = new SymbolTable<ValueManager>();
         errcount = 0;
         success = true;
+    }
+    
+    /**
+     * Clear globals.
+     */
+    public void clearContext()
+    {
+        globals.clear();
+        values.clear();
     }
     
     /**
@@ -213,8 +222,9 @@ public class VIVAContext
     public Object getThing( Class<?> type, Object name ) throws Exception
     {
         String prefix = getPrefix( type );
-        Object thing = globals.get( prefix + ":" + name.toString() );
-        if( thing==null ) throw new Exception( "No such " + type + " as " + name.toString() );
+        String key =  prefix + ":" + name.toString();
+        Object thing = globals.get( key );
+        if( thing==null ) throw new Exception( "No such " + prefix + " as " + name.toString() );
         return thing;
     }    
 }

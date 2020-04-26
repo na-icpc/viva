@@ -6,16 +6,33 @@ import org.vanb.viva.utils.VIVAContext;
 import org.vanb.viva.utils.VIVAException;
 import org.vanb.viva.utils.ValueManager;
 
+/**
+ * The Class FunctionNode.
+ */
 public abstract class FunctionNode extends VariableNode
 {
+    
+    /** The parameters. */
     protected LinkedList<ExpressionNode> parameters;
     
+    /**
+     * Instantiates a new function node.
+     *
+     * @param name the name
+     * @param type the type
+     * @param parms the parms
+     */
     public FunctionNode( String name, Class<?> type, LinkedList<ExpressionNode> parms )
     {
         super( name, type, true );
         parameters = parms;
     }
     
+    /**
+     * To string.
+     *
+     * @return the string
+     */
     public String toString()
     {
         String result = name + "(";
@@ -39,6 +56,13 @@ public abstract class FunctionNode extends VariableNode
         return result;
     }
     
+    /**
+     * Evaluate.
+     *
+     * @param context the context
+     * @return the object
+     * @throws VIVAException the VIVA exception
+     */
     public Object evaluate( VIVAContext context ) throws VIVAException
     {
         Object value; 
@@ -83,5 +107,12 @@ public abstract class FunctionNode extends VariableNode
         return value;
     }
     
+    /**
+     * Gets the value.
+     *
+     * @param context the context
+     * @return the value
+     * @throws VIVAException the VIVA exception
+     */
     public abstract Object getValue( VIVAContext context ) throws VIVAException;
 }

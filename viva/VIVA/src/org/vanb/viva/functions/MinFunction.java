@@ -2,11 +2,23 @@ package org.vanb.viva.functions;
 
 import java.util.Comparator;
 
+/**
+ * The Class MinFunction.
+ */
 public class MinFunction extends MinMaxFunction
 {
+    /**
+     * The Class MinComparator.
+     */
     public static class MinComparator implements Comparator<Object>
     {
-
+        /**
+         * Compare two values.
+         *
+         * @param a A value
+         * @param b Another value
+         * @return Standard for compare, but backwards
+         */
         @Override
         public int compare( Object a, Object b )
         {
@@ -23,11 +35,19 @@ public class MinFunction extends MinMaxFunction
         
     }
     
+    /**
+     * Instantiates a new min function.
+     */
     public MinFunction()
     {
         comparator = new MinComparator();
     }
     
+    /**
+     * Gets the name.
+     *
+     * @return the name
+     */
     @Override
     public String getName()
     {

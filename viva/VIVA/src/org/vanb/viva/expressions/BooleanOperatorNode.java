@@ -41,7 +41,7 @@ public abstract class BooleanOperatorNode extends NumberBinaryOperatorNode
         {
             try
             {
-                result = evaluate( left.toString(), right.toString() );
+                result = evaluate( (String)left.evaluate(context), (String)right.evaluate(context) );
             }
             catch( Exception e )
             {

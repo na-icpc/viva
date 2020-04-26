@@ -2,6 +2,7 @@ package org.vanb.viva;
 
 import java.util.List;
 
+import org.vanb.viva.utils.Utilities;
 import org.vanb.viva.utils.VIVAContext;
 
 /**
@@ -13,43 +14,9 @@ import org.vanb.viva.utils.VIVAContext;
  */
 public abstract class ArithmeticFunction implements ScalarFunction
 {
-    protected String name;
-
-    /**
-     * Check to see if a result is not a number.
-     * 
-     * @param x Result to check
-     * @param how How the result was derived
-     * @throws Exception Throws a generic Exception if x is NaN
-     */
-    public static void nanCheck( double x, String how ) throws Exception
-    {
-        String nan = x==Double.NaN ? "NaN" : 
-                     x==Double.NEGATIVE_INFINITY ? "-Infinity" :
-                     x==Double.POSITIVE_INFINITY ? "Infinity" : null;
-        if( nan!=null )
-        {
-            throw new Exception( "Result of " + how + " is " + nan + "." );
-        }
-    }
     
-    /**
-     * Check to see if a result is not a number.
-     * 
-     * @param x Result to check
-     * @param how How the result was derived
-     * @throws Exception Throws a generic Exception if x is NaN
-     */
-    public static void nanCheck( float x, String how ) throws Exception
-    {
-        String nan = x==Float.NaN ? "NaN" : 
-                     x==Float.NEGATIVE_INFINITY ? "-Infinity" :
-                     x==Float.POSITIVE_INFINITY ? "Infinity" : null;
-        if( nan!=null )
-        {
-            throw new Exception( "Result of " + how + " is " + nan + "." );
-        }
-    }
+    /** The name. */
+    protected String name;
 
     @Override
     /**
@@ -107,7 +74,7 @@ public abstract class ArithmeticFunction implements ScalarFunction
     {
         Number argument = (Number)parameters.get( 0 );
         double result = implementation( argument.doubleValue() );
-        nanCheck( result, name + "(" + argument + ")" );
+        Utilities.nanCheck( result, name + "(" + argument + ")" );
 
         return new Double( result );
     }

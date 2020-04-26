@@ -4,10 +4,21 @@ import org.vanb.viva.parser.ParseException;
 import org.vanb.viva.utils.VIVAContext;
 import org.vanb.viva.utils.VIVAException;
 
+/**
+ * The Class BitwiseNotNode.
+ */
 public class BitwiseNotNode extends UnaryOperatorNode
 {
+    
+    /** The type. */
     Class<?> type;
     
+    /**
+     * Instantiate.
+     *
+     * @param arg the operand
+     * @throws ParseException the parse exception
+     */
     @Override
     public void instantiate( ExpressionNode arg ) throws ParseException
     {
@@ -19,6 +30,13 @@ public class BitwiseNotNode extends UnaryOperatorNode
         argument = arg;
     }
 
+    /**
+     * Evaluate.
+     *
+     * @param context the context
+     * @return the result
+     * @throws VIVAException the VIVA exception
+     */
     @Override
     public Object evaluate( VIVAContext context ) throws VIVAException
     {

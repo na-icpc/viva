@@ -415,6 +415,7 @@ public class VIVAGUI implements ActionListener
     /**
      * Initialize the contents of the frame.
      */
+    @SuppressWarnings( "serial" )
     private void initialize()
     {
         // VIVA!
@@ -607,7 +608,7 @@ public class VIVAGUI implements ActionListener
                     {
                         if( ie.getStateChange()==ItemEvent.SELECTED )
                         {
-                            JComboBox<String> pulldown = (JComboBox<String>)ie.getSource();
+                            //JComboBox<String> pulldown = (JComboBox<String>)ie.getSource();
                             parametersError.setText( "Warning: Changes will not take effect until Pattern is Parsed." );
                             btnParsePattern.setEnabled( true );
                         }

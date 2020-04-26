@@ -11,11 +11,14 @@ import org.vanb.viva.utils.VIVAContext;
  */
 public interface VectorFunction extends Function
 {
+    
     /**
      * Run this Function.
-     * 
-     * @param list of rows of parameter values
+     *
+     * @param context the context
+     * @param parameters the parameters
      * @return The result of running the Function.
+     * @throws Exception the exception
      */
     public Object run( VIVAContext context, List<List<Object>> parameters ) throws Exception;
 }

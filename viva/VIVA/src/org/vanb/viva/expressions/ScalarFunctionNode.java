@@ -1,6 +1,7 @@
 package org.vanb.viva.expressions;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.vanb.viva.ScalarFunction;
 import org.vanb.viva.utils.VIVAContext;
@@ -23,7 +24,7 @@ public class ScalarFunctionNode extends FunctionNode
      * @param f the f
      * @param parms the parms
      */
-    public ScalarFunctionNode( String name, Class<?> type, ScalarFunction f, LinkedList<ExpressionNode> parms )
+    public ScalarFunctionNode( String name, Class<?> type, ScalarFunction f, List<ExpressionNode> parms )
     {
         super( name, type, parms );
         function = f;
@@ -38,7 +39,7 @@ public class ScalarFunctionNode extends FunctionNode
      */
     public Object getValue( VIVAContext context ) throws VIVAException
     {
-        LinkedList<Object> parmvalues = new LinkedList<Object>();
+        List<Object> parmvalues = new ArrayList<Object>(parameters.size());
         for( ExpressionNode parm : parameters )
         {
             parmvalues.add( parm.evaluate( context ) );
@@ -51,7 +52,6 @@ public class ScalarFunctionNode extends FunctionNode
         }
         catch( Exception e )
         {
-            e.printStackTrace();
             context.throwException( e.getMessage() );   
         }
         

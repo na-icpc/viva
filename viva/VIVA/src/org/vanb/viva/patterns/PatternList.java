@@ -1,6 +1,7 @@
 package org.vanb.viva.patterns;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.vanb.viva.expressions.ExpressionNode;
 import org.vanb.viva.utils.VIVAContext;
@@ -13,7 +14,7 @@ import org.vanb.viva.utils.VIVAException;
  */
 public class PatternList implements Pattern
 {
-    private LinkedList<Pattern> patterns;
+    private List<Pattern> patterns;
     ConstraintList constraints;
     
     /**
@@ -21,7 +22,7 @@ public class PatternList implements Pattern
      */
     public PatternList()
     {
-        patterns = new LinkedList<Pattern>();
+        patterns = new ArrayList<Pattern>();
         constraints = new ConstraintList();
     }
     

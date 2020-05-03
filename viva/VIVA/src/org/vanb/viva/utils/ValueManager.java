@@ -1,6 +1,7 @@
 package org.vanb.viva.utils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class keeps track of the values and tokens for 
@@ -13,10 +14,10 @@ import java.util.ArrayList;
 public class ValueManager
 {
     /** List of input values */
-    private ArrayList<Object> values;
+    private List<Object> values;
     
     /** List of input tokens (which got parsed to the values) */
-    private ArrayList<String> tokens;
+    private List<String> tokens;
     
     /** The current value */
     private Object currentValue;
@@ -32,8 +33,8 @@ public class ValueManager
      */
     public ValueManager()
     {
-        values = new ArrayList<Object>(1000);
-        tokens = new ArrayList<String>(1000);
+        values = new ArrayList<Object>(1000000);
+        tokens = new ArrayList<String>(1000000);
         currentValue = null;
         currentToken = null;
         count = 0;

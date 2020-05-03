@@ -10,7 +10,7 @@ public class Node extends Base
 {
     
     /** The edges. */
-    private List<Edge> edges = new ArrayList<Edge>();
+    private List<Edge> edges = new ArrayList<Edge>(1000000);
 
     /**
      * Instantiates a new node.

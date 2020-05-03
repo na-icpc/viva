@@ -4,7 +4,8 @@
 package org.vanb.viva.utils;
 
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 /**
  * A generic, hierarchical symbol table.
@@ -15,10 +16,10 @@ import java.util.LinkedList;
 public class SymbolTable<T>
 {
     /** A stack of symbol tables */
-    private LinkedList<HashMap<String,T>> tables;
+    private Deque<HashMap<String,T>> tables;
     
     /** A stack of iteration counts */
-    private LinkedList<Integer> counts;
+    private Deque<Integer> counts;
     
     /**
      * Create a generic SymbolTable.
@@ -26,11 +27,11 @@ public class SymbolTable<T>
     public SymbolTable()
     {
         // Create the tables stack and add the top level
-        tables = new LinkedList<HashMap<String,T>>();
+        tables = new ArrayDeque<HashMap<String,T>>();
         tables.add( new HashMap<String,T>() );
         
         // Ditto with the counts
-        counts = new LinkedList<Integer>();
+        counts = new ArrayDeque<Integer>();
         counts.add( 0 );
     }
     

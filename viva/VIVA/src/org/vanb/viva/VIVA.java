@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.lang.reflect.Modifier;
 
 import org.vanb.viva.parser.ParseException;
 import org.vanb.viva.parser.PatternParser;
@@ -11,8 +12,24 @@ import org.vanb.viva.parser.TokenMgrError;
 import org.vanb.viva.patterns.Pattern;
 import org.vanb.viva.utils.InputManager;
 import org.vanb.viva.utils.VIVAContext;
-import org.vanb.viva.functions.*;
-import org.vanb.viva.parameters.*;
+import org.vanb.viva.functions.CompareFunctions;
+import org.vanb.viva.functions.GlobalFunctions;
+import org.vanb.viva.functions.GraphFunctions;
+import org.vanb.viva.functions.MathFunctions;
+import org.vanb.viva.functions.MiscFunctions;
+import org.vanb.viva.functions.StringFunctions;
+import org.vanb.viva.parameters.DepsParameter;
+import org.vanb.viva.parameters.EOFStyleParameter;
+import org.vanb.viva.parameters.EOLNStyleParameter;
+import org.vanb.viva.parameters.FepsParameter;
+import org.vanb.viva.parameters.IgnoreBlanksParameter;
+import org.vanb.viva.parameters.IgnoreEOLNParameter;
+import org.vanb.viva.parameters.JavaDoubleParameter;
+import org.vanb.viva.parameters.JavaFloatParameter;
+import org.vanb.viva.parameters.JavaIntParameter;
+import org.vanb.viva.parameters.JavaLongParameter;
+import org.vanb.viva.parameters.MaxErrsParameter;
+import org.vanb.viva.parameters.Parameter;
 
 /**
  * VIVA: vanb's Input Verification Assistant
@@ -38,6 +55,36 @@ public class VIVA
     
     /** VIVA's context */
     private VIVAContext context = new VIVAContext();
+    
+    /**
+     * Adds a group of functions that are inner classes of a Class.
+     *
+     * @param functions the Class which holds the functions
+     */
+    private void addFunctions( Class<?> functions )
+    {
+        for( Class<?> function : functions.getClasses() ) if( Function.class.isAssignableFrom( function ) )
+        {
+            int mods = function.getModifiers();
+            if( Modifier.isStatic( mods ) 
+                    && Modifier.isPublic( mods ) 
+                    && !Modifier.isAbstract( mods ) 
+                    && !Modifier.isInterface( mods ) ) try
+            {
+                context.addFunction( (Function)function.newInstance() );
+            }
+            catch( InstantiationException e )
+            {
+                System.err.println( "Could not add function " + function.getCanonicalName() + ": " + e.getMessage() );
+                e.printStackTrace();
+            }
+            catch( IllegalAccessException e )
+            {
+                System.err.println( "Could not add function " + function.getCanonicalName() + ": " + e.getMessage() );
+                e.printStackTrace();
+            }
+        }
+    }
     
     /**
      * Tell VIVA the pattern to use (and parse it).
@@ -164,76 +211,13 @@ public class VIVA
      * VIVA constructor adds all of the standard VIVA Functions.
      */
     public VIVA()
-    {
-        addFunction( new AbsoluteValueFunction() );   
-        addFunction( new AddEdgeFunction() );   
-        addFunction( new AddNodeFunction() );   
-        addFunction( new AddNodesFunction() );   
-        addFunction( new AddToListFunction() );   
-        addFunction( new ArcCosineFunction() );   
-        addFunction( new ArcSineFunction() );   
-        addFunction( new ArcTangent2Function() );   
-        addFunction( new ArcTangentFunction() );   
-        addFunction( new ConcatenateFunction() );   
-        addFunction( new ConcatAllFunction() );   
-        addFunction( new CosineFunction() );   
-        addFunction( new CountFunction() );   
-        //addFunction( new DepsFunction() );
-        addFunction( new DecreasingFunction() );
-        addFunction( new DistanceFunction() );
-        addFunction( new EulersNumberToPowerFunction() );
-        //addFunction( new FepsFunction() );
-        addFunction( new GetIntFunction() );   
-        addFunction( new GetLongFunction() );   
-        addFunction( new GetFloatFunction() );   
-        addFunction( new GetDoubleFunction() );   
-        addFunction( new GetStringFunction() ); 
-        addFunction( new GraphFunction() ); 
-        addFunction( new HyperbolicCosineFunction() );   
-        addFunction( new HyperbolicSineFunction() );   
-        addFunction( new HyperbolicTangentFunction() );   
-        addFunction( new IfFunction() );   
-        addFunction( new IncreasingFunction() );   
-        addFunction( new InListFunction() );   
-        addFunction( new IsCactusFunction() );   
-        addFunction( new IsConnectedFunction() );   
-        addFunction( new IsDAGFunction() );   
-        addFunction( new IsDesertFunction() );   
-        addFunction( new IsForestFunction() );   
-        addFunction( new IsPrimeFunction() );   
-        addFunction( new IsTreeFunction() );   
-        addFunction( new LeftJustificationFunction() );
-        addFunction( new LengthFunction() );
-        addFunction( new Log10Function() );   
-        addFunction( new Log2Function() );   
-        addFunction( new MaxFunction() );   
-        addFunction( new MaxAllFunction() );           
-        addFunction( new MinFunction() );   
-        addFunction( new MinAllFunction() );   
-        addFunction( new NaturalLogFunction() );   
-        addFunction( new NonDecreasingFunction() );   
-        addFunction( new NonIncreasingFunction() );   
-        addFunction( new PowerFunction() );   
-        addFunction( new RightJustificationFunction() );   
-        addFunction( new SetIntFunction() );   
-        addFunction( new SetLongFunction() );   
-        addFunction( new SetFloatFunction() );   
-        addFunction( new SetDoubleFunction() );   
-        addFunction( new SetStringFunction() );   
-        addFunction( new SineFunction() );   
-        addFunction( new SquareRootFunction() );   
-        addFunction( new SumFunction() );
-        addFunction( new TangentFunction() );   
-        addFunction( new TestFunction() );   
-        addFunction( new TestAllFunction() );   
-        addFunction( new ToDegreesFunction() );   
-        addFunction( new ToDoubleFunction() );   
-        addFunction( new ToFloatFunction() );   
-        addFunction( new ToIntegerFunction() );   
-        addFunction( new ToLongFunction() );   
-        addFunction( new ToRadiansFunction() );   
-        addFunction( new ToStringFunction() );   
-        addFunction( new UniqueFunction() );
+    { 
+        addFunctions( MathFunctions.class );
+        addFunctions( StringFunctions.class );
+        addFunctions( CompareFunctions.class );
+        addFunctions( MiscFunctions.class );
+        addFunctions( GlobalFunctions.class );
+        addFunctions( GraphFunctions.class );
         
         context.addParameter( new DepsParameter() );
         context.addParameter( new FepsParameter() );

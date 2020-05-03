@@ -112,11 +112,11 @@ public class Graph extends Base
         // Do we want weighted edges?
         if( !weighted && weight!=null )     
         {
-            throw new Exception( "Cannot put a weighted edge on unweighted graph " + getID() );
+            throw new Exception( "Cannot put a weighted edge on unweighted graph '" + getID() + "'" );
         }
         else if( weighted && weight==null )     
         {
-            throw new Exception( "Cannot put an unweighted edge on weighted graph " + getID() );
+            throw new Exception( "Cannot put an unweighted edge on weighted graph '" + getID() + "'" );
         }
 
         // We'll identify nodes by String. Only discrete types (int, long, String) can be Node IDs.
@@ -126,7 +126,7 @@ public class Graph extends Base
         // Is this a self-edge?
         if( !allowSelf && fromstr.equals( tostr ) )
         {
-            throw new Exception( "Cannot add a self-edge (" + fromstr + ") to graph " + getID() );
+            throw new Exception( "Cannot add a self-edge (" + fromstr + ") to graph '" + getID() + "'" );
         }
         
         // The key is a unique identifier for the Edge. 
@@ -138,7 +138,7 @@ public class Graph extends Base
         // Is this a multi-edge?
         if( !allowMulti && edges.keySet().contains( key ) ) 
         {
-            throw new Exception( "Cannot add duplicate edge (" + key + ") to graph " + getID() );
+            throw new Exception( "Cannot add duplicate edge (" + key + ") to graph '" + getID() + "'" );
         }
         
         // Does the from-node exist?
@@ -146,7 +146,7 @@ public class Graph extends Base
         if( fromnode==null )
         {
             if( autoAdd ) fromnode = this.addNode( from );
-            else throw new Exception( "Cannot find from-node " + fromnode + " in graph " + getID() );            
+            else throw new Exception( "Cannot find from-node " + fromnode + " in graph '" + getID() + "'" );            
         }
         
         // Does the to-node exist?
@@ -154,7 +154,7 @@ public class Graph extends Base
         if( tonode==null )
         {
             if( autoAdd ) tonode = this.addNode( to );
-            else throw new Exception( "Cannot find to-node " + tonode + " in graph " + getID() );            
+            else throw new Exception( "Cannot find to-node " + tonode + " in graph '" + getID() + "'" );            
         }
 
         // Create the edge, put it everywhere it needs to go.
@@ -283,16 +283,17 @@ public class Graph extends Base
     
     /** A number used to differentiate between start points when detecting if a graph is a Desert */
     private int index;
-    
+       
     /**
      * Detect a Desert.
      *
      * @param node a node in the graph
      * @return true if we find a cycle, otherwise false
      */
-    private Boolean detectDesert( Node node )
+    private Boolean detectDesert( Node node, Node from )
     {
         boolean isDesert = true;
+        System.err.println( "Node " + node.getID() );
         
         if( path.contains( node ) )
         {
@@ -301,11 +302,14 @@ public class Graph extends Base
             {
                 Edge edge = (Edge)next.getExtras();
                 int edgeindex = (int)edge.getExtras();
+                System.err.println( "testing " + edge.getID() + " index is " + edgeindex);
+
                 if( edgeindex==index ) 
                 {
                     isDesert = false;
                     break;
                 }
+                else if( edgeindex==0 ) edge.setExtras( index );
                 
                 next = edge.getOther( next );
             }
@@ -317,11 +321,15 @@ public class Graph extends Base
             path.add( node );
             for( Edge edge : node.getEdges() ) 
             {
-                node.setExtras( edge );
-                if( !detectDesert( edge.getOther( node ) ) )
+                Node next = edge.getOther( node );
+                if( !next.equals( from ))
                 {
-                    isDesert = false;
-                    break;
+                    node.setExtras( edge );
+                    if( !detectDesert( next, node ) )
+                    {
+                        isDesert = false;
+                        break;
+                    }
                 }
             }
             path.remove( node );
@@ -348,7 +356,7 @@ public class Graph extends Base
         for( Node node : nodes.values() ) if( node.getExtras()==null )
         {
             ++index;
-            if( !detectDesert( node ) )
+            if( !detectDesert( node, null ) )
             {
                 isdesert = false;
                 break;
@@ -356,5 +364,15 @@ public class Graph extends Base
         }
 
         return isdesert;
+    }
+    
+    /**
+     * Get the number of Components.
+     *
+     * @return the number of Component
+     */
+    public Integer components()
+    {
+        return nComponents;
     }
 }

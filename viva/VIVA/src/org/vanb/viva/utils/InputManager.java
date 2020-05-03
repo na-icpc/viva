@@ -6,6 +6,7 @@ import java.nio.BufferUnderflowException;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel.MapMode;
 import java.util.ArrayDeque;
+import java.util.Deque;
 
 /**
  * Control the input: get lines, tokenize them, report simple formatting errors.
@@ -67,7 +68,7 @@ public class InputManager
     private State state = new State();
     
     /** A list of 'anchors' - States we can go back to. */
-    private ArrayDeque<State> anchors = new ArrayDeque<State>();
+    private Deque<State> anchors = new ArrayDeque<State>();
     
     /** Context */
     private VIVAContext context;

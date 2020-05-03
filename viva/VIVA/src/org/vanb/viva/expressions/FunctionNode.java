@@ -1,6 +1,6 @@
 package org.vanb.viva.expressions;
 
-import java.util.LinkedList;
+import java.util.List;
 
 import org.vanb.viva.utils.VIVAContext;
 import org.vanb.viva.utils.VIVAException;
@@ -13,7 +13,7 @@ public abstract class FunctionNode extends VariableNode
 {
     
     /** The parameters. */
-    protected LinkedList<ExpressionNode> parameters;
+    protected List<ExpressionNode> parameters;
     
     /**
      * Instantiates a new function node.
@@ -22,7 +22,7 @@ public abstract class FunctionNode extends VariableNode
      * @param type the type
      * @param parms the parms
      */
-    public FunctionNode( String name, Class<?> type, LinkedList<ExpressionNode> parms )
+    public FunctionNode( String name, Class<?> type, List<ExpressionNode> parms )
     {
         super( name, type, true );
         parameters = parms;
@@ -40,14 +40,8 @@ public abstract class FunctionNode extends VariableNode
         boolean first = true;
         for( ExpressionNode parm : parameters )
         {
-            if( first )
-            {
-                first = false;   
-            }
-            else
-            {
-                result += ",";
-            }
+            if( first ) first = false;   
+            else result += ",";
             result += parm.toString();
         }
         

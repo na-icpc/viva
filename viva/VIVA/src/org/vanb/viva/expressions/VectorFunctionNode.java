@@ -1,6 +1,6 @@
 package org.vanb.viva.expressions;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.vanb.viva.VectorFunction;
@@ -11,7 +11,7 @@ public class VectorFunctionNode extends FunctionNode
 {
     private VectorFunction function;
     
-    public VectorFunctionNode( String name, Class<?> type, VectorFunction f, LinkedList<ExpressionNode> parms )
+    public VectorFunctionNode( String name, Class<?> type, VectorFunction f, List<ExpressionNode> parms )
     {
         super( name, type, parms );
         function = f;
@@ -20,10 +20,10 @@ public class VectorFunctionNode extends FunctionNode
     public Object getValue( VIVAContext context ) throws VIVAException
     {
         int saveindex = context.index;
-        List<List<Object>> rows = new LinkedList<List<Object>>();
+        List<List<Object>> rows = new ArrayList<List<Object>>(context.values.getCount());
         for( context.index=0; context.index < context.values.getCount(); ++context.index )
         {
-            List<Object> parmvalues = new LinkedList<Object>();
+            List<Object> parmvalues = new ArrayList<Object>(parameters.size());
             for( ExpressionNode parm : parameters )
             {
                 parmvalues.add( parm.evaluate( context ) );

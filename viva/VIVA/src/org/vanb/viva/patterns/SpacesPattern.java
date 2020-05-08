@@ -4,8 +4,17 @@ import org.vanb.viva.expressions.ExpressionNode;
 import org.vanb.viva.utils.VIVAContext;
 import org.vanb.viva.utils.VIVAException;
 
+/**
+ * The Class SpacesPattern.
+ */
 public class SpacesPattern extends ValuePattern
 {
+    
+    /**
+     * Instantiates a new spaces pattern.
+     *
+     * @param w the w
+     */
     public SpacesPattern( ExpressionNode w )
     {
         super.setName( "@" );
@@ -13,18 +22,38 @@ public class SpacesPattern extends ValuePattern
         super.setWidth( w );
     }
     
+    /**
+     * Gets the type.
+     *
+     * @return the type
+     */
     @Override
     public Class<?> getType()
     {
         return String.class;
     }
 
+    /**
+     * Gets the value.
+     *
+     * @param token the token
+     * @param context the context
+     * @return the value
+     * @throws Exception the exception
+     */
     @Override
     public Object getValue( String token, VIVAContext context ) throws Exception
     {
         return null;
     }
     
+    /**
+     * Test.
+     *
+     * @param context the context
+     * @return true, if successful
+     * @throws VIVAException the VIVA exception
+     */
     public boolean test( VIVAContext context ) throws VIVAException
     {
         boolean success = true;
@@ -63,6 +92,11 @@ public class SpacesPattern extends ValuePattern
     }
     
     
+    /**
+     * Gets the default value.
+     *
+     * @return the default value
+     */
     public Object getDefaultValue()
     {
         return " ";

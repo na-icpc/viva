@@ -5,27 +5,58 @@ import org.vanb.viva.utils.VIVAContext;
 import org.vanb.viva.utils.VIVAException;
 import org.vanb.viva.utils.ValueManager;
 
+/**
+ * The Class ValuePattern.
+ */
 public abstract class ValuePattern implements Pattern
 {
+    
+    /** The name. */
     private String name;
+    
+    /** Is this Fixed field?. */
     private boolean fixedfield = false;
+    
+    /** The width. */
     private ExpressionNode width = null;
     
-    public void setName( String n )
+    /**
+     * Sets the name.
+     *
+     * @param name the new name
+     */
+    public void setName( String name )
     {
-        name = n;
+        this.name = name;
     }
     
+    /**
+     * Sets the fixed field.
+     *
+     * @param ff the new fixed field
+     */
     public void setFixedField( boolean ff )
     {
         fixedfield = ff;   
     }
     
+    /**
+     * Sets the width.
+     *
+     * @param w the new width
+     */
     public void setWidth( ExpressionNode w )
     {
         width = w;
     }
     
+    /**
+     * Gets the token.
+     *
+     * @param context the context
+     * @return the token
+     * @throws Exception the exception
+     */
     protected String getToken( VIVAContext context ) throws Exception
     {
         String token = null;
@@ -58,6 +89,13 @@ public abstract class ValuePattern implements Pattern
         return token;
     }
     
+    /**
+     * Test.
+     *
+     * @param context the context
+     * @return true, if successful
+     * @throws VIVAException the VIVA exception
+     */
     @Override
     public boolean test( VIVAContext context ) throws VIVAException
     {
@@ -115,12 +153,31 @@ public abstract class ValuePattern implements Pattern
         return success;
     }
     
+    /** A RegEx pattern for a good double. */
     public static java.util.regex.Pattern goodDouble = java.util.regex.Pattern.compile( "\\-?(0|[1-9][0-9]*)(\\.[0-9]*)?" );
     
+    /**
+     * Gets the value.
+     *
+     * @param token the token
+     * @param context the context
+     * @return the value
+     * @throws Exception the exception
+     */
     public abstract Object getValue( String token, VIVAContext context ) throws Exception;
     
+    /**
+     * Gets the type.
+     *
+     * @return the type
+     */
     public abstract Class<?> getType();
     
+    /**
+     * Gets the default value.
+     *
+     * @return the default value
+     */
     public abstract Object getDefaultValue();
 
 }

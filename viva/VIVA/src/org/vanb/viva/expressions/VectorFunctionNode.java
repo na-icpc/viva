@@ -7,16 +7,36 @@ import org.vanb.viva.VectorFunction;
 import org.vanb.viva.utils.VIVAContext;
 import org.vanb.viva.utils.VIVAException;
 
+/**
+ * The Class VectorFunctionNode.
+ */
 public class VectorFunctionNode extends FunctionNode
 {
+    
+    /** The function. */
     private VectorFunction function;
     
+    /**
+     * Instantiates a new vector function node.
+     *
+     * @param name the name
+     * @param type the type
+     * @param f the function
+     * @param parms the parms
+     */
     public VectorFunctionNode( String name, Class<?> type, VectorFunction f, List<ExpressionNode> parms )
     {
         super( name, type, parms );
         function = f;
     }
     
+    /**
+     * Gets the value.
+     *
+     * @param context the context
+     * @return the value
+     * @throws VIVAException the VIVA exception
+     */
     public Object getValue( VIVAContext context ) throws VIVAException
     {
         int saveindex = context.index;

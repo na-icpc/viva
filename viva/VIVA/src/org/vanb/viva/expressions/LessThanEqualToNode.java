@@ -6,7 +6,13 @@ package org.vanb.viva.expressions;
 public class LessThanEqualToNode extends BooleanOperatorNode
 {
     
-    /** 
+    /**
+     * Evaluate
+     *
+     * @param l the left double
+     * @param r the right double
+     * @return the object
+     * @throws Exception the exception
      * @see org.vanb.viva.expressions.NumberBinaryOperatorNode#evaluate(double, double)
      */
     public Object evaluate( double l, double r ) throws Exception
@@ -14,7 +20,13 @@ public class LessThanEqualToNode extends BooleanOperatorNode
         return new Boolean( l<=r+deps );
     }
 
-    /** 
+    /**
+     * Evaluate
+     *
+     * @param l the left float
+     * @param r the right float
+     * @return the object
+     * @throws Exception the exception
      * @see org.vanb.viva.expressions.NumberBinaryOperatorNode#evaluate(float, float)
      */
     @Override
@@ -23,7 +35,13 @@ public class LessThanEqualToNode extends BooleanOperatorNode
         return new Boolean( l<=r+feps);
     }
 
-    /** 
+    /**
+     * Evaluate
+     *
+     * @param l the left long
+     * @param r the right long
+     * @return the object
+     * @throws Exception the exception
      * @see org.vanb.viva.expressions.NumberBinaryOperatorNode#evaluate(long, long)
      */
     @Override
@@ -32,7 +50,13 @@ public class LessThanEqualToNode extends BooleanOperatorNode
         return new Boolean( l<=r );
     }
 
-    /** 
+    /**
+     * Evaluate
+     *
+     * @param l the left int
+     * @param r the right int
+     * @return the object
+     * @throws Exception the exception
      * @see org.vanb.viva.expressions.NumberBinaryOperatorNode#evaluate(int, int)
      */
     @Override
@@ -41,7 +65,13 @@ public class LessThanEqualToNode extends BooleanOperatorNode
         return new Boolean( l<=r );
     }
 
-    /** 
+    /**
+     * Evaluate
+     *
+     * @param l the left string
+     * @param r the right string
+     * @return the object
+     * @throws Exception the exception
      * @see org.vanb.viva.expressions.BooleanOperatorNode#evaluate(java.lang.String, java.lang.String)
      */
     @Override

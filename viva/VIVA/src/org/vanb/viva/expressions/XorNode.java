@@ -4,8 +4,19 @@ import org.vanb.viva.parser.ParseException;
 import org.vanb.viva.utils.VIVAContext;
 import org.vanb.viva.utils.VIVAException;
 
+/**
+ * The Class XorNode.
+ */
 public class XorNode extends BinaryOperatorNode
 {
+    
+    /**
+     * Instantiate.
+     *
+     * @param lhs the lhs
+     * @param rhs the rhs
+     * @throws ParseException the parse exception
+     */
     @Override
     public void instantiate( ExpressionNode lhs, ExpressionNode rhs ) throws ParseException
     {
@@ -22,6 +33,13 @@ public class XorNode extends BinaryOperatorNode
         }
     }
 
+    /**
+     * Evaluate.
+     *
+     * @param context the context
+     * @return the object
+     * @throws VIVAException the VIVA exception
+     */
     @Override
     public Object evaluate( VIVAContext context ) throws VIVAException
     {
@@ -31,6 +49,11 @@ public class XorNode extends BinaryOperatorNode
         return new Boolean( l ^ r );
     }
 
+    /**
+     * Gets the return type.
+     *
+     * @return the return type
+     */
     @Override
     public Class<?> getReturnType()
     {

@@ -4,10 +4,22 @@ import org.vanb.viva.parser.ParseException;
 import org.vanb.viva.utils.VIVAContext;
 import org.vanb.viva.utils.VIVAException;
 
+/**
+ * The Class ShiftNode.
+ */
 public class ShiftNode extends BinaryOperatorNode
 {
+    
+    /** The type. */
     private Class<?> type;
     
+    /**
+     * Instantiate.
+     *
+     * @param lhs the lhs
+     * @param rhs the rhs
+     * @throws ParseException the parse exception
+     */
     @Override
     public void instantiate( ExpressionNode lhs, ExpressionNode rhs ) throws ParseException
     {
@@ -34,6 +46,13 @@ public class ShiftNode extends BinaryOperatorNode
         }
     }
 
+    /**
+     * Evaluate.
+     *
+     * @param context the context
+     * @return the object
+     * @throws VIVAException the VIVA exception
+     */
     @Override
     public Object evaluate( VIVAContext context ) throws VIVAException
     {
@@ -68,6 +87,11 @@ public class ShiftNode extends BinaryOperatorNode
         return result;
     }
     
+    /**
+     * Gets the return type.
+     *
+     * @return the return type
+     */
     @Override
     public Class<?> getReturnType()
     {

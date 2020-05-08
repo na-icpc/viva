@@ -4,10 +4,22 @@ import org.vanb.viva.parser.ParseException;
 import org.vanb.viva.utils.VIVAContext;
 import org.vanb.viva.utils.VIVAException;
 
+/**
+ * The Class IntegerLongBinaryOperatorNode.
+ */
 public abstract class IntegerLongBinaryOperatorNode extends BinaryOperatorNode
 {
+    
+    /** The type. */
     private Class<?> type;
     
+    /**
+     * Instantiate.
+     *
+     * @param lhs the lhs
+     * @param rhs the rhs
+     * @throws ParseException the parse exception
+     */
     @Override
     public void instantiate( ExpressionNode lhs, ExpressionNode rhs ) throws ParseException
     {
@@ -37,6 +49,13 @@ public abstract class IntegerLongBinaryOperatorNode extends BinaryOperatorNode
         }
     }
 
+    /**
+     * Evaluate.
+     *
+     * @param context the context
+     * @return the object
+     * @throws VIVAException the VIVA exception
+     */
     @Override
     public Object evaluate( VIVAContext context ) throws VIVAException
     {
@@ -63,9 +82,31 @@ public abstract class IntegerLongBinaryOperatorNode extends BinaryOperatorNode
         return result;
     }
     
+    /**
+     * Evaluate.
+     *
+     * @param l the left long
+     * @param r the right long
+     * @return the object
+     * @throws Exception the exception
+     */
     public abstract Object evaluate( long l, long r ) throws Exception;
+    
+    /**
+     * Evaluate.
+     *
+     * @param l the left int
+     * @param r the right int
+     * @return the object
+     * @throws Exception the exception
+     */
     public abstract Object evaluate( int l, int r ) throws Exception;
 
+    /**
+     * Gets the return type.
+     *
+     * @return the return type
+     */
     @Override
     public Class<?> getReturnType()
     {

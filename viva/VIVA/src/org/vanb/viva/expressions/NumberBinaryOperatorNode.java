@@ -20,7 +20,12 @@ public abstract class NumberBinaryOperatorNode extends BinaryOperatorNode
     /** The epsilon for floats. */
     protected float feps;
     
-    /** 
+    /**
+     * Instantiate.
+     *
+     * @param lhs the lhs
+     * @param rhs the rhs
+     * @throws ParseException the parse exception
      * @see org.vanb.viva.expressions.BinaryOperatorNode#instantiate(org.vanb.viva.expressions.ExpressionNode, org.vanb.viva.expressions.ExpressionNode)
      */
     @Override
@@ -66,7 +71,12 @@ public abstract class NumberBinaryOperatorNode extends BinaryOperatorNode
         }
     }
 
-    /** 
+    /**
+     * Evaluate.
+     *
+     * @param context the context
+     * @return the object
+     * @throws VIVAException the VIVA exception
      * @see org.vanb.viva.expressions.ExpressionNode#evaluate(org.vanb.viva.utils.VIVAContext)
      */
     @Override
@@ -156,7 +166,10 @@ public abstract class NumberBinaryOperatorNode extends BinaryOperatorNode
      */
     public abstract Object evaluate( int l, int r ) throws Exception;
 
-    /** 
+    /**
+     * Get the Return Type.
+     *
+     * @return the return type
      * @see org.vanb.viva.expressions.ExpressionNode#getReturnType()
      */
     @Override

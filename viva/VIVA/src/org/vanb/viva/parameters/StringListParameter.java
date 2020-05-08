@@ -10,7 +10,8 @@ import java.util.Arrays;
  */
 public abstract class StringListParameter extends Parameter
 {
-    /** List of possible values */
+    
+    /**  List of possible values. */
     public String values[];
     
     /**
@@ -29,6 +30,9 @@ public abstract class StringListParameter extends Parameter
     
     /**
      * Determine if a potential value is in the List.
+     *
+     * @param value the value
+     * @return true, if is valid
      */
     public boolean isvalid( Object value )
     {
@@ -53,10 +57,13 @@ public abstract class StringListParameter extends Parameter
         return ok;
     }
 
-    @Override
+    
     /**
      * Describe how to use this Parameter.
+     *
+     * @return the string
      */
+    @Override
     public String usage()
     {
         boolean first = true;
@@ -70,6 +77,12 @@ public abstract class StringListParameter extends Parameter
         return message;
     }
     
+    /**
+     * Convert.
+     *
+     * @param token the token
+     * @return the object
+     */
     public Object convert( String token )
     {
         String result = null;

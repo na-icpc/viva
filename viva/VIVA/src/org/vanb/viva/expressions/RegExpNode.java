@@ -7,10 +7,22 @@ import org.vanb.viva.parser.ParseException;
 import org.vanb.viva.utils.VIVAContext;
 import org.vanb.viva.utils.VIVAException;
 
+/**
+ * The Class RegExpNode.
+ */
 public class RegExpNode extends BinaryOperatorNode
 {    
+    
+    /** The pattern. */
     private Pattern pattern;
 
+    /**
+     * Instantiate.
+     *
+     * @param lhs the lhs
+     * @param rhs the rhs
+     * @throws ParseException the parse exception
+     */
     @Override
     public void instantiate( ExpressionNode lhs, ExpressionNode rhs )
             throws ParseException
@@ -48,6 +60,13 @@ public class RegExpNode extends BinaryOperatorNode
         }
     }
 
+    /**
+     * Evaluate.
+     *
+     * @param context the context
+     * @return the object
+     * @throws VIVAException the VIVA exception
+     */
     @Override
     public Object evaluate( VIVAContext context ) throws VIVAException
     {
@@ -55,6 +74,11 @@ public class RegExpNode extends BinaryOperatorNode
         return new Boolean( matcher.matches() );
     }
 
+    /**
+     * Gets the return type.
+     *
+     * @return the return type
+     */
     @Override
     public Class<?> getReturnType()
     {

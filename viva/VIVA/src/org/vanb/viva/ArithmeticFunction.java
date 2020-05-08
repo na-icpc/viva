@@ -29,24 +29,26 @@ public abstract class ArithmeticFunction implements ScalarFunction
         return name;
     }
 
-    @Override
+    
     /**
      * Check this function's parameters. It should take exactly one number.
      * 
      * @param params List of parameters to check
      * @return Double.class if parameter is OK, null if not.
      */
+    @Override
     public Class<?> getReturnType( Class<?>[] params )
     {
         return params.length==1 && Number.class.isAssignableFrom( params[0] ) ? Double.class : null;
     }
 
-    @Override
+    
     /**
      * Get a String describing this function's usage, which should be the same for all Arithmetic Functions.
      * 
      * @return A String describing this function's usage
      */
+    @Override
     public String getUsage()
     {
         return name + "(number)";
@@ -61,7 +63,6 @@ public abstract class ArithmeticFunction implements ScalarFunction
      */
     protected abstract double implementation( double parameter ) throws Exception;
 
-    @Override
     /**
      * Execute this function.
      * 
@@ -70,6 +71,7 @@ public abstract class ArithmeticFunction implements ScalarFunction
      * @return The result of the function
      * @throws A generic exeption if anything goes wrong
      */
+    @Override
     public Object run( VIVAContext context, List<Object> parameters ) throws Exception
     {
         Number argument = (Number)parameters.get( 0 );

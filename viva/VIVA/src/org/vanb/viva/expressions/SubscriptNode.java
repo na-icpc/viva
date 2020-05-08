@@ -4,16 +4,35 @@ import org.vanb.viva.utils.VIVAContext;
 import org.vanb.viva.utils.VIVAException;
 import org.vanb.viva.utils.ValueManager;
 
+/**
+ * The Class SubscriptNode.
+ */
 public class SubscriptNode extends VariableNode
 {
+    
+    /** The subscript. */
     private ExpressionNode subscript;
     
+    /**
+     * Instantiates a new subscript node.
+     *
+     * @param name the name
+     * @param type the type
+     * @param sub the sub
+     */
     public SubscriptNode( String name, Class<?> type, ExpressionNode sub )
     {
         super( name, type, true );
         subscript = sub;
     }
     
+    /**
+     * Evaluate.
+     *
+     * @param context the context
+     * @return the object
+     * @throws VIVAException the VIVA exception
+     */
     @Override
     public Object evaluate( VIVAContext context ) throws VIVAException
     {
@@ -48,6 +67,11 @@ public class SubscriptNode extends VariableNode
         return value==null ? new Integer(0) : value;
     }
     
+    /**
+     * To string.
+     *
+     * @return the string
+     */
     public String toString()
     {
         return name + "[" + subscript + "]";

@@ -20,6 +20,7 @@ public class ChoiceController implements Pattern
         Pattern choice = null;
         
         context.input.dropAnchor();
+        boolean itworks = false;
         
         for( Pattern pattern : choices  )
         {
@@ -29,15 +30,15 @@ public class ChoiceController implements Pattern
             choice = pattern;
             context.values.addLevel();
             context.testLevel++;
-            boolean itworks = pattern.test( context );
+            itworks = pattern.test( context );
             context.testLevel--;
             context.values.removeLevel();
             context.input.returnToAnchor();
             
-            if( itworks ) break;            
+            if( itworks ) break;     
         }
         
-        return choice==null ? false : choice.test( context );
+        return itworks ? choice.test( context ) : false;
     }
 
 }

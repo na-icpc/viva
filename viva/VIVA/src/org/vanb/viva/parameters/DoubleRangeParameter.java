@@ -1,9 +1,25 @@
 package org.vanb.viva.parameters;
 
+/**
+ * The Class DoubleRangeParameter.
+ */
 public abstract class DoubleRangeParameter extends Parameter
 {
-    protected double lo, hi;
     
+    /** The low value of the range. */
+    protected double lo;
+    
+    /** The high value of the range. */
+    protected double hi;
+    
+    /**
+     * Instantiates a new double range parameter.
+     *
+     * @param name the name
+     * @param lo the low value
+     * @param hi the high value
+     * @param defaultValue the default value
+     */
     protected DoubleRangeParameter( String name, double lo, double hi, double defaultValue )
     {
         super( name, Double.class, defaultValue );
@@ -11,17 +27,34 @@ public abstract class DoubleRangeParameter extends Parameter
         this.hi = hi;
     }
     
+    /**
+     * Checks if parameter is valid.
+     *
+     * @param value the value
+     * @return true, if is valid
+     */
     @Override
     public boolean isvalid( Object value )
     {
         return value.getClass()==Double.class && lo <= (Double)value && (Double)value <= hi;
     }
     
+    /**
+     * Usage.
+     *
+     * @return the string
+     */
     public String usage()
     {
         return "Must be a double between " + lo + " and " + hi;
     }
 
+    /**
+     * Convert a token to its double value.
+     *
+     * @param token the token
+     * @return the object
+     */
     public Object convert( String token )
     {
         Double value;

@@ -4,10 +4,21 @@ import org.vanb.viva.parser.ParseException;
 import org.vanb.viva.utils.VIVAContext;
 import org.vanb.viva.utils.VIVAException;
 
+/**
+ * The Class NegativeNode.
+ */
 public class NegativeNode extends UnaryOperatorNode
 {
+    
+    /** The type. */
     Class<?> type;
     
+    /**
+     * Instantiate.
+     *
+     * @param arg the arg
+     * @throws ParseException the parse exception
+     */
     @Override
     public void instantiate( ExpressionNode arg ) throws ParseException
     {
@@ -19,6 +30,13 @@ public class NegativeNode extends UnaryOperatorNode
         argument = arg;
     }
 
+    /**
+     * Evaluate.
+     *
+     * @param context the context
+     * @return the object
+     * @throws VIVAException the VIVA exception
+     */
     @Override
     public Object evaluate( VIVAContext context ) throws VIVAException
     {

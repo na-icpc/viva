@@ -4,18 +4,39 @@ import org.vanb.viva.utils.VIVAContext;
 import org.vanb.viva.utils.VIVAException;
 import org.vanb.viva.utils.ValueManager;
 
+/**
+ * The Class CountNode.
+ */
 public class CountNode extends VariableNode
 {
-    public CountNode( String n )
+    
+    /**
+     * Instantiates a new count node.
+     *
+     * @param name the name
+     */
+    public CountNode( String name )
     {
-        super( n, Integer.class, true );
+        super( name, Integer.class, true );
     }
     
+    /**
+     * To string.
+     *
+     * @return the string
+     */
     public String toString()
     {
         return name + "#";
     }
         
+    /**
+     * Evaluate.
+     *
+     * @param context the context
+     * @return the object
+     * @throws VIVAException the VIVA exception
+     */
     public Object evaluate( VIVAContext context ) throws VIVAException
     {
         ValueManager vm = context.values.lookup( name );

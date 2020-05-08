@@ -2,15 +2,29 @@ package org.vanb.viva.parameters;
 
 import org.vanb.viva.utils.VIVAContext;
 
+/**
+ * The Class EOFStyleParameter.
+ */
 public class EOFStyleParameter extends StringListParameter
 {
+    
+    /** The options. */
     private static String options[] = { "both", "windows", "linux", "system" };
     
+    /**
+     * Instantiates a new EOF style parameter.
+     */
     public EOFStyleParameter()
     {
         super( "eofstyle", options, 3 );
     }
 
+    /**
+     * Action.
+     *
+     * @param context the context
+     * @param value the value
+     */
     @Override
     public void action( VIVAContext context, Object value )
     {

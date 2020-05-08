@@ -6,7 +6,13 @@ package org.vanb.viva.expressions;
 public class NotEqualToNode extends BooleanOperatorNode
 {
     
-    /** 
+    /**
+     * Evaluate.
+     *
+     * @param l the l
+     * @param r the r
+     * @return the object
+     * @throws Exception the exception
      * @see org.vanb.viva.expressions.NumberBinaryOperatorNode#evaluate(double, double)
      */
     @Override
@@ -15,7 +21,13 @@ public class NotEqualToNode extends BooleanOperatorNode
         return new Boolean( Math.abs( l-r ) >= deps );
     }
 
-    /** 
+    /**
+     * Evaluate.
+     *
+     * @param l the l
+     * @param r the r
+     * @return the object
+     * @throws Exception the exception
      * @see org.vanb.viva.expressions.NumberBinaryOperatorNode#evaluate(float, float)
      */
     @Override
@@ -24,7 +36,13 @@ public class NotEqualToNode extends BooleanOperatorNode
         return new Boolean( Math.abs( l-r ) >= feps );
     }
 
-    /** 
+    /**
+     * Evaluate.
+     *
+     * @param l the l
+     * @param r the r
+     * @return the object
+     * @throws Exception the exception
      * @see org.vanb.viva.expressions.NumberBinaryOperatorNode#evaluate(long, long)
      */
     @Override
@@ -33,7 +51,13 @@ public class NotEqualToNode extends BooleanOperatorNode
         return new Boolean( l!=r );
     }
 
-    /** 
+    /**
+     * Evaluate.
+     *
+     * @param l the l
+     * @param r the r
+     * @return the object
+     * @throws Exception the exception
      * @see org.vanb.viva.expressions.NumberBinaryOperatorNode#evaluate(int, int)
      */
     @Override
@@ -42,7 +66,13 @@ public class NotEqualToNode extends BooleanOperatorNode
         return new Boolean( l!=r );
     }
 
-    /** 
+    /**
+     * Evaluate.
+     *
+     * @param l the l
+     * @param r the r
+     * @return the object
+     * @throws Exception the exception
      * @see org.vanb.viva.expressions.BooleanOperatorNode#evaluate(java.lang.String, java.lang.String)
      */
     @Override

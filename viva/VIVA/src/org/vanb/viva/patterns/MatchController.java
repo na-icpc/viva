@@ -10,6 +10,8 @@ import org.vanb.viva.utils.VIVAException;
  */
 public class MatchController extends PatternListController
 {
+    
+    /** The terminating pattern. */
     private Pattern terminatingPattern;
 
     /**
@@ -32,9 +34,11 @@ public class MatchController extends PatternListController
     }
         
     /**
-     * Test to see if this pattern matches the input file
-     * 
+     * Test to see if this pattern matches the input file.
+     *
+     * @param context the context
      * @return true if this Pattern matches, otherwise false
+     * @throws VIVAException the VIVA exception
      */
     public boolean test( VIVAContext context ) throws VIVAException
     {

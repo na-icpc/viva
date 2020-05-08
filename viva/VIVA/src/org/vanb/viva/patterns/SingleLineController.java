@@ -3,8 +3,19 @@ package org.vanb.viva.patterns;
 import org.vanb.viva.utils.VIVAContext;
 import org.vanb.viva.utils.VIVAException;
 
+/**
+ * The Class SingleLineController.
+ */
 public class SingleLineController extends PatternListController
 {
+    
+    /**
+     * Test.
+     *
+     * @param context the context
+     * @return true, if successful
+     * @throws VIVAException the VIVA exception
+     */
     public boolean test( VIVAContext context ) throws VIVAException
     {
         boolean success = super.test( context );

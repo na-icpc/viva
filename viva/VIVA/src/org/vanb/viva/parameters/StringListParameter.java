@@ -1,3 +1,9 @@
+/*
+ * VIVA - vanb's Input Verification Assistant
+ * (C) 2012-2020
+ * 
+ * @author vanb
+ */
 package org.vanb.viva.parameters;
 
 import java.util.Arrays;
@@ -34,6 +40,7 @@ public abstract class StringListParameter extends Parameter
      * @param value the value
      * @return true, if is valid
      */
+    @Override
     public boolean isvalid( Object value )
     {
         boolean ok;
@@ -83,6 +90,7 @@ public abstract class StringListParameter extends Parameter
      * @param token the token
      * @return the object
      */
+    @Override
     public Object convert( String token )
     {
         String result = null;

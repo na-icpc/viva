@@ -1,3 +1,9 @@
+/*
+ * VIVA - vanb's Input Verification Assistant
+ * (C) 2012-2020
+ * 
+ * @author vanb
+ */
 package org.vanb.viva.utils;
 
 import java.util.ArrayList;
@@ -99,6 +105,7 @@ public class ValueManager
      * 
      * @return A description of this ValueManager.
      */
+    @Override
     public String toString()
     {
         return "ValueManager:" + values + " " + currentValue + " " + count;

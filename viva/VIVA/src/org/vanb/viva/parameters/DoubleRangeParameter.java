@@ -1,3 +1,9 @@
+/*
+ * VIVA - vanb's Input Verification Assistant
+ * (C) 2012-2020
+ * 
+ * @author vanb
+ */
 package org.vanb.viva.parameters;
 
 /**
@@ -44,6 +50,7 @@ public abstract class DoubleRangeParameter extends Parameter
      *
      * @return the string
      */
+    @Override
     public String usage()
     {
         return "Must be a double between " + lo + " and " + hi;
@@ -55,6 +62,7 @@ public abstract class DoubleRangeParameter extends Parameter
      * @param token the token
      * @return the object
      */
+    @Override
     public Object convert( String token )
     {
         Double value;

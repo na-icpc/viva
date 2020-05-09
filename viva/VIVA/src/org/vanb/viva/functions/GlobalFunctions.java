@@ -1,3 +1,9 @@
+/*
+ * VIVA - vanb's Input Verification Assistant
+ * (C) 2012-2020
+ * 
+ * @author vanb
+ */
 package org.vanb.viva.functions;
 
 import java.util.HashSet;
@@ -193,6 +199,7 @@ public class GlobalFunctions
          * @param params the params
          * @return the return type
          */
+        @Override
         public Class<?> getReturnType( Class<?>[] params )
         {
             return params.length==1 ? type : null;
@@ -203,6 +210,7 @@ public class GlobalFunctions
          *
          * @return the usage
          */
+        @Override
         public String getUsage()
         {
             return name + "(varname)";
@@ -216,6 +224,7 @@ public class GlobalFunctions
          * @return the object
          * @throws Exception the exception
          */
+        @Override
         public Object run( VIVAContext context, List<Object> parameters ) throws Exception
         {        
             return context.getThing( type, parameters.get( 0 ) );
@@ -342,6 +351,7 @@ public class GlobalFunctions
          * @param params the params
          * @return the return type
          */
+        @Override
         public Class<?> getReturnType( Class<?>[] params )
         {
             return params.length==2 && params[1]==type ? Boolean.class : null;
@@ -352,6 +362,7 @@ public class GlobalFunctions
          *
          * @return the usage
          */
+        @Override
         public String getUsage()
         {
             return name + "(varname," + type.getSimpleName().toLowerCase() + ")";
@@ -365,6 +376,7 @@ public class GlobalFunctions
          * @return the object
          * @throws Exception the exception
          */
+        @Override
         public Object run( VIVAContext context, List<Object> parameters ) throws Exception
         {
             context.setThing( parameters.get(0), parameters.get(1) );

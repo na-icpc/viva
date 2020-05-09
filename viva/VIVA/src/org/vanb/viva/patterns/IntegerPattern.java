@@ -1,3 +1,9 @@
+/*
+ * VIVA - vanb's Input Verification Assistant
+ * (C) 2012-2020
+ * 
+ * @author vanb
+ */
 package org.vanb.viva.patterns;
 
 import org.vanb.viva.utils.VIVAContext;
@@ -17,6 +23,7 @@ public class IntegerPattern extends ValuePattern
      * @return the value
      * @throws Exception the exception
      */
+    @Override
     public Object getValue( String token, VIVAContext context ) throws Exception
     {
         token = token.trim();
@@ -31,6 +38,7 @@ public class IntegerPattern extends ValuePattern
      *
      * @return the type
      */
+    @Override
     public Class<?> getType()
     {
         return Integer.class;
@@ -41,6 +49,7 @@ public class IntegerPattern extends ValuePattern
      *
      * @return the default value
      */
+    @Override
     public Object getDefaultValue()
     {
         return new Integer( 0 );

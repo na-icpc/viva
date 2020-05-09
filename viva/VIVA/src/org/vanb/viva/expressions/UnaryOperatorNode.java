@@ -1,3 +1,9 @@
+/*
+ * VIVA - vanb's Input Verification Assistant
+ * (C) 2012-2020
+ * 
+ * @author vanb
+ */
 package org.vanb.viva.expressions;
 
 import org.vanb.viva.parser.ParseException;
@@ -27,6 +33,7 @@ public abstract class UnaryOperatorNode implements ExpressionNode
      *
      * @return the string
      */
+    @Override
     public String toString()
     {
         return operator + argument;
@@ -37,6 +44,7 @@ public abstract class UnaryOperatorNode implements ExpressionNode
      *
      * @return the return type
      */
+    @Override
     public Class<?> getReturnType()
     {
         return argument.getReturnType();

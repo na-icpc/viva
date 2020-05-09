@@ -1,3 +1,9 @@
+/*
+ * VIVA - vanb's Input Verification Assistant
+ * (C) 2012-2020
+ * 
+ * @author vanb
+ */
 package org.vanb.viva.patterns;
 
 import org.vanb.viva.utils.VIVAContext;
@@ -16,6 +22,7 @@ public class SingleLineController extends PatternListController
      * @return true, if successful
      * @throws VIVAException the VIVA exception
      */
+    @Override
     public boolean test( VIVAContext context ) throws VIVAException
     {
         boolean success = super.test( context );

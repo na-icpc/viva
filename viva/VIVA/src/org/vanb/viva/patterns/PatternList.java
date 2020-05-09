@@ -1,3 +1,9 @@
+/*
+ * VIVA - vanb's Input Verification Assistant
+ * (C) 2012-2020
+ * 
+ * @author vanb
+ */
 package org.vanb.viva.patterns;
 
 import java.util.ArrayList;
@@ -57,6 +63,7 @@ public class PatternList implements Pattern
      * @return true if this Pattern matches, otherwise false
      * @throws VIVAException the VIVA exception
      */
+    @Override
     public boolean test( VIVAContext context ) throws VIVAException
     {
         boolean success = true;

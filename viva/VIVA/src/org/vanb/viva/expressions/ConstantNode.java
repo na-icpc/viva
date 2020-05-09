@@ -1,3 +1,9 @@
+/*
+ * VIVA - vanb's Input Verification Assistant
+ * (C) 2012-2020
+ * 
+ * @author vanb
+ */
 package org.vanb.viva.expressions;
 
 import org.vanb.viva.utils.VIVAContext;
@@ -51,6 +57,7 @@ public class ConstantNode implements ExpressionNode
      *
      * @return the string
      */
+    @Override
     public String toString()
     {
         return value instanceof String ? "\"" + value + "\"" : value.toString();

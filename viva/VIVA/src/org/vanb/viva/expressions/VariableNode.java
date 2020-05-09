@@ -1,3 +1,9 @@
+/*
+ * VIVA - vanb's Input Verification Assistant
+ * (C) 2012-2020
+ * 
+ * @author vanb
+ */
 package org.vanb.viva.expressions;
 
 import org.vanb.viva.utils.VIVAContext;
@@ -82,6 +88,7 @@ public class VariableNode implements ExpressionNode
      *
      * @return the string
      */
+    @Override
     public String toString()
     {
         return name + (wantValue?"":"$");

@@ -1,3 +1,9 @@
+/*
+ * VIVA - vanb's Input Verification Assistant
+ * (C) 2012-2020
+ * 
+ * @author vanb
+ */
 package org.vanb.viva.expressions;
 
 import java.util.List;
@@ -33,6 +39,7 @@ public abstract class FunctionNode extends VariableNode
      *
      * @return the string
      */
+    @Override
     public String toString()
     {
         String result = name + "(";
@@ -57,6 +64,7 @@ public abstract class FunctionNode extends VariableNode
      * @return the object
      * @throws VIVAException the VIVA exception
      */
+    @Override
     public Object evaluate( VIVAContext context ) throws VIVAException
     {
         Object value; 

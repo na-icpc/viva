@@ -1,3 +1,9 @@
+/*
+ * VIVA - vanb's Input Verification Assistant
+ * (C) 2012-2020
+ * 
+ * @author vanb
+ */
 package org.vanb.viva.gui;
 
 import java.awt.Color;
@@ -54,8 +60,6 @@ import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableModel;
@@ -210,6 +214,7 @@ public class VIVAGUI implements ActionListener
          *
          * @param de the Event
          */
+        @Override
         public void changedUpdate( DocumentEvent de )
         {
             setButtons();
@@ -221,6 +226,7 @@ public class VIVAGUI implements ActionListener
          *
          * @param de the Event
          */
+        @Override
         public void insertUpdate( DocumentEvent de )
         {
             setButtons();
@@ -232,6 +238,7 @@ public class VIVAGUI implements ActionListener
          *
          * @param de the Event
          */
+        @Override
         public void removeUpdate( DocumentEvent de )
         {
             setButtons();
@@ -354,6 +361,7 @@ public class VIVAGUI implements ActionListener
          * 
          * @param lines A list of lines
          */
+        @Override
         protected void process( List<String> lines )
         {
             for( String line : lines ) outputsText.append( line );
@@ -396,6 +404,7 @@ public class VIVAGUI implements ActionListener
          * @param field the field
          * @return true, if successful
          */
+        @Override
         public boolean verify( JComponent field )
         {
             boolean ok = true;
@@ -437,6 +446,7 @@ public class VIVAGUI implements ActionListener
     {
         EventQueue.invokeLater( new Runnable()
         {
+            @Override
             public void run()
             {
                 try
@@ -660,7 +670,7 @@ public class VIVAGUI implements ActionListener
         
 
         // Start to work with VIVA's parameters. First, gather their names.
-        String parms[] = (String[])context.parameters.keySet().toArray(new String[context.parameters.size()]);
+        String parms[] = context.parameters.keySet().toArray(new String[context.parameters.size()]);
         Arrays.sort( parms );
         
         // Build a table of Parameters
@@ -731,11 +741,13 @@ public class VIVAGUI implements ActionListener
         // Create a graphical version of that table
         parametersTable = new JTable( table, columns )
         {
+            @Override
             public TableCellEditor getCellEditor( int row, int col )
             {
                 return col==1 && editors[row]!=null ? editors[row] : super.getCellEditor( row, col );
             }
             
+            @Override
             public boolean isCellEditable( int row, int col )
             {
                 return col==1;
@@ -828,6 +840,7 @@ public class VIVAGUI implements ActionListener
         // automatically shift focus to the Pattern Editor.
         frmViva.addWindowFocusListener( new WindowAdapter()
         {
+            @Override
             public void windowGainedFocus( WindowEvent e )
             {
                 patternEditor.requestFocusInWindow();
@@ -1032,6 +1045,7 @@ public class VIVAGUI implements ActionListener
      * @param ae
      *            The Action Event
      */
+    @Override
     public void actionPerformed( ActionEvent ae )
     {
         // Figure out which button was pressed

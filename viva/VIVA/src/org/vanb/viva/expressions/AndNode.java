@@ -1,3 +1,9 @@
+/*
+ * VIVA - vanb's Input Verification Assistant
+ * (C) 2012-2020
+ * 
+ * @author vanb
+ */
 package org.vanb.viva.expressions;
 
 import org.vanb.viva.parser.ParseException;
@@ -6,6 +12,8 @@ import org.vanb.viva.utils.VIVAException;
 
 /**
  * The Class AndNode.
+ *
+ * @author vanb
  */
 public class AndNode extends BinaryOperatorNode
 {

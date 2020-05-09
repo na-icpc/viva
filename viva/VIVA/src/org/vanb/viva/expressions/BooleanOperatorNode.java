@@ -1,3 +1,9 @@
+/*
+ * VIVA - vanb's Input Verification Assistant
+ * (C) 2012-2020
+ * 
+ * @author vanb
+ */
 package org.vanb.viva.expressions;
 
 import org.vanb.viva.parser.ParseException;
@@ -15,6 +21,7 @@ public abstract class BooleanOperatorNode extends NumberBinaryOperatorNode
     /**
      * @see org.vanb.viva.expressions.NumberBinaryOperatorNode#instantiate(org.vanb.viva.expressions.ExpressionNode, org.vanb.viva.expressions.ExpressionNode)
      */
+    @Override
     public void instantiate( ExpressionNode lhs, ExpressionNode rhs ) throws ParseException
     {
         if( String.class.equals( lhs.getReturnType() ) || String.class.equals( rhs.getReturnType() ) )
@@ -34,6 +41,7 @@ public abstract class BooleanOperatorNode extends NumberBinaryOperatorNode
     /**
      * @see org.vanb.viva.expressions.NumberBinaryOperatorNode#evaluate(org.vanb.viva.utils.VIVAContext)
      */
+    @Override
     public Object evaluate( VIVAContext context ) throws VIVAException
     {
         Object result = null;
@@ -67,6 +75,7 @@ public abstract class BooleanOperatorNode extends NumberBinaryOperatorNode
     /**
      * @see org.vanb.viva.expressions.NumberBinaryOperatorNode#getReturnType()
      */
+    @Override
     public Class<?> getReturnType()
     {
         return Boolean.class;

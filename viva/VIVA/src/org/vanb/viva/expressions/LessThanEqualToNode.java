@@ -1,3 +1,9 @@
+/*
+ * VIVA - vanb's Input Verification Assistant
+ * (C) 2012-2020
+ * 
+ * @author vanb
+ */
 package org.vanb.viva.expressions;
 
 /**
@@ -15,6 +21,7 @@ public class LessThanEqualToNode extends BooleanOperatorNode
      * @throws Exception the exception
      * @see org.vanb.viva.expressions.NumberBinaryOperatorNode#evaluate(double, double)
      */
+    @Override
     public Object evaluate( double l, double r ) throws Exception
     {
         return new Boolean( l<=r+deps );

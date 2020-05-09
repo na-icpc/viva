@@ -35,6 +35,7 @@ public class DoublePattern extends ValuePattern
      *
      * @return the type
      */
+    @Override
     public Class<?> getType()
     {
         return Double.class;
@@ -45,6 +46,7 @@ public class DoublePattern extends ValuePattern
      *
      * @return the default value
      */
+    @Override
     public Object getDefaultValue()
     {
         return new Double( 0 );

@@ -1,3 +1,9 @@
+/*
+ * VIVA - vanb's Input Verification Assistant
+ * (C) 2012-2020
+ * 
+ * @author vanb
+ */
 package org.vanb.viva.patterns;
 
 import org.vanb.viva.utils.VIVAContext;

@@ -1,3 +1,9 @@
+/*
+ * VIVA - vanb's Input Verification Assistant
+ * (C) 2012-2020
+ * 
+ * @author vanb
+ */
 package org.vanb.viva.graphs;
 
 /**
@@ -28,6 +34,7 @@ public class Base
      * @param other the other
      * @return true, if successful
      */
+    @Override
     public boolean equals( Object other )
     {
         boolean result = true;;
@@ -48,6 +55,7 @@ public class Base
      *
      * @return the hash code of the id.
      */
+    @Override
     public int hashCode()
     {
         return id.hashCode();

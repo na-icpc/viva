@@ -1,3 +1,9 @@
+/*
+ * VIVA - vanb's Input Verification Assistant
+ * (C) 2012-2020
+ * 
+ * @author vanb
+ */
 package org.vanb.viva.utils;
 
 /**
@@ -70,6 +76,7 @@ public class VIVAException extends Exception
      * 
      * @return Root cause
      */
+    @Override
     public Exception getCause()
     {
         return cause;

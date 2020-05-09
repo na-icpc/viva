@@ -1,3 +1,9 @@
+/*
+ * VIVA - vanb's Input Verification Assistant
+ * (C) 2012-2020
+ * 
+ * @author vanb
+ */
 package org.vanb.viva.patterns;
 
 import org.vanb.viva.expressions.ExpressionNode;
@@ -54,6 +60,7 @@ public class SpacesPattern extends ValuePattern
      * @return true, if successful
      * @throws VIVAException the VIVA exception
      */
+    @Override
     public boolean test( VIVAContext context ) throws VIVAException
     {
         boolean success = true;
@@ -97,6 +104,7 @@ public class SpacesPattern extends ValuePattern
      *
      * @return the default value
      */
+    @Override
     public Object getDefaultValue()
     {
         return " ";

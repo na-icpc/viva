@@ -14,11 +14,15 @@ import org.vanb.viva.utils.VIVAException;
  */
 public class PatternList implements Pattern
 {
+    
+    /** The patterns. */
     private List<Pattern> patterns;
+    
+    /** The constraints. */
     ConstraintList constraints;
     
     /**
-     * Create a PatternList
+     * Create a PatternList.
      */
     public PatternList()
     {
@@ -27,8 +31,8 @@ public class PatternList implements Pattern
     }
     
     /**
-     * Add a pattern to this PatternList
-     * 
+     * Add a pattern to this PatternList.
+     *
      * @param pattern Pattern to add
      */
     public void addPattern( Pattern pattern )
@@ -37,9 +41,9 @@ public class PatternList implements Pattern
     }
     
     /**
-     * Add a constraint to this PatternList
-     * 
-     * @param pattern Pattern to add
+     * Add a constraint to this PatternList.
+     *
+     * @param constraint the constraint
      */
     public void addConstraint( ExpressionNode constraint )
     {
@@ -47,9 +51,11 @@ public class PatternList implements Pattern
     }
     
     /**
-     * Test to see if this pattern matches the input file
-     * 
+     * Test to see if this pattern matches the input file.
+     *
+     * @param context the context
      * @return true if this Pattern matches, otherwise false
+     * @throws VIVAException the VIVA exception
      */
     public boolean test( VIVAContext context ) throws VIVAException
     {

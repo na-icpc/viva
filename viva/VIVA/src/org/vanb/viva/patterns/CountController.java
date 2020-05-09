@@ -11,6 +11,8 @@ import org.vanb.viva.utils.VIVAException;
  */
 public class CountController extends PatternListController
 {
+    
+    /** The count. */
     ExpressionNode count;
     
     /**
@@ -33,9 +35,11 @@ public class CountController extends PatternListController
     }
         
     /**
-     * Test to see if this pattern matches the input file
-     * 
+     * Test to see if this pattern matches the input file.
+     *
+     * @param context the context
      * @return true if this Pattern matches, otherwise false
+     * @throws VIVAException the VIVA exception
      */
     public boolean test( VIVAContext context ) throws VIVAException
     {

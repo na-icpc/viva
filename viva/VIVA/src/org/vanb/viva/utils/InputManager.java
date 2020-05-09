@@ -24,10 +24,11 @@ public class InputManager
      */
     private class State
     {
-        /** Position in the input file */
+        
+        /**  Position in the input file. */
         protected int pos = 0;
         
-        /** Position to backsh() to */
+        /**  Position to backsh() to. */
         protected int lastPos;
         
         /** State of EOF, EOLN, and whether the last variable was a fixed-sized field. */
@@ -64,16 +65,16 @@ public class InputManager
         }
     }
     
-    /** Current state */
+    /**  Current state. */
     private State state = new State();
     
     /** A list of 'anchors' - States we can go back to. */
     private Deque<State> anchors = new ArrayDeque<State>();
     
-    /** Context */
+    /**  Context. */
     private VIVAContext context;
     
-    /** The current input file being tested */
+    /**  The current input file being tested. */
     private MappedByteBuffer map;
     
     /** Last position in the file. */
@@ -81,8 +82,10 @@ public class InputManager
    
     /**
      * Create an input controller for the specified file.
-     * 
+     *
      * @param filename Name of the file
+     * @param c the c
+     * @throws Exception the exception
      */
     public InputManager( String filename, VIVAContext c ) throws Exception
     {
@@ -96,8 +99,8 @@ public class InputManager
     
     /**
      * Put one character back on the input.
-     * 
-     * @throws IOException
+     *
+     * @throws IOException Signals that an I/O exception has occurred.
      */
     private void backch() throws IOException
     {
@@ -107,10 +110,9 @@ public class InputManager
     /**
      * Read a character, returning -1 on EOF and -2 on EOL. 
      * Also set the "eof" and "eoln" flags.
-     * 
-     * @param context
+     *
      * @return The input character, or -1 for eof, or -2 for eoln.
-     * @throws Exception
+     * @throws Exception the exception
      */
     private int nextch() throws Exception
     {
@@ -170,15 +172,14 @@ public class InputManager
         return c;
     }
         
-    /** We'll build tokens in here */
+    /**  We'll build tokens in here. */
     private StringBuilder builder = new StringBuilder();
     
     /**
      * Get the next token on the current line.
-     * 
-     * @param context Context
+     *
      * @return The next token
-     * @throws Exception
+     * @throws Exception the exception
      */
     public String getNextToken() throws Exception
     {
@@ -257,9 +258,9 @@ public class InputManager
     
     /**
      * Get all text to EOLN.
-     * 
+     *
      * @return Text on the current line up to EOLN
-     * @throws Exception
+     * @throws Exception the exception
      */
     public String getToEOLN() throws Exception
     {
@@ -278,10 +279,10 @@ public class InputManager
     
     /**
      * Get the text in a fixed-width field.
-     * 
+     *
      * @param width Width of the field
      * @return Text in the current line of the given width
-     * @throws Exception
+     * @throws Exception the exception
      */
     public String getFixedField( int width ) throws Exception
     {
@@ -308,8 +309,8 @@ public class InputManager
     /**
      * Drop an anchor, which means remembering the State at this place
      * so we can easily go back to it.
-     * 
-     * @throws VIVAException
+     *
+     * @throws VIVAException the VIVA exception
      */
     public void dropAnchor() throws VIVAException
     {
@@ -322,8 +323,8 @@ public class InputManager
     
     /**
      * Return to the last recored 'anchor' State.
-     * 
-     * @throws VIVAException
+     *
+     * @throws VIVAException the VIVA exception
      */
     public void returnToAnchor() throws VIVAException
     {
@@ -335,8 +336,8 @@ public class InputManager
     
     /**
      * Get rid of the current 'anchor' State.
-     * 
-     * @throws VIVAException
+     *
+     * @throws VIVAException the VIVA exception
      */
     public void raiseAnchor() throws VIVAException
     {
@@ -378,8 +379,8 @@ public class InputManager
     }
     
     /**
-     * Are we at EOLN?
-     * 
+     * Are we at EOLN?.
+     *
      * @return true if at EOLN, otherwise false
      */
     public boolean atEOLN()
@@ -400,6 +401,9 @@ public class InputManager
     
     /**
      * Read the next line, and perform formatting checks.
+     *
+     * @return the next line
+     * @throws Exception the exception
      */
     public void getNextLine() throws Exception
     {
@@ -436,9 +440,8 @@ public class InputManager
     
     /**
      * Check to see if there are any blank lines, extra spaces, or extra characters after all of the input has been parsed.
-     * 
-     * @param context
-     * @throws Exception
+     *
+     * @throws Exception the exception
      */
     public void eofChecks() throws Exception
     {
@@ -515,7 +518,7 @@ public class InputManager
     }
     
     /**
-     * Close
+     * Close.
      */
     public void close()
     {

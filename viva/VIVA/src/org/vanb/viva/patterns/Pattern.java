@@ -10,12 +10,13 @@ import org.vanb.viva.utils.VIVAException;
  */
 public interface Pattern
 {
+    
     /**
-     * Test to see if this pattern matches the input file
+     * Test to see if this pattern matches the input file.
+     *
      * @param context The context in which VIVA is operating
-     * 
      * @return true if this Pattern matches, otherwise false
-     * @throws VIVAException
+     * @throws VIVAException the VIVA exception
      */
     public boolean test( VIVAContext context ) throws VIVAException;
 }

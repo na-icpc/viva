@@ -5,15 +5,32 @@ import java.util.List;
 import org.vanb.viva.utils.VIVAContext;
 import org.vanb.viva.utils.VIVAException;
 
+/**
+ * The Class ChoiceController.
+ */
 public class ChoiceController implements Pattern
 {
+    
+    /** The choices. */
     private List<Pattern> choices;
     
-    public ChoiceController( List<Pattern> c )
+    /**
+     * Instantiates a new choice controller.
+     *
+     * @param choices the choices
+     */
+    public ChoiceController( List<Pattern> choices )
     {
-        choices = c;   
+        this.choices = choices;   
     }
     
+    /**
+     * Test.
+     *
+     * @param context the context
+     * @return true, if successful
+     * @throws VIVAException the VIVA exception
+     */
     @Override
     public boolean test( VIVAContext context ) throws VIVAException
     {

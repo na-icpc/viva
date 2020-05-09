@@ -11,8 +11,14 @@ import org.vanb.viva.utils.VIVAException;
  */
 public class PatternListController implements Pattern
 {
+    
+    /** The pattern list. */
     protected PatternList patternList;
+    
+    /** The constraints. */
     protected ConstraintList constraints;
+    
+    /** Is this pattern multiline?. */
     protected boolean multiline = false;
     
     /**
@@ -25,8 +31,8 @@ public class PatternListController implements Pattern
     }
         
     /**
-     * Set the PatternList
-     * 
+     * Set the PatternList.
+     *
      * @param list the list of Patterns to control
      */
     public void setPatternList( PatternList list )
@@ -45,9 +51,11 @@ public class PatternListController implements Pattern
     }
     
     /**
-     * Test to see if this pattern matches the input file
-     * 
+     * Test to see if this pattern matches the input file.
+     *
+     * @param context the context
      * @return true if this Pattern matches, otherwise false
+     * @throws VIVAException the VIVA exception
      */
     public boolean test( VIVAContext context ) throws VIVAException
     {

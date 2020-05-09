@@ -288,6 +288,7 @@ public class Graph extends Base
      * Detect a Desert.
      *
      * @param node a node in the graph
+     * @param from the node we came from
      * @return true if we find a cycle, otherwise false
      */
     private Boolean detectDesert( Node node, Node from )

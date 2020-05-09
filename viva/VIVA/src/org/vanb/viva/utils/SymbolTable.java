@@ -10,15 +10,17 @@ import java.util.Deque;
 /**
  * A generic, hierarchical symbol table.
  * The symbol table is implemented as a stack of HashMaps.
- * 
+ *
  * @author vanb
+ * @param <T> the generic type
  */
 public class SymbolTable<T>
 {
-    /** A stack of symbol tables */
+    
+    /**  A stack of symbol tables. */
     private Deque<HashMap<String,T>> tables;
     
-    /** A stack of iteration counts */
+    /**  A stack of iteration counts. */
     private Deque<Integer> counts;
     
     /**
@@ -69,7 +71,8 @@ public class SymbolTable<T>
     
     /**
      * Get the count of the number of iterations at this level.
-     * @return
+     *
+     * @return the count
      */
     public int getCount()
     {
@@ -112,8 +115,8 @@ public class SymbolTable<T>
     }
     
     /**
-     * Determine if the named variable is defined at the current (innermost) level
-     * 
+     * Determine if the named variable is defined at the current (innermost) level.
+     *
      * @param name variable name
      * @return true if defined at the current level, otherwise false
      */

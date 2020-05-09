@@ -441,8 +441,8 @@ public class GraphFunctions
         /**
          * Test.
          *
-         * @param  graph the graph
-         * @return       the boolean
+         * @param graph the graph
+         * @return the object
          */
         public abstract Object test( Graph graph );
     }
@@ -623,8 +623,6 @@ public class GraphFunctions
 
         /**
          * Count the number of components in this Graph.
-         *
-         * @param name the name
          */
         public Components()
         {

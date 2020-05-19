@@ -16,6 +16,8 @@ import org.vanb.viva.utils.VIVAContext;
 
 /**
  * All of the Graph Functions.
+ *
+ * @author vanb
  */
 public class GraphFunctions
 {
@@ -27,6 +29,8 @@ public class GraphFunctions
 
     /**
      * Add an Edge to a Graph.
+     *
+     * @author vanb
      */
     public static class AddEdge implements ScalarFunction
     {
@@ -95,6 +99,8 @@ public class GraphFunctions
 
     /**
      * Add a Node to a Graph.
+     *
+     * @author vanb
      */
     public static class AddNode implements ScalarFunction
     {
@@ -159,6 +165,8 @@ public class GraphFunctions
 
     /**
      * Add multiple sequential Nodes to a Graph.
+     *
+     * @author vanb
      */
     public static class AddNodes implements ScalarFunction
     {
@@ -228,6 +236,8 @@ public class GraphFunctions
 
     /**
      * Create a Graph.
+     *
+     * @author vanb
      */
     public static class CreateGraph implements ScalarFunction
     {
@@ -361,6 +371,8 @@ public class GraphFunctions
 
     /**
      * A template for all Graph test functions.
+     *
+     * @author vanb
      */
     private static abstract class GraphTestFunction implements ScalarFunction
     {
@@ -449,12 +461,15 @@ public class GraphFunctions
          *
          * @param graph the graph
          * @return the object
+         * @throws Exception the exception
          */
-        public abstract Object test( Graph graph );
+        public abstract Object test( Graph graph ) throws Exception;
     }
 
     /**
      * Is this Graph a Cactus?.
+     *
+     * @author vanb
      */
     public static class IsCactus extends GraphTestFunction
     {
@@ -483,6 +498,8 @@ public class GraphFunctions
 
     /**
      * Test if the graph is connected.
+     *
+     * @author vanb
      */
     public static class IsConnected extends GraphTestFunction
     {
@@ -511,6 +528,8 @@ public class GraphFunctions
 
     /**
      * Test if the graph is a Directed Acyclic Graph (DAG).
+     *
+     * @author vanb
      */
     public static class IsDAG extends GraphTestFunction
     {
@@ -539,6 +558,8 @@ public class GraphFunctions
 
     /**
      * Checks if this Graph is a Desert.
+     *
+     * @author vanb
      */
     public static class IsDesert extends GraphTestFunction
     {
@@ -567,6 +588,8 @@ public class GraphFunctions
 
     /**
      * Test if this Graph is a Forest.
+     *
+     * @author vanb
      */
     public static class IsForest extends GraphTestFunction
     {
@@ -595,6 +618,8 @@ public class GraphFunctions
 
     /**
      * Test if the graph is a Tree.
+     *
+     * @author vanb
      */
     public static class IsTree extends GraphTestFunction
     {
@@ -623,6 +648,8 @@ public class GraphFunctions
 
     /**
      * Count the number of components in this Graph.
+     *
+     * @author vanb
      */
     public static class Components extends GraphTestFunction
     {
@@ -645,6 +672,35 @@ public class GraphFunctions
         public Object test( Graph graph )
         {
             return graph.components();
+        }
+    }
+    
+    /**
+     * Detect if there are any negative cycles in this Graph.
+     *
+     * @author vanb
+     */
+    public static class NoNegativeCycles extends GraphTestFunction
+    {
+
+        /**
+         * Detect if there are any negative cycles in this Graph.
+         */
+        public NoNegativeCycles()
+        {
+            super( "nonegcycles", Boolean.class );
+        }
+
+        /**
+         * Detect if there are any negative cycles in this Graph.
+         *
+         * @param  graph the graph
+         * @return       true, if there are no negative cycles.
+         */
+        @Override
+        public Object test( Graph graph ) throws Exception
+        {
+            return graph.noNegativeCycles();
         }
     }
 

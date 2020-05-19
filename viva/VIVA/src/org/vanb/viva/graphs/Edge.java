@@ -8,6 +8,8 @@ package org.vanb.viva.graphs;
 
 /**
  * The Class Edge.
+ *
+ * @author vanb
  */
 public class Edge extends Base
 {
@@ -37,6 +39,17 @@ public class Edge extends Base
         this.weight = weight;
     }
 
+    /**
+     * Gets the id.
+     *
+     * @return the id
+     */
+    @Override
+    public String getID()
+    {
+        return id;
+    }
+    
     /**
      * Gets the from Node.
      *
@@ -86,6 +99,17 @@ public class Edge extends Base
     public Number getWeight()
     {
         return weight;
+    }
+    
+    /**
+     * To string.
+     *
+     * @return the string
+     */
+    @Override
+    public String toString()
+    {
+        return id + "[" + to.getID() + "->" + from.getID() + "]";
     }
 
 }

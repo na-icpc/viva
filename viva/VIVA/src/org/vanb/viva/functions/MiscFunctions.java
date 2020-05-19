@@ -519,5 +519,34 @@ public class MiscFunctions
         }
 
     }
+    
+    public static class Exists implements ScalarFunction
+    {
+
+        @Override
+        public String getName()
+        {
+            return "exists";
+        }
+
+        @Override
+        public Class<?> getReturnType( Class<?>[] params )
+        {
+            return params.length==1 ? Boolean.class : null;
+        }
+
+        @Override
+        public String getUsage()
+        {
+            return "exists(any single parameter)";
+        }
+
+        @Override
+        public Object run( VIVAContext context, List<Object> parameters ) throws Exception
+        {
+            return parameters.get( 0 )!=null;
+        }
+        
+    }
 
 }

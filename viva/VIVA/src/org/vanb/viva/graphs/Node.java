@@ -28,6 +28,16 @@ public class Node extends Base
         super( id );
     }
 
+    /**
+     * Gets the id.
+     *
+     * @return the id
+     */
+    @Override
+    public String getID()
+    {
+        return id;
+    }
 
     /**
      * Gets the edges.
@@ -59,5 +69,16 @@ public class Node extends Base
     public void addEdge( Edge edge )
     {
         edges.add( edge );   
+    }
+    
+    /**
+     * To string.
+     *
+     * @return the string
+     */
+    @Override
+    public String toString()
+    {
+        return id + "(" + extras + ")";
     }
 }

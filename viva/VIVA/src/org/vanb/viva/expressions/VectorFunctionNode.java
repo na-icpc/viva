@@ -53,7 +53,14 @@ public class VectorFunctionNode extends FunctionNode
             List<Object> parmvalues = new ArrayList<Object>(parameters.size());
             for( ExpressionNode parm : parameters )
             {
-                parmvalues.add( parm.evaluate( context ) );
+                try
+                {
+                    parmvalues.add( parm.evaluate( context ) );
+                }
+                catch( NullPointerException npe )
+                {
+                    parmvalues.add( null );    
+                }
             }
             rows.add( parmvalues );
         }

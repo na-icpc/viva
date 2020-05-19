@@ -6,11 +6,17 @@
  */
 package org.vanb.viva.graphs;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * The Class Graph.
+ *
+ * @author vanb
  */
 public class Graph extends Base
 {
@@ -220,7 +226,7 @@ public class Graph extends Base
         return edges.size()==nodes.size()-nComponents && (!directed || zeroins.size()==nComponents);
     }
     
-    /** Path from the start of a DFS to a given node */
+    /**  Path from the start of a DFS to a given node. */
     private HashSet<Node> path = new HashSet<Node>();
 
     /**
@@ -287,7 +293,7 @@ public class Graph extends Base
         return isConnected() && isDesert();
     }
     
-    /** A number used to differentiate between start points when detecting if a graph is a Desert */
+    /**  A number used to differentiate between start points when detecting if a graph is a Desert. */
     private int index;
        
     /**
@@ -381,5 +387,150 @@ public class Graph extends Base
     public Integer components()
     {
         return nComponents;
+    }
+    
+    /**
+     * Find a connected component.
+     *
+     * @param node A starting Node
+     * @param componentNodes the component's nodes, built as we go
+     * @param componentEdges the component's edges, built as we go
+     */
+    private void findComponent( Node node, Set<Node> componentNodes, Set<Edge> componentEdges )
+    {
+        componentNodes.add( node );
+        node.setExtras( "visited" );
+        for( Edge edge : node.getEdges() )
+        {
+            componentEdges.add( edge );
+            if( edge.getWeight().doubleValue()<0.0 ) edge.setExtras( node );
+            Node neighbor = edge.getOther( node );
+            if( neighbor.getExtras()==null ) findComponent( neighbor, componentNodes, componentEdges );
+        }
+    }
+    
+    /**
+     * Detect a negative cycle in a connected component.
+     *
+     * @param start a starting node
+     * @param componentNodes the component's nodes
+     * @param componentEdges the component's edges
+     * @return true, if there is a negative cycle in this component
+     */
+    private boolean detectNegativeCycle( Node start, Set<Node> componentNodes, Set<Edge> componentEdges )
+    {
+        // Use Bellman/Ford to find all shortest paths from the start node to every other node
+        for( Node node : componentNodes ) node.setExtras( Double.POSITIVE_INFINITY );    
+        start.setExtras( 0.0 );
+               
+        for( int i=0; i<componentNodes.size()-1; i++ )
+        {
+            for( Edge edge : componentEdges )
+            {
+                Node fromNode = edge.getFrom();
+                Node toNode = edge.getTo();
+                double u = ((Number)fromNode.getExtras()).doubleValue();
+                double v = ((Number)toNode.getExtras()).doubleValue();
+                double w = edge.getWeight().doubleValue();
+                if( u+w<v ) toNode.setExtras( u+w );
+             }
+        }
+        
+        // Take B/F one step further.
+        // If we can find a shorter path, then there has to be a negative cycle.
+        boolean isneg = false;
+        for( Edge edge : componentEdges )
+        {
+            double u = ((Number)edge.getFrom().getExtras()).doubleValue();
+            double v = ((Number)edge.getTo().getExtras()).doubleValue();
+            double w = edge.getWeight().doubleValue();
+            if( u+w<v ) 
+            {
+                isneg = true;
+                break;
+            }
+        }
+        
+        return isneg;
+    }
+    
+    /**
+     * Check if there are no negative cycles.
+     *
+     * @return true, if there are no negative cycles in the graph
+     * @throws Exception the exception
+     */
+    public Boolean noNegativeCycles() throws Exception
+    {
+        Boolean noneg = Boolean.TRUE;
+        
+        if( weighted )
+        {
+            if( nodes.size()*edges.size()>1000000 )
+            {
+                throw new Exception( "Graph is too big to test for negative cycles. |V|*|E|>1,000,000 (" 
+                                   + nodes.size() + " * " + edges.size() + " = " + (nodes.size()*edges.size()) + ")" );    
+            }
+            
+            if( directed )
+            {
+                // For a Directed graph, we'll use Bellman/Fors, which is O(|V|*|E|)                
+                List<Node> componentNodes = new ArrayList<Node>(nodes.size()+1);
+                List<Edge> componentEdges = new ArrayList<Edge>(edges.size()+nodes.size());
+
+                // Grab all of the ndodes and edges
+                componentNodes.addAll( nodes.values() );
+                componentEdges.addAll( edges.values() );
+                
+                // We'll create an artificial start node, 
+                // with a directed edge of weight 0 to every actual node.
+                Node start = new Node( "start" );
+                componentNodes.add( start );
+                for( Node node : nodes.values() )
+                {
+                    Edge edge = new Edge( "start->" + node.getID(), start, node, 0.0 );
+                    componentEdges.add( edge );
+                }
+                
+                // This will be the cost from the start node to each other nodes
+                for( Node node : componentNodes ) node.setExtras( Double.POSITIVE_INFINITY );    
+                start.setExtras( 0.0 );
+                       
+                // B/F!
+                for( int i=0; i<componentNodes.size()-1; i++ )
+                {
+                    for( Edge edge : componentEdges )
+                    {
+                        Node fromNode = edge.getFrom();
+                        Node toNode = edge.getTo();
+                        double u = ((Number)fromNode.getExtras()).doubleValue();
+                        double v = ((Number)toNode.getExtras()).doubleValue();
+                        double w = edge.getWeight().doubleValue();
+                        if( u+w<v ) toNode.setExtras( u+w );
+                     }
+                }
+                
+                // Take B/F one step further.
+                // If we can find a shorter path, then there has to be a negative cycle.
+                for( Edge edge : componentEdges )
+                {
+                    double u = ((Number)edge.getFrom().getExtras()).doubleValue();
+                    double v = ((Number)edge.getTo().getExtras()).doubleValue();
+                    double w = edge.getWeight().doubleValue();
+                    if( u+w<v ) 
+                    {
+                        noneg = Boolean.FALSE;
+                        break;
+                    }
+                }
+
+            }
+            else
+            {
+                throw new Exception( "Cannot detect negative cycles in an undirected graph; the problem is NP-Complete." );    
+            }
+        }
+        
+        return noneg;
     }
 }

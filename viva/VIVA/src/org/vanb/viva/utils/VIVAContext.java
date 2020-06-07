@@ -213,7 +213,7 @@ public class VIVAContext
     {
         String prefix = getPrefix( thing.getClass() );
         String key = prefix + ":" + name.toString();
-        if( globals.containsKey( key ) ) throw new Exception( "Already a " + prefix + " called " +name.toString() );
+        //if( globals.containsKey( key ) ) throw new Exception( "Already a " + prefix + " called " +name.toString() );
         globals.put( key, thing );
     }
     
